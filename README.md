@@ -4,15 +4,9 @@ Musterimplementierung der Zählerstandsgangmessung für dynamische Stromtarife.
 <!-- LICENSE -->
 ## License
 
-Distributed under the Apache-2.0 License. See [[LICENSE]] for more information.
+Distributed under the Apache-2.0 License. See [License](./LICENSE) for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-Inspired by the work of the [Solix2MQTT Project](https://github.com/tomquist/solix2mqtt)
 
 ## Maintainer / Imprint
 
