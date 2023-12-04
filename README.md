@@ -1,0 +1,2 @@
+# ZSG_DynamischeStromtarife
+Muterimplementierung der Zählerstandsgangmessung für dynamische Stromtarife
