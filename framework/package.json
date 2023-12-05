@@ -1,0 +1,44 @@
+{
+  "name": "zsg-settelment",
+  "version": "1.0.0",
+  "description": "Zählerstandsgangmessung für dynamische Stromtarife",
+  "scripts": {
+    "dev": "moleculer-runner --hot services/**/*.service.js",
+    "start": "moleculer-runner",
+    "cli": "moleculer connect NATS",
+    "ci": "jest --watch",
+    "test": "jest --coverage",
+    "lint": "eslint services",
+    "dc:up": "docker-compose up --build -d",
+    "dc:logs": "docker-compose logs -f",
+    "dc:down": "docker-compose down"
+  },
+  "keywords": [
+    "microservices",
+    "moleculer"
+  ],
+  "author": "",
+  "devDependencies": {
+    "eslint": "^8.25.0",
+    "jest": "^27.5.1",
+    "jest-cli": "^27.5.1",
+    "moleculer-repl": "^0.7.3"
+  },
+  "dependencies": {
+    "moleculer": "^0.14.26",
+    "moleculer-db": "^0.8.25",
+    "moleculer-web": "^0.10.4",
+    "nats": "^2.7.1"
+  },
+  "engines": {
+    "node": ">= 16.x.x"
+  },
+  "jest": {
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node",
+    "rootDir": "./services",
+    "roots": [
+      "../test"
+    ]
+  }
+}
