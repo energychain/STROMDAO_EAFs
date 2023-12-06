@@ -5,6 +5,6 @@ tasks:
       before: |
           cd ./framework
       init: |
-          echo npm install
+          npm install
       command: |
-          echo npm run dev
+         npm run dev
