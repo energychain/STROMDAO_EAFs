@@ -3,7 +3,7 @@ tasks:
       # change working directory as per configured in `checkoutLocation`
       # which is configured above as `/workspaces/framework`
       before: |
-          cd ../framework
+          cd ./framework
       init: |
           echo npm install
       command: |
