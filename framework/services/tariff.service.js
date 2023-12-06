@@ -37,6 +37,12 @@ module.exports = {
 				method: "GET",
 				path: "/customLabels"
 			},
+			/**
+			 * Provides displayable values (labels) for price segments. Mainly used by views (UI).
+			 *
+			 * @param {type} ctx - description of parameter
+			 * @return {Object} - description of return value
+			 */
 			async handler(ctx) {
 				return {
 					virtual_1: "Hochtarif",

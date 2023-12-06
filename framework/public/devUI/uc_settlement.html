@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Use Case: Tariff</title>
+    <title>Use Case: Settlement</title>
     <meta name="description" content="ZSG für dynamische Stromtarife">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css?h=cd822b7fd22c8a95a68470c795adea69">
 </head>
@@ -24,13 +24,15 @@
         </nav>
     </header>
     <div class="container">
-        <form id="fetchLabels">
+        <form id="fetchSettlement">
             <div class="card">
                 <div class="card-header">
-                    <h3>Tarifzeiten</h3>
+                    <h3>Verteilung Verbrauch einer Zeiteinheit</h3>
                 </div>
                 <div class="card-body">
-                    <div class="input-group" style="margin-bottom: 15px;"><span class="input-group-text col-2">Zeitpunkt</span><input class="form-control" id="time" type="datetime-local" name="time" required=""></div>
+                    <div class="input-group" style="margin-bottom: 15px;"><span class="input-group-text col-2">Start Zeitpunkt</span><input class="form-control" id="startTime" type="datetime-local" name="startTime" required=""></div>
+                    <div class="input-group" style="margin-bottom: 15px;"><span class="input-group-text col-2">End Zeitpunkt</span><input class="form-control" id="endTime" type="datetime-local" name="endTime" required=""></div>
+                    <div class="input-group" style="margin-bottom: 15px;"><span class="input-group-text col-2">Verbrauch</span><input class="form-control" type="number" id="consumption" name="consumption" step="1" min="0" required=""></div>
                 </div>
                 <div class="card-footer text-end">
                     <div class="row">
@@ -44,11 +46,15 @@
                 </div>
             </div>
         </form>
-        <div id="tariffsBackend" style="display: none;margin-top: 25px;"></div>
+        <div id="settlementBackend" style="display: none;margin-top: 25px;">
+            <h3>Letzte Übermittlung</h3>
+            <p id="lastReadingTime">-</p>
+            <div class="card-group" id="settlements" style="margin-top: 15px;"></div>
+        </div>
     </div>
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
-    <script src="assets/js/uc_tariff.js?h=4980502c861e066161f104f65b6b93e9"></script>
+    <script src="assets/js/uc_settlement.js?h=b70321013b685c123f79acab055d4b0d"></script>
 </body>
 
 </html>

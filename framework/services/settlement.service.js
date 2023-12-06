@@ -36,7 +36,7 @@ module.exports = {
 		 */
 		retrieve: {
 			rest: {
-				method: "GET",
+				method: "POST",
 				path: "/retrieve"
 			},
 			params: {

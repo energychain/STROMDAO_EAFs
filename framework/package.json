@@ -1,6 +1,6 @@
 {
-  "name": "zsg-settelment",
-  "version": "1.0.0",
+  "name": "zsg-framework",
+  "version": "0.2.5",
   "description": "Zählerstandsgangmessung für dynamische Stromtarife",
   "scripts": {
     "dev": "moleculer-runner --hot services/**/*.service.js",
@@ -19,10 +19,12 @@
   ],
   "author": "",
   "devDependencies": {
+    "@spailybot/moleculer-auto-openapi": "^0.1.15",
     "eslint": "^8.25.0",
     "jest": "^27.5.1",
     "jest-cli": "^27.5.1",
-    "moleculer-repl": "^0.7.3"
+    "moleculer-repl": "^0.7.3",
+    "swagger-ui-dist": "^5.10.3"
   },
   "dependencies": {
     "moleculer": "^0.14.26",

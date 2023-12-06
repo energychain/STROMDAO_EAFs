@@ -66,7 +66,6 @@ $(document).ready(function () {
             time: new Date($('#time').val()+"Z").getTime() * 1,
             reading: $('#reading').val() * 1
           };
-          console.log(dataToSend);
           // AJAX POST-Request
           $.ajax({
             type: 'POST',

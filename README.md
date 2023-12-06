@@ -1,5 +1,14 @@
 # ZSG_DynamischeStromtarife
-Musterimplementierung der Zählerstandsgangmessung für dynamische Stromtarife.
+**Musterimplementierung der Zählerstandsgangmessung für dynamische Stromtarife.**
+
+Umsetzung für die Einführung eines netzdienlichen dynamischen Stromtarifs folgend des [EAF-10 Dynamische Tarife für Elektrizität](https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/SmartMeter/Stufenmodell/Energiewirtschaftliche_Anwendungsfaelle.pdf?__blob=publicationFile&v=5). 
+
+## 🌟 Features
+
+- Verarbeitung von Zählerstandsgängen über REST-API
+- Anwendung eines dynamischen Preissignals für Strompreis (Settlement)
+- Anlegen von Untermessungen (Submetering) für Tarifstufen
+
 
 <!-- LICENSE -->
 ## License

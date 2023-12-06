@@ -34,6 +34,12 @@ module.exports = {
 			params: {
 				meterId: "string"
 			},
+			/**
+			 * Retrieves the previous reading for a given meter ID.
+			 *
+			 * @param {Object} ctx - The context object.
+			 * @return {Object|null} The previous reading object or null if not found.
+			 */
 			async handler(ctx) {
 				const _previousReading = await ctx.call("readings.find",{
 						query: {
@@ -66,6 +72,19 @@ module.exports = {
 				time: { type: "number"},
 				reading: { type: "number"}
 			},
+			/**
+			 * Handles updated meter readings:
+			 * 	 - validation of values
+			 *   - creation of transient reading
+			 *   - settlement to virtual meter points
+			 *   - consensus update for main meter
+			 *
+			 * @param {object} ctx - The context object containing the request information.
+			 * @param {string} ctx.params.meterId - The ID of the meter.
+			 * @param {number} ctx.params.time - The timestamp of the reading.
+			 * @param {number} ctx.params.reading - The value of the reading.
+			 * @return {object} transientReading - The updated transient reading object.
+			 */
 			async handler(ctx) {
 				const _previousReading = await ctx.call("readings.find",{
 						query: {
