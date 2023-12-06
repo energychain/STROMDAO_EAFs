@@ -1,7 +1,10 @@
 # ZSG_DynamischeStromtarife
 **Musterimplementierung der Zählerstandsgangmessung für dynamische Stromtarife.**
 
-Umsetzung für die Einführung eines netzdienlichen dynamischen Stromtarifs folgend des [EAF-10 Dynamische Tarife für Elektrizität](https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/SmartMeter/Stufenmodell/Energiewirtschaftliche_Anwendungsfaelle.pdf?__blob=publicationFile&v=5). 
+Umsetzung für die Einführung eines netzdienlichen dynamischen Stromtarifs folgend des [EAF-10 Dynamische Tarife für Elektrizität](https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/SmartMeter/Stufenmodell/Energiewirtschaftliche_Anwendungsfaelle.pdf?__blob=publicationFile&v=5):
+
+> Der Verbraucher oder Erzeuger erhält kurzfristig für bestimmte Zeitfenster variable Tarife durch den Energielieferanten oder Aggregator, der diese über den Messstellenbetreiber durch das iMSys zur Verfügung stellt. Dies sind ereignisvariable Tarife, da sie, anders als bei den zeitvariablen Tarifen, nicht wiederkehrend in bestimmten Zeitfenstern auftreten, sondern einmalig und damit ereignishaft für ein bestimmtes Zeitfenster gesetzt werden. Der Verbraucher oder Erzeuger kann auf diese ereignisvariablen Tarife reagieren, wenn er über flexible Verbrauchs-, Erzeugungs- oder Speicheranlagen verfügt, und somit seine Energiekosten optimieren. Neben dem Anzeigen der Tarifereignisse wird durch Zusammenspiel von iMSys und Backend auch die zeitaufgelöste und transparente Abrechnung sichergestellt.
+
 
 ## 🌟 Features
 
