@@ -103,16 +103,20 @@ module.exports = {
 					"time":ctx.params.time * 1,
 					"virtual_0":0,
 					"virtual_1":0,
-					"virtual_2":0
+					"virtual_2":0,
+					"consumption":0,
+					"processed":"tbd"
 				}
 
 				// Check if we know this meter by testing the length of the result (0 = not known, 1 = known)
 				if(_previousReading.length == 0) {
 					transientReading = await ctx.call("readings.insert",{entity:transientReading});
 					transientReading.processed = true;
+					transientReading.consumption = 0; // No consumption on first meter reading
 				} else {
 					transientReading = _previousReading[0];
-			
+					delete transientReading.processed;
+
 					// Validate that we could update
 					if( 
 						(transientReading.time  < ctx.params.time)	&& // new reading needs to be newer than previous
@@ -133,20 +137,41 @@ module.exports = {
 								transientReading[key] = 0;
 							}
 							transientReading[key] += 1 * value; 
+							transientReading['consumption_'+key] = 1 * value; 
 						}
 
 						transientReading.reading = ctx.params.reading * 1;
 						transientReading.time = ctx.params.time * 1;
 						transientReading.id = transientReading._id;
 						await ctx.call("readings.update",transientReading);
+						transientReading.consumption = deltaConumption;
 						delete transientReading.id;
 						transientReading.processed = true;
 					  } else {
 						// Invalid transient reading - do not update
 						transientReading.processed = false;
+						if(transientReading.time  > ctx.params.time) transientReading.debug = "time";
+						if(transientReading.meterId != ctx.params.meterId) transientReading.debug = "meterId";
+						if(transientReading.reading > ctx.params.reading) transientReading.debug = "reading";
 					  }
 				}
 				delete transientReading._id; // For operational safety we do not provide our db IDs to the client.
+				if((transientReading.processed) && (require("../runtime.settings.js").AUTO_CLEARING)) {
+					transientReading.endTime = transientReading.time;
+					const transientClearing = {
+						"meterId": transientReading.meterId, 
+						"reading":transientReading.reading,
+						"endTime":transientReading.time,
+						"consumption":transientReading.consumption,
+					}
+					for (const [key, value] of Object.entries(transientReading)) {
+						if((key.indexOf('virtual_') == 0) || (key.indexOf('consumption_') == 0 )) {
+							transientClearing[key] = value;
+						}
+					}
+					let clearing = await ctx.call("clearing.commit",transientClearing);
+					transientReading.clearing = clearing;
+				}
 				return transientReading;
 			}
 		}

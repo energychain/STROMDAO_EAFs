@@ -101,8 +101,9 @@ module.exports = {
 					sum +=  1 * value;
 					selectedKey = key;
 				}
-				settlement[selectedKey] += sum - ctx.params.consumption;
-
+				if(selectedKey !== null) {
+					settlement[selectedKey] += sum - ctx.params.consumption;
+				}
 				return settlement;
 			}
 		}

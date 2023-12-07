@@ -35,7 +35,7 @@ Germany  <br/>
   <br/>
 +49 6226 968 009 0  <br/>
   <br/>
-kontakt@stromdao.com  <br/>
+dev@stromdao.com  <br/>
   <br/>
 Handelsregister: HRB 728691 (Amtsgericht Mannheim)<br/>
   <br/>

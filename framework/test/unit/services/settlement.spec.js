@@ -28,9 +28,9 @@ describe("Test 'settlement' service", () => {
 			for (const [key, value] of Object.entries(res)) {
 					saldo += value;
 			}
-			//expect(saldo).toBe(testConsumption1); // TODO Fix that in settlement service
+			expect(saldo).toBe(testConsumption1); 
 		});
-		/*
+		
 		it("should valid settlement", async () => {
 			let res =await broker.call("settlement.retrieve",{
 				consumption:testConsumption1,
@@ -43,7 +43,7 @@ describe("Test 'settlement' service", () => {
 			}
 			expect(saldo).toBe(testConsumption1);
 		});
-		*/
+		
 	});
 
 

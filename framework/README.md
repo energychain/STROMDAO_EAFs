@@ -20,6 +20,8 @@ In the terminal, try the following commands:
 - **metering**: Metering Service to push readings to
 - **tariff** Provides tariff labels.
 - **settlement** Settles consumption from meter readings to tariff labels. 
+- **clearing** Actual clearing of delta meta readings with settlements.
+
 
 ## NPM scripts
 

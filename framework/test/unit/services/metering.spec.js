@@ -6,6 +6,7 @@ const TestService = require("../../../services/metering.service");
 const ReadingsService = require("../../../services/readings.service");
 const SettlementService = require("../../../services/settlement.service");
 const TariffService = require("../../../services/tariff.service");
+const ClearingService = require("../../../services/clearing.service");
 
 describe("Test 'metering' service", () => {
 	let broker = new ServiceBroker({ logger: false });
@@ -13,6 +14,7 @@ describe("Test 'metering' service", () => {
 	broker.createService(ReadingsService);
 	broker.createService(SettlementService);
 	broker.createService(TariffService);
+	broker.createService(ClearingService);
 
 	beforeAll(() => broker.start());
 	afterAll(() => broker.stop());

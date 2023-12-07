@@ -1,6 +1,6 @@
 "use strict";
-const EPOCH_DURATION = 3600000; // Defines how long an Epoch is. 
-const TARIFF_SEGMENTS = 3; // Number of Tariff segments to create
+const EPOCH_DURATION =  require("../runtime.settings.js").EPOCH_DURATION; // Defines how long an Epoch is. 
+const TARIFF_SEGMENTS = require("../runtime.settings.js").TARIFF_SEGMENTS; // Number of Tariff segments to create
 
 /**
  * Tariff service providing labels for dynamic pricing model
