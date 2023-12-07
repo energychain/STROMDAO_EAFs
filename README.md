@@ -1,5 +1,5 @@
-# ZSG_DynamischeStromtarife
-**Musterimplementierung der Zählerstandsgangmessung für dynamische Stromtarife.**
+# EAFs - Zählerstandsgangmessung für dynamische Stromtarife
+**Referenzimplementierung der STROMDAO GmbH**
 
 Umsetzung für die Einführung eines netzdienlichen dynamischen Stromtarifs folgend des [EAF-10 Dynamische Tarife für Elektrizität](https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/SmartMeter/Stufenmodell/Energiewirtschaftliche_Anwendungsfaelle.pdf?__blob=publicationFile&v=5):
 
