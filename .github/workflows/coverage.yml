@@ -20,11 +20,5 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Change to Framework
-      run: cd framework
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Run the tests
-      run: npm test -- --coverage
+    - name: Run tests on Framework
+      run: cd framework ;; npm install ;; npm test -- --coverage 
