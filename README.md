@@ -1,3 +1,5 @@
+[![STROMDAO logo](https://static.corrently.cloud/stromdao_988.png)](https://stromdao.de/)
+
 # EAFs - Zählerstandsgangmessung für dynamische Stromtarife
 **Referenzimplementierung der STROMDAO GmbH**
 

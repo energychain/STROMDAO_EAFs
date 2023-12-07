@@ -19,7 +19,9 @@ module.exports = {
 	/**
 	 * Dependencies
 	 */
-	dependencies: [],
+	dependencies: [
+		"readings"
+	],
 
 	/**
 	 * Actions
@@ -110,9 +112,8 @@ module.exports = {
 					transientReading.processed = true;
 				} else {
 					transientReading = _previousReading[0];
-					console.log(_previousReading);
+			
 					// Validate that we could update
-
 					if( 
 						(transientReading.time  < ctx.params.time)	&& // new reading needs to be newer than previous
 						(transientReading.meterId == ctx.params.meterId) &&	// same meter
@@ -132,7 +133,6 @@ module.exports = {
 								transientReading[key] = 0;
 							}
 							transientReading[key] += 1 * value; 
-							//TODO sanity check if sum of values is equal to deltaConumption
 						}
 
 						transientReading.reading = ctx.params.reading * 1;

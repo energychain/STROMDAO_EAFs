@@ -1,6 +1,6 @@
 [![Moleculer](https://badgen.net/badge/Powered%20by/Moleculer/0e83cd)](https://moleculer.services)
 
-# zsg-settelment
+# stromdao-eaf
 This is a [Moleculer](https://moleculer.services/)-based microservices project. Generated with the [Moleculer CLI](https://moleculer.services/docs/0.14/moleculer-cli.html).
 
 ## Usage
@@ -15,16 +15,11 @@ In the terminal, try the following commands:
 - `call greeter.welcome --name John` - Call the `greeter.welcome` action with the `name` parameter.
 
 
-
 ## Services
 - **api**: API Gateway services
-- **greeter**: Sample service with `hello` and `welcome` actions.
-
-
-## Useful links
-
-* Moleculer website: https://moleculer.services/
-* Moleculer Documentation: https://moleculer.services/docs/0.14/
+- **metering**: Metering Service to push readings to
+- **tariff** Provides tariff labels.
+- **settlement** Settles consumption from meter readings to tariff labels. 
 
 ## NPM scripts
 

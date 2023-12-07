@@ -27,16 +27,9 @@ module.exports = {
 
 		routes: [
 			{
-				openapi: {
-					// Define an OpenAPI specification that will apply to all aliases within this route
-				},
 				path: '/openapi',
-				aliases: {
-					'GET /openapi.json': 'openapi.generateDocs',
-					'GET /ui': 'openapi.ui',
-					'GET /assets/:file': 'openapi.assets',
-					'GET /oauth2-redirect': 'openapi.oauth2Redirect',
-				},
+				whitelist: ['openapi.*'],
+				autoAliases: true
 			},
 			{
 				path: "/api",

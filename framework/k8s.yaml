@@ -10,15 +10,6 @@ data:
   LOGLEVEL: info
   SERVICEDIR: services
   TRANSPORTER: nats://nats:4222
-  
-  
-  
-  
-  
-  
-  
-  
-  
 
 ---
 #########################################################

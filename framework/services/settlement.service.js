@@ -22,7 +22,7 @@ module.exports = {
 	/**
 	 * Dependencies
 	 */
-	dependencies: [],
+	dependencies: ["tariff"],
 
 	/**
 	 * Actions
@@ -101,7 +101,6 @@ module.exports = {
 					sum +=  1 * value;
 					selectedKey = key;
 				}
-				console.log("APPLY Correction value to ",selectedKey,(sum - ctx.params.consumption));
 				settlement[selectedKey] += sum - ctx.params.consumption;
 
 				return settlement;

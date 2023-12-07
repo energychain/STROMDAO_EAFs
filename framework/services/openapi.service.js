@@ -1,10 +1,10 @@
 const OpenApiMixin = require('@spailybot/moleculer-auto-openapi');
 
 module.exports = {
-   // Choose your preferred name
    name: 'openapi',
+   mixins: [OpenApiMixin],
    settings: {
-       rest: '/openapi',
+       rest: 'openapi',
        schemaPath: '/openapi/openapi.json',
        openapi: {
          info: {
@@ -12,5 +12,8 @@ module.exports = {
            version: "0.2.5"
          }
        }
-   }
+   },
+   async started() {
+     console.log("OpenAPI Service started");
+    }
 };

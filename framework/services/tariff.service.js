@@ -16,6 +16,11 @@ module.exports = {
 	name: "tariff",
 
 	mixins: [DbService],
+	
+	adapter: require("../runtime.settings.js").db_adapter,
+	
+	collection: "tariff",
+
 	/**
 	 * Settings
 	 */
@@ -143,7 +148,7 @@ module.exports = {
 	 * Service started lifecycle event handler
 	 */
 	async started() {
-
+		
 	},
 
 	/**

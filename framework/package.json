@@ -1,7 +1,7 @@
 {
-  "name": "zsg-framework",
-  "version": "0.2.5",
-  "description": "Zählerstandsgangmessung für dynamische Stromtarife",
+  "name": "stromdao-eaf",
+  "version": "0.2.6",
+  "description": "Referenzimplementierung: Zählerstandsgangmessung für dynamische Stromtarife",
   "scripts": {
     "dev": "moleculer-runner --hot services/**/*.service.js",
     "start": "moleculer-runner",
@@ -15,9 +15,13 @@
   },
   "keywords": [
     "microservices",
-    "moleculer"
+    "moleculer",
+    "reference",
+    "eaf-10",
+    "stromdao",
+    "tariff"
   ],
-  "author": "",
+  "author": "STROMDAO GmbH <dev@stromdao.com>",
   "devDependencies": {
     "@spailybot/moleculer-auto-openapi": "^0.1.15",
     "eslint": "^8.25.0",
@@ -29,6 +33,7 @@
   "dependencies": {
     "moleculer": "^0.14.26",
     "moleculer-db": "^0.8.25",
+    "moleculer-db-adapter-mongo": "^0.4.19",
     "moleculer-web": "^0.10.4",
     "nats": "^2.7.1"
   },

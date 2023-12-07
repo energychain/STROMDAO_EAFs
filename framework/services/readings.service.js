@@ -5,6 +5,7 @@
 
 
 const DbService = require("moleculer-db");
+
 /**
  * @typedef {import('moleculer').ServiceSchema} ServiceSchema Moleculer's Service Schema
  * @typedef {import('moleculer').Context} Context Moleculer's Context
@@ -13,6 +14,10 @@ const DbService = require("moleculer-db");
 /** @type {ServiceSchema} */
 module.exports = {
 	name: "readings",
+	
+	adapter: require("../runtime.settings.js").db_adapter,
+	
+	collection: "readings",
 
 	mixins: [DbService],
 	/**
