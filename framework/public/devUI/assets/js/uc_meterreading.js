@@ -58,6 +58,10 @@ $(document).ready(function () {
     //Initialize Time to yesterday at same time.
     $('#time').val(new Date(new Date().getTime()-86400000).toISOString().substring(0,16));
 
+    $('#btnClearing').on('click',function() {
+        location.href="./uc_clearing.html?meterId="+$('#meterId').val();
+    }
+    )
     $('#updateReading').submit(function (event) {
         event.preventDefault();
         $('#submitReading').attr('disabled', 'disabled');
@@ -75,12 +79,15 @@ $(document).ready(function () {
             success: function(response) {
               // Erfolgreiche Antwort vom Server
               $('#submitReading').removeAttr('disabled');
+              $('#btnClearing').hide();
               if(response.processed) {
                     $('#successAlert').show();
                     setTimeout(function() {
                             $('#successAlert').hide();
-                    },1000);
-
+                    },5000);
+                    if(typeof response.clearing !== 'undefined') {
+                        $('#btnClearing').show();
+                    }
                    renderReadings(response);
               } else {
                     $('#warningAlert').show();

@@ -3,11 +3,12 @@
 const { ServiceBroker } = require("moleculer");
 const { ValidationError } = require("moleculer").Errors;
 const TestService = require("../../../services/tariff.service");
-
+const PriceService = require("../../../services/price.service");
 
 describe("Test 'tariff' service", () => {
 	let broker = new ServiceBroker({ logger: false });
 	broker.createService(TestService);
+	broker.createService(PriceService);
 
 	beforeAll(() => broker.start());
 	afterAll(() => broker.stop());
@@ -40,6 +41,21 @@ describe("Test 'tariff' service", () => {
 			for(let i=0;i<res.length;i++) {
 				expect(res[i].label == labels[i+1].label).toBe(true);
 			}
+		});
+	});
+	describe("Test 'tariff.setPrices' action", () => {
+		it("should provide labels from now to near future", async () => {
+			let res =await broker.call("tariff.setPrices",{
+				virtual_1:0.1,
+				virtual_2:0.2,
+				virtual_3:0.4
+			});
+			expect(typeof res.virtual_1 !== 'undefined').toBe(true);
+		});
+		it("should return a valid price for virtual_1", async () => {
+			let res =await broker.call("tariff.getPrices",{
+			});
+			expect(typeof res.virtual_1 !== 'undefined').toBe(true);
 		});
 	});
 });

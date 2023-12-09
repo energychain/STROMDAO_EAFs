@@ -16,7 +16,11 @@ Umsetzung für die Einführung eines netzdienlichen dynamischen Stromtarifs folg
 - Verarbeitung von Zählerstandsgängen über REST-API
 - Anwendung eines dynamischen Preissignals für Strompreis (Settlement)
 - Anlegen von Untermessungen (Submetering) für Tarifstufen
+- Erstellung von Abrechnungen (Clearing)
 
+## Demo
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/energychain/STROMDAO_EAFs)
 
 <!-- LICENSE -->
 ## License

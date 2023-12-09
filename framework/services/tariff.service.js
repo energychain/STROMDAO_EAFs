@@ -56,6 +56,67 @@ module.exports = {
 				};
 			}
 		},
+		setPrices: {
+			rest: {
+				method: "POST",
+				path: "/setPrices"
+			},
+			async handler(ctx) {
+				
+				let labels = await ctx.call("tariff.customLabels");
+				for (const [key, value] of Object.entries(labels)) {
+					if(typeof ctx.params[key] !== 'undefined') {
+						// TODO: Delete newer prices than epoch 0
+						let previousDeclarations = await ctx.call("price.find",{
+							query: {
+								label: key,
+								epoch: { $gte : 0}
+							}
+						});
+						for(let j=0;j<previousDeclarations.length;j++) {
+							await ctx.call("price.remove",{
+								_id: previousDeclarations[j]._id
+							});
+						}
+						await ctx.call("price.insert",{entity:{
+							epoch: 0,
+							label: key,
+							price: ctx.params[key] * 1
+						}});
+					}
+				}	
+				return ctx.params;
+			}
+		},
+		getPrices: {
+			rest: {
+				method: "GET",
+				path: "/getPrices"
+			},
+			async handler(ctx) {
+				if(typeof ctx.params.epoch == 'undefined') {
+					ctx.params.epoch = Math.floor(new Date().getTime() / require("../runtime.settings.js").EPOCH_DURATION);
+				}
+				let results =  await ctx.call("price.find",{
+					query:{
+						epoch: {
+							$lte: ctx.params.epoch * 1
+						}
+					},
+					sort:"-epoch"
+				});
+				let labels = await ctx.call("tariff.customLabels");
+				let prices = {};
+				for (const [key, value] of Object.entries(labels)) {
+					for(let i=0;(i<results.length) && (typeof prices[key] == 'undefined') ;i++) {
+						if(results[i].label == key) {
+							prices[key] = results[i].price;
+						}
+					}
+				}
+				return prices;
+			}
+		},
 		epochDuration: {
 			rest: {
 				method: "GET",

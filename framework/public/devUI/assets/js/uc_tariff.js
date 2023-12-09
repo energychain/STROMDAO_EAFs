@@ -21,6 +21,36 @@ $(document).ready(function () {
     $.getJSON("/api/tariff/customLabels", function(data) {
         customLabels = data;
         doFetch();
+        let html = '';
+        for (const [key, value] of Object.entries(data)) {
+            html += '<div class="input-group" style="margin-bottom: 15px;">';
+            html += '<span class="input-group-text col-3">'+value+'</span>';
+            html += '<input class="form-control" type="number" step="0.01" min="0.01" name="'+key+'"  id="'+key+'" required/>';
+//            html += '<button class="btn btn-primary" type="button">Speichern</button>';
+            html += '</div>';
+        }
+        $('#tariffPrices').html(html);
+    });
+
+    $('#frmPrices').submit(function(event) {
+        event.preventDefault();
+        var dataToSend = {};
+        for (const [key, value] of Object.entries(customLabels)) {
+            dataToSend[key] = $('#'+key).val()
+        }
+        console.log("My Data", dataToSend);
+        $.ajax({
+            type: 'POST',
+            url: '/api/tariff/setPrices', 
+            data: JSON.stringify(dataToSend),
+            contentType: 'application/json',
+            success: function(response) {
+                 console.log(response);
+            },
+            error: function(error) {
+                console.error(error);
+            }
+        });   
     });
 
     $('#fetchLabels').submit(function (event) {

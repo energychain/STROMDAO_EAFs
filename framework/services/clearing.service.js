@@ -36,6 +36,38 @@ module.exports = {
 	 */
 	actions: {
 
+		retrieve: {
+			rest: {
+				method: "GET",
+				path: "/retrieve"
+			},
+			params: {
+				meterId: {
+					type: "string",
+					required: true
+				}
+			},
+			async handler(ctx) {
+				let results =  await ctx.call("clearing.find",{
+					query: {
+						meterId: ctx.params.meterId
+					},
+					sort:"-epoch"
+				});
+				let labels = await ctx.call("tariff.customLabels");
+				for(let i=0;i<results.length;i++) {
+					for(const [key, value] of Object.entries(labels)) {
+						if(typeof results[i][key] == 'undefined') {
+							results[i][key] = 0
+						}
+						if(typeof results[i]["consumption_"+key] == 'undefined') {
+							results[i]['consumption_'+key] = 0
+						}
+					}
+				}
+				return results;
+			}
+		},
 		/**
 		 * Commit a readings of a meterId to run clearing.
 		 *
@@ -77,7 +109,6 @@ module.exports = {
 				ctx.params.clearingTime = new Date().getTime();
 
 				if( 
-					(ctx.params.startTime < ctx.params.endTime) &&
 					(ctx.params.consumption >= 0)
 				) {
 						if(previousClearings.length == 0) {			
@@ -90,8 +121,23 @@ module.exports = {
 									(previousClearing.epoch <= ctx.params.epoch) &&
 								    (previousClearing.reading <= ctx.params.reading) 		
 							) {
-								await ctx.call("clearing.insert",{entity:ctx.params});
+								// Apply Price Info to Clearance
+								let prices = await ctx.call("tariff.getPrices",{
+									epoch: ctx.params.epoch
+								});
+								let totalCost = 0;
+
+								for (let [key, value] of Object.entries(prices)) {
+									if(value == null) value = 0;
+									if(typeof ctx.params["consumption_"+key] == 'undefined') ctx.params["consumption_"+key] = 0;
+									const epochCost = (ctx.params["consumption_"+key]/1000) * value;
+									totalCost += 1 * epochCost; 
+									ctx.params["cost_"+key] = epochCost;
+								}
+								ctx.params["cost"] = totalCost;
 								ctx.params.processed = true;
+								await ctx.call("clearing.insert",{entity:ctx.params});
+								
 								// TODO validate virtual readings
 							} 
 						}

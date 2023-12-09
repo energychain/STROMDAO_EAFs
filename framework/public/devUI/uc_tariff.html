@@ -16,14 +16,29 @@
                 <div class="collapse navbar-collapse" id="navcol-1">
                     <ul class="navbar-nav">
                         <li class="nav-item"><a class="nav-link" href="uc_meterreading.html">Zählerablesung</a></li>
-                        <li class="nav-item"><a class="nav-link" href="uc_tariff.html">Tarifvorhersage</a></li>
+                        <li class="nav-item"><a class="nav-link" href="uc_tariff.html">Tarif</a></li>
                         <li class="nav-item"><a class="nav-link" href="uc_settlement.html">Settlement</a></li>
+                        <li class="nav-item"><a class="nav-link" href="uc_clearing.html">Abrechnung</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
     <div class="container">
+        <form id="frmPrices" style="margin-bottom: 25px;">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Tarifpreise (Arbeitspreis)</h3>
+                </div>
+                <div class="card-body" id="tariffPrices"></div>
+                <div class="card-footer text-end">
+                    <div class="row">
+                        <div class="col"></div>
+                        <div class="col-2"><button class="btn btn-primary" type="submit">Speichern</button></div>
+                    </div>
+                </div>
+            </div>
+        </form>
         <form id="fetchLabels">
             <div class="card">
                 <div class="card-header">
@@ -48,7 +63,7 @@
     </div>
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
-    <script src="assets/js/uc_tariff.js?h=4980502c861e066161f104f65b6b93e9"></script>
+    <script src="assets/js/uc_tariff.js?h=b2db8c2f48f27d0e37807de71bd88e3c"></script>
 </body>
 
 </html>
