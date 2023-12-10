@@ -40,9 +40,77 @@ module.exports = {
 				path: "/retrieve"
 			},
 			params: {
-				consumption: {type:"number",integer:true,min:0},
-				startTime: {type:"number",integer:true,min:0},
-				endTime: {type:"number",integer:true,min:0}
+				consumption: {type:"number",integer:true,min:0, example: 12345, $$t: "Consumption in Wh"},
+				startTime: {type:"number",integer:true,min:0, example: 1702217116620, $$t: "Start of consumption timeframe" },
+				endTime: {type:"number",integer:true,min:0, example:1702217116620, $$t: "End of consumption timeframe"}
+			},
+			openapi: {
+				summary: "Distribution of consumption in a time period to tariff segments.",
+				description: "The settlement.retrieve action is designed for calculating how a consumption figure, measured between two meter readings, is divided across different tariff segments. It uses a given timeframe and the consumption amount as input parameters. The result of this action details the split of the consumption into designated tariff segments, labeled `virtual_1` to `virtual_9`. This action serves as a central point of calculation to allocate energy usage to the respective tariff sub-meters according to the defined tariff structure.",
+				responses: {
+					200: {
+						"description": "Settlement result",
+						"content": {
+						"application/json": {
+							"schema": {
+								"type": `object`,
+								"properties": {
+									"virtual_1": { 
+										type: `number`, 
+										description: `Part of consumption in virtual_1 tariff` ,
+										example: 123
+									},
+									"virtual_2": { 
+										type: `number`, 
+										description: `Part of consumption in virtual_2 tariff` ,
+										example: 456
+									},									
+									"virtual_3": { 
+										type: `number`, 
+										description: `Part of consumption in virtual_3 tariff` ,
+										example: 123
+									},
+									"virtual_4": { 
+										type: `number`, 
+										description: `Part of consumption in virtual_4 tariff` ,
+										example: 456
+									},
+									"virtual_5": { 
+										type: `number`, 
+										description: `Part of consumption in virtual_5 tariff` ,
+										example: 123
+									},
+									"virtual_6": { 
+										type: `number`, 
+										description: `Part of consumption in virtual_6 tariff` ,
+										example: 456
+									},
+									"virtual_7": { 
+										type: `number`, 
+										description: `Part of consumption in virtual_7 tariff` ,
+										example: 123
+									},
+									"virtual_8": { 
+										type: `number`, 
+										description: `Part of consumption in virtual_8 tariff` ,
+										example: 456
+									},
+									"virtual_9": { 
+										type: `number`, 
+										description: `Part of consumption in virtual_9 tariff` ,
+										example: 123
+									}
+								}
+							},
+							"example": {
+								"virtual_1": 688,
+								"virtual_2": 222,
+								"virtual_3": 0
+							}
+						},
+						},
+					},
+				},
 			},
 			async handler(ctx) {
 
