@@ -36,6 +36,43 @@ module.exports = {
 			params: {
 				meterId: "string"
 			},
+			openapi: {
+				summary: "Last processed Reading of a Meter",
+				description: "Allows to retrieve last meter reading with virtual meters of tariff segments.",
+				responses: {
+					200: {
+						"description": "Last Reading",
+						"content": {
+						"application/json": {
+							"schema": {
+								"type": `object`,
+								"properties": {
+									"processed": { 
+										type: `boolean`, 
+										description: `If meter reading could be processed (if valid to updates)` ,
+										example: true
+									},
+									"reading": { 
+										type: `number`, 
+										description: `Meter Reading in Wh` ,
+										example: 1350
+									}
+								}
+							},
+							"example": {
+								"meterId": "demo",
+								"reading": 67589,
+								"time": 1702135605721,
+								"virtual_0": 910,
+								"virtual_1": 688,
+								"virtual_2": 222,
+								"virtual_3": 0
+							}
+						},
+						},
+					},
+				},
+			},
 			/**
 			 * Retrieves the previous reading for a given meter ID.
 			 *
@@ -69,10 +106,60 @@ module.exports = {
 				method: "POST",
 				path: "/updateReading"
 			},
+			openapi: {
+				summary: "Update a meter reading",
+				description: "Stores meter reading update and runs settlement on delta to last reading value. Does auto clearing in case enabled in `runtime.settings.js`.",
+				responses: {
+					200: {
+						"description": "Processed information",
+						"content": {
+						"application/json": {
+							"schema": {
+								"type": `object`,
+								"properties": {
+									"processed": { 
+										type: `boolean`, 
+										description: `If meter reading could be processed (if valid to updates)` ,
+										example: true
+									},
+									"reading": { 
+										type: `number`, 
+										description: `Meter Reading in Wh` ,
+										example: 1350
+									}
+								}
+							},
+							"example": {
+								"meterId": "demo",
+								"reading": 67589,
+								"time": 1702135605721,
+								"virtual_0": 910,
+								"virtual_1": 688,
+								"virtual_2": 222,
+								"virtual_3": 0,
+								"processed": true
+							}
+						},
+						},
+					},
+				},
+			},
 			params: {
-				meterId: "string",
-				time: { type: "number"},
-				reading: { type: "number"}
+				meterId: {
+					type: "string",
+					$$t: "Uniq ID of meter to be updated. Might be MeLoId",
+					example: "demo"
+				},
+				time: { 
+					type: "number",
+					$$t: "Timestamp of meter reading given in partameter `reading` in UTC ms.",
+					example: 1702217116620
+				},
+				reading: { 
+					type: "number",
+					$$t: "Actual reading in Wh at given time in parameter `time`",
+					example: 833546123
+				}
 			},
 			/**
 			 * Handles updated meter readings:
@@ -102,10 +189,13 @@ module.exports = {
 					"reading":ctx.params.reading * 1,
 					"time":ctx.params.time * 1,
 					"virtual_0":0,
-					"virtual_1":0,
-					"virtual_2":0,
 					"consumption":0,
 					"processed":"tbd"
+				}
+				const labels = await ctx.call("tariff.customLabels");
+
+				for (const [key, value] of Object.entries(labels)) {
+					transientReading[key] = 0;
 				}
 
 				// Check if we know this meter by testing the length of the result (0 = not known, 1 = known)
@@ -130,7 +220,7 @@ module.exports = {
 							startTime: transientReading.time,
 							endTime: ctx.params.time
 						});
-						
+
 						transientReading.virtual_0 += 1 * deltaConumption;
 						for (const [key, value] of Object.entries(settlement)) {
 							if((typeof transientReading[key] == "undefined") || (transientReading[key] == null)) {

@@ -48,12 +48,63 @@ module.exports = {
 			 * @param {type} ctx - description of parameter
 			 * @return {Object} - description of return value
 			 */
+			openapi: {
+				summary: "Provides user-defined labels for instance-specific tariff segments",
+				description: "The customLabels action related to tariffs provides custom labels for the tariff segments in an instance."  +  
+						 "These are mapped to correspond with the specific use case, such as representing tariffs like `peak` and `off-peak`." +
+						 "The internal identifiers range from `virtual_1` to `virtual_9` and are configured accordingly." +
+						 "The configuration is done in the `runtime.settings.js` file and should be set before the initial start of the framework;" +
+						 "it is not intended to be changed during runtime",
+				responses: {
+					200: {
+						"description": "Mapping of internal label like `virtual_1` to runtime specific label like `off-peak`. Static response as it is taken from the `runtime.settings.js`.",
+						"content": {
+						"application/json": {
+							"schema": {
+								"type": `object`,
+								"properties": {
+									"virtual_1": { 
+										type: `string`, 
+										description: `Runtime specific name of tariff 1` ,
+										example: "Niedertarif"
+									},
+									"virtual_2": { 
+										type: `string`, 
+										description: `Runtime specific name of tariff 2` ,
+										example: "Mitteltarif"
+									},
+									"virtual_3": { 
+										type: `string`, 
+										description: `Runtime specific name of tariff 3` ,
+										example: "Hochtarif"
+									},
+									"virtual_4": { 
+										type: `string`, 
+										description: `Runtime specific name of tariff 4` ,
+										example: "Engpass"
+									}
+								}
+							},
+							"example": {
+								"virtual_1": "Off-Peak",
+								"virtual_2": "Standard",
+								"virtual_3": "Peak"
+							}
+						},
+						},
+					},
+				},
+			},
 			async handler(ctx) {
-				return {
-					virtual_1: "Hochtarif",
-					virtual_2: "Mitteltarif",
-					virtual_3: "Niedertarif"
-				};
+				let labels = require("../runtime.settings.js").TARIFF_LABELS;
+				let res = {};
+
+				for (const [key, value] of Object.entries(labels)) {
+					if(value.length > 0) {
+						res[key] = value;
+					}
+				}
+				return res;
 			}
 		},
 		setPrices: {
@@ -61,8 +112,56 @@ module.exports = {
 				method: "POST",
 				path: "/setPrices"
 			},
+			params: {
+				virtual_1: { $$t: "Price for `virtual_1` tariff segment", type: "number", optional: false, example:0.2 },
+				virtual_2: { $$t: "Price for `virtual_2` tariff segment", type: "number", optional: true , example:0.31},
+				virtual_3: { $$t: "Price for `virtual_3` tariff segment", type: "number", optional: true , example:0.4 },
+				virtual_4: { $$t: "Price for `virtual_4` tariff segment", type: "number", optional: true , example:0.5 },
+				virtual_5: { $$t: "Price for `virtual_5` tariff segment", type: "number", optional: true , example:0.5 },
+				virtual_6: { $$t: "Price for `virtual_6` tariff segment", type: "number", optional: true , example:0.5 },
+				virtual_7: { $$t: "Price for `virtual_7` tariff segment", type: "number", optional: true , example:0.5 },
+				virtual_8: { $$t: "Price for `virtual_8` tariff segment", type: "number", optional: true , example:0.5 },
+				virtual_9: { $$t: "Price for `virtual_9` tariff segment", type: "number", optional: true , example:0.5 }	
+			},
+			openapi: {
+				summary: "Specify kWh price per tariff segment.",
+				description: "The setPrices action allows setting a price per kilowatt-hour for each tariff segment within this environment for energy applications. You can retrieve the available tariff segments through the `tariff.customLabels` action. When setting prices, a price must be specified for each tariff segment using the internal labels `virtual_1` to `virtual_9`. Additionally, an optional time slice (epoch) can be provided to indicate from when the price information becomes valid",
+				responses: {
+					200: {
+						"description": "Price Information as given in request",
+						"content": {
+						"application/json": {
+							"schema": {
+								"type": `object`,
+								"properties": {
+									"virtual_1": { 
+										type: `number`, 
+										description: `kWh price of tariff 1` ,
+										example: 0.2
+									},
+									"virtual_2": { 
+										type: `number`, 
+										description: `kWh price of tariff 2` ,
+										example: 0.31
+									},
+									"virtual_3": { 
+										type: `number`, 
+										description: `kWh price of tariff 3` ,
+										example: 0.39
+									}
+								}
+							},
+							"example": {
+								"virtual_1": 0.2,
+								"virtual_2": 0.31,
+								"virtual_3": 0.39
+							}
+						},
+						},
+					},
+				},
+			},
 			async handler(ctx) {
-				
 				let labels = await ctx.call("tariff.customLabels");
 				for (const [key, value] of Object.entries(labels)) {
 					if(typeof ctx.params[key] !== 'undefined') {
@@ -93,6 +192,46 @@ module.exports = {
 				method: "GET",
 				path: "/getPrices"
 			},
+			params: {
+				epoch: { $$t: "Epoch to get price information for.", type: "number", optional: true, example:4711 }
+			},
+			openapi: {
+				summary: "Gives setup price infos of current environment.",
+				responses: {
+					200: {
+						"description": "Price Information for this environment",
+						"content": {
+						"application/json": {
+							"schema": {
+								"type": `object`,
+								"properties": {
+									"virtual_1": { 
+										type: `number`, 
+										description: `kWh price of tariff 1` ,
+										example: 0.2
+									},
+									"virtual_2": { 
+										type: `number`, 
+										description: `kWh price of tariff 2` ,
+										example: 0.31
+									},
+									"virtual_3": { 
+										type: `number`, 
+										description: `kWh price of tariff 3` ,
+										example: 0.39
+									}
+								}
+							},
+							"example": {
+								"virtual_1": 0.2,
+								"virtual_2": 0.31,
+								"virtual_3": 0.39
+							}
+						},
+						},
+					}
+				}
+			},
 			async handler(ctx) {
 				if(typeof ctx.params.epoch == 'undefined') {
 					ctx.params.epoch = Math.floor(new Date().getTime() / require("../runtime.settings.js").EPOCH_DURATION);
@@ -114,6 +253,7 @@ module.exports = {
 						}
 					}
 				}
+				
 				return prices;
 			}
 		},
@@ -179,6 +319,7 @@ module.exports = {
 
 					results.push(existingEpochs["epoch_"+i]);
 				}
+				console.log(results);
 				return results;
 			}
 		}

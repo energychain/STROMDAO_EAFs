@@ -51,7 +51,7 @@ module.exports = {
 					startTime: ctx.params.startTime,
 					endTime: ctx.params.endTime					
 				});
-
+				
 				const EPOCH_DURATION = await ctx.call("tariff.epochDuration");
 
 				let settlement = {};

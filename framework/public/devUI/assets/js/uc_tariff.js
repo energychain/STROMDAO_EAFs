@@ -38,7 +38,6 @@ $(document).ready(function () {
         for (const [key, value] of Object.entries(customLabels)) {
             dataToSend[key] = $('#'+key).val()
         }
-        console.log("My Data", dataToSend);
         $.ajax({
             type: 'POST',
             url: '/api/tariff/setPrices', 
