@@ -51,7 +51,7 @@ So unterstützt das STROMDAO EAF Energieversorger dabei, ihren Kunden maßgeschn
 
 -   **Datenerfassung**:
     -   Nutzt Verbrauchsdaten und Erzeugungsprognosen für die Preisbildung
-    -   Integriert den GrünstromIndex zur regionalen Tarifanpassung in Deutschland
+    -   Integriert den [GrünstromIndex](https://gruenstromindex.de/) zur regionalen Tarifanpassung in Deutschland
 -   **Analyse und Prognose**:  
     -   In-built Forecasting-Mechanismus für transparente und konsensbasierte Prognosen
     -   Risikominimierung für Versorger und Verbraucher

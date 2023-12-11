@@ -41,6 +41,15 @@ $(document).ready(function() {
             reading: meterReading,
             time: meterTime
         });
+
+        meterReading +=  1 +  Math.round(Math.random() * 1000);
+        meterTime += 1 + Math.round(Math.random() * 4 * 3600000);
+        await submitReading({
+            meterId: 'demo',
+            reading: meterReading,
+            time: meterTime
+        });
+        
         location.reload();
     }
 

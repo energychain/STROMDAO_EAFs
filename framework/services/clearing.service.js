@@ -65,6 +65,7 @@ module.exports = {
 						}
 					}
 				}
+				results.sort((a,b) => b.endTime - a.endTime);
 				return results;
 			}
 		},

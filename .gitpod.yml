@@ -8,3 +8,9 @@ tasks:
           npm install
       command: |
          npm run dev
+ports:
+    - name: Demo UI
+      port: 3000
+      onOpen: open-preview
+      visibility: private
+
