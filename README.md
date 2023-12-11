@@ -30,6 +30,22 @@ Umsetzung für die Einführung eines netzdienlichen dynamischen Stromtarifs folg
 
 > Der Verbraucher oder Erzeuger erhält kurzfristig für bestimmte Zeitfenster variable Tarife durch den Energielieferanten oder Aggregator, der diese über den Messstellenbetreiber durch das iMSys zur Verfügung stellt. Dies sind ereignisvariable Tarife, da sie, anders als bei den zeitvariablen Tarifen, nicht wiederkehrend in bestimmten Zeitfenstern auftreten, sondern einmalig und damit ereignishaft für ein bestimmtes Zeitfenster gesetzt werden. Der Verbraucher oder Erzeuger kann auf diese ereignisvariablen Tarife reagieren, wenn er über flexible Verbrauchs-, Erzeugungs- oder Speicheranlagen verfügt, und somit seine Energiekosten optimieren. Neben dem Anzeigen der Tarifereignisse wird durch Zusammenspiel von iMSys und Backend auch die zeitaufgelöste und transparente Abrechnung sichergestellt.
 
+### Umsetzung in STROMDAO EAF
+Das STROMDAO Energy Application Framework (EAF) stellt eine innovative Plattform für Stromanbieter dar, um dynamische, ereignisvariable Stromtarife zu implementieren und anzubieten. Mit Blick auf die Verpflichtung der Energieversorger, bis zum Jahr 2025 einen dynamischen Tarif zur Verfügung zu stellen, bietet das STROMDAO EAF folgende Funktionen:
+
+-   **Tarifaktualisierung**: Automatisiertes Update der Tarife, konfigurierbar bis zu 15-minütigen Intervallen, und Stabilisierung der Preise für festgelegte Zeiteinheiten über eine API zuverlässig abrufbar.
+    
+-   **Integration mit Messstellenbetreibern**: Durch die Nutzung von etablierten Kommunikationsstandards wie AS4 und die Integration über CLS-Kanäle, bietet das EAF eine flexible Anbindung an existierende iMSys oder Leseköpfe.
+    
+-   **Tarifgestaltung**: EAF erlaubt Stromanbietern, Tarife präzise zu segmentieren und situativ anzupassen, wodurch auf spezifische Markt- und Netzgegebenheiten schnell und effizient reagiert werden kann.
+    
+-   **Abrechnungsintegration**: Durch eine direkte Anbindung zu ERP-Systemen mittels OBIS-Codes für jeden Tarifsegment-Unterzähler wird eine einfache, kompatible und transparente Abrechnung sichergestellt.
+    
+-   **Skalierbare Echtzeit-Datenverarbeitung**: EAFs Microservice-Architektur ermöglicht eine flexible Anpassung an wachsende Teilnehmerzahlen sowie die Aufrechterhaltung hoher Durchsatzraten für die Prozesse von Datenerfassung, Tarifverwaltung und Abrechnung.
+    
+-   **Benutzerfreundliche und sichere Infrastruktur**: Die EAF bietet eine intuitive Benutzeroberfläche für die Anbindung an Kundensysteme und bewahrt die Sicherheit der Daten durch fortschrittliche Verfahren zur Datenverarbeitung.
+    
+So unterstützt das STROMDAO EAF Energieversorger dabei, ihren Kunden maßgeschneiderte Tarifmodelle anzubieten, die eine Reaktion auf spezifische Ereignisse und Marktsituationen erlauben. Dies fördert eine aktivere Teilnahme am Energiemarkt und trägt zu effizienterem Energieverbrauch und -erzeugung bei. Mit diesem fortschrittlichen Ansatz hilft das EAF Energieversorgern, Innovationstreiber zu sein und den gesetzlichen Anforderungen eines dynamischen Energiesektors gerecht zu werden.
 
 ## 🌟 Features
 
