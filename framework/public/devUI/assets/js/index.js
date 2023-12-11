@@ -27,7 +27,7 @@ $(document).ready(function() {
         });
 
         meterReading +=  1 +  Math.round(Math.random() * 1000);
-        meterTime += 1 + Math.round(Math.random() * 3600000);
+        meterTime += 1 + Math.round(Math.random() * 4 * 3600000);
         await submitReading({
             meterId: 'demo',
             reading: meterReading,
@@ -35,7 +35,7 @@ $(document).ready(function() {
         });
 
         meterReading +=  1 +  Math.round(Math.random() * 1000);
-        meterTime += 1 + Math.round(Math.random() * 3600000);
+        meterTime += 1 + Math.round(Math.random() * 4 * 3600000);
         await submitReading({
             meterId: 'demo',
             reading: meterReading,
