@@ -33,7 +33,9 @@
     "swagger-ui-dist": "^5.10.3"
   },
   "dependencies": {
+    "@moleculer/lab": "^0.6.4",
     "axios": "^1.6.2",
+    "dotenv": "^16.3.1",
     "jsonwebtoken": "^9.0.2",
     "moleculer": "^0.14.26",
     "moleculer-auto-openapi": "^1.1.6",

@@ -1,4 +1,6 @@
 const MongoDBAdapter = require("moleculer-db-adapter-mongo");
+const fs = require("fs");
+require('dotenv').config();
 
 module.exports = {
     db_adapter: null,  // Use for MondoDB: new MongoDBAdapter("mongodb://HOSTNAME/stromdao_eafs")
@@ -16,8 +18,16 @@ module.exports = {
         "virtual_8": "",
         "virtual_9": ""
     },
-    JWT_SECRET: "******UnbedingtÄndern!******", // Secret for JSON-Web-Tokens 
+    JWT_PRIVATEKEY: fs.readFileSync("./runtime.privateKey.pem"), // Private Key - Regenerate Keypair with 'openssl genrsa -out runtime.privateKey.pem 2048' 
+    JWT_PUBLICKEY: fs.readFileSync("./runtime.publicKey.pem"), // Public Key - Regenerate Keypair with 'openssl genrsa -out runtime.privateKey.pem 2048' 
+    JWT_OPTIONS: {
+        issuer:  "Stadtwerk Musterstadt",
+        subject:  "EAF",
+        audience:  "https://tariff.stadtwerk-musterstadt.de",
+        algorithm:  "RS256"
+       },
     JWT_EXPIRE_METERING: '7d', // Token expiration for reading updates
     JWT_EXPIRE_CLEARING: '7d', // Token expiration for clearings
     JWT_EXPIRE_READING: '7d', // Token expiration for processed readings
+    MOLECULAR_LAB_KEY:process.env.MOLECULAR_LAB_KEY
 }

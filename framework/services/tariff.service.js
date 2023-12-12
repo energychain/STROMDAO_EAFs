@@ -165,7 +165,6 @@ module.exports = {
 				let labels = await ctx.call("tariff.customLabels");
 				for (const [key, value] of Object.entries(labels)) {
 					if(typeof ctx.params[key] !== 'undefined') {
-						// TODO: Delete newer prices than epoch 0
 						let previousDeclarations = await ctx.call("price.find",{
 							query: {
 								label: key,
@@ -174,7 +173,7 @@ module.exports = {
 						});
 						for(let j=0;j<previousDeclarations.length;j++) {
 							await ctx.call("price.remove",{
-								_id: previousDeclarations[j]._id
+								id: previousDeclarations[j]._id
 							});
 						}
 						await ctx.call("price.insert",{entity:{
@@ -266,7 +265,25 @@ module.exports = {
 				return EPOCH_DURATION;
 			}
 		},
-
+		prices: {
+			openapi: {
+				summary: "Gives combined labels and prices.",
+			},
+			rest: {
+				method: "GET",
+				path: "/prices"
+			},
+			async handler(ctx) {
+				let labels = await ctx.call("tariff.labels",ctx.params);
+				for(let i=0;i<labels.length;i++) {
+					const prices = await ctx.call("tariff.getPrices",{
+						epoch: labels[i].epoch
+					});
+					labels[i].price = prices[labels[i].label];
+				}
+				return labels;
+			}
+		},
 		/**
 		 * Provides labels for a given timeframe or next 24 hours
 		 *

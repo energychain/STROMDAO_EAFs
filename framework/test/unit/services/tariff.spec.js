@@ -57,6 +57,25 @@ describe("Test 'tariff' service", () => {
 			});
 			expect(typeof res.virtual_1 !== 'undefined').toBe(true);
 		});
+		it("should allow updates", async () => {
+			let res =await broker.call("tariff.setPrices",{
+				virtual_1:0.2,
+				virtual_2:0.4,
+				virtual_3:0.7
+			});
+			expect(typeof res.virtual_1 !== 'undefined').toBe(true);
+		});
+	});
+	describe("Test 'tariff.prices' action", () => {
+		it("should provide labels from now to near future", async () => {
+			let res =await broker.call("tariff.prices");
+			expect(typeof res[0].price !== 'undefined').toBe(true);
+			let found = false;
+			if((res[0].price == 0.1)  && (res[0].label == 'virtual_1')) found = true;
+			if((res[0].price == 0.4)  && (res[0].label == 'virtual_2')) found = true;
+			if((res[0].price == 0.7)  && (res[0].label == 'virtual_3')) found = true;
+			expect(found).toBe(true);
+		});
 	});
 });
 

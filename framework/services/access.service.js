@@ -24,20 +24,38 @@ module.exports = {
 	 * Actions
 	 */
 	actions: {
+		publicKey: {
+			openapi: {
+				summary: "Retrieve public key of this instance."
+			},
+			rest: {
+				method: "GET",
+				path: "/publicKey"
+			},
+			async handler(ctx) {
+				return {publicKey:"" + require("../runtime.settings.js").JWT_PUBLICKEY}
+			}
+		},
 		createMeterJWT: {
+			openapi: {
+				summary: "Create Token to authorize external reading updates of meter"
+			},
 			rest: {
 				method: "GET",
 				path: "/createJWT"
 			},
 			params: {
 				meterId: {
-					type:"string"
+					type:"string",
+					$$t: "MeterId of the meter to authorize reading updates for"
 				}
 			},
 			async handler(ctx) {
+				const signOptions = require("../runtime.settings.js").JWT_OPTIONS;
+				signOptions.expiresIn = require("../runtime.settings.js").JWT_EXPIRE_METERING;
 				const token = jwt.sign({
 					meterId: ctx.params.meterId 
-				  }, require("../runtime.settings.js").JWT_SECRET,{expiresIn: require("../runtime.settings.js").JWT_EXPIRE_METERING});
+				  }, require("../runtime.settings.js").JWT_PRIVATEKEY,signOptions);
 				return token;
 			}
 		},
@@ -46,9 +64,13 @@ module.exports = {
 				method: "GET",
 				path: "/createReadingJWT"
 			},
+			openapi: {
+				summary: "Create Token to verify reading updates of this instance."
+			},
 			params: {
 				meterId: {
 					type:"string"
+
 				},
 				reading: {
 					type:"number"
@@ -58,7 +80,9 @@ module.exports = {
 				}
 			},
 			async handler(ctx) {
-				const token = jwt.sign(ctx.params, require("../runtime.settings.js").JWT_SECRET,{expiresIn: require("../runtime.settings.js").JWT_EXPIRE_READING});
+				const signOptions = require("../runtime.settings.js").JWT_OPTIONS;
+				signOptions.expiresIn = require("../runtime.settings.js").JWT_EXPIRE_READING;
+				const token = jwt.sign(ctx.params, require("../runtime.settings.js").JWT_PRIVATEKEY,signOptions);
 				return token;
 			}
 		},
@@ -66,6 +90,9 @@ module.exports = {
 			rest: {
 				method: "GET",
 				path: "/createClearingJWT"
+			},
+			openapi: {
+				summary: "Create Token to verify clearings of this instance."
 			},
 			params: {
 				meterId: {
@@ -90,17 +117,22 @@ module.exports = {
 				},
 			},
 			async handler(ctx) {
-				const token = jwt.sign(ctx.params, require("../runtime.settings.js").JWT_SECRET,{expiresIn: require("../runtime.settings.js").JWT_EXPIRE_CLEARING});
+				const signOptions = require("../runtime.settings.js").JWT_OPTIONS;
+				signOptions.expiresIn = require("../runtime.settings.js").JWT_EXPIRE_CLEARING;
+				const token = jwt.sign(ctx.params, require("../runtime.settings.js").JWT_PRIVATEKEY,signOptions);
 				return token;
 			}
 		},
 		/*
 			Returns payload data of a Json-Web-Token created using this service.
 		*/
-		retrieveJWT: {
+		verifySelf: {
 			rest: {
 				method: "GET",
-				path: "/retrieveJWT"
+				path: "/verifySelf"
+			},
+			openapi: {
+				summary: "Verify signing token is this instance."
 			},
 			params: {
 				token: {
@@ -108,7 +140,9 @@ module.exports = {
 				}
 			},
 			async handler(ctx) {
-				const token = jwt.verify(ctx.params.token, require("../runtime.settings.js").JWT_SECRET);
+				const verifyOptions = require("../runtime.settings.js").JWT_OPTIONS;
+				verifyOptions.expiresIn = require("../runtime.settings.js").JWT_EXPIRE_METERING;
+				const token = jwt.verify(ctx.params.token,require("../runtime.settings.js").JWT_PUBLICKEY, verifyOptions);
 				return token;
 			}
 		}

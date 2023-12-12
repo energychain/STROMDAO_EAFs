@@ -31,7 +31,8 @@ module.exports = {
 				
 				whitelist: [
 					"metering.updateReading",
-					"metering.lastReading"
+					"metering.lastReading",
+					"access.publicKey"
 				],
 
 				// Route-level Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
@@ -142,7 +143,7 @@ module.exports = {
 					token = auth.slice(7);
 				}
 				try {
-					const accessValidation = await ctx.call("access.retrieveJWT", {"token": token});
+					const accessValidation = await ctx.call("access.verifySelf", {"token": token});
 					if(typeof accessValidation.meterId == 'undefined') {
 						throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
 					} else {

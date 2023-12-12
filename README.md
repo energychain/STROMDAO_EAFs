@@ -73,6 +73,13 @@ So unterstützt das STROMDAO EAF Energieversorger dabei, ihren Kunden maßgeschn
     -   Konzipiert für einfache Handhabung und Nutzung
     -   Förderung von Standards, die die Zusammenarbeit und gemeinsame Nutzung erleichtern
 
+## Repository Struktur
+- `/framework/` - Laufzeitumgebung von STROMDAO EAF basierend auf der Moleculer Service Microservice Umgebung.
+- `/framework/public` - Statische Entwickler UI (Zugriff via [[https://localhost:3000/]]).
+- `/framework/public_metering` - Statische MeterPointOperations UI (Zugriff via [[https://localhost:3001/]]).
+- `/framework/services` - Implementierung der einzelnen Micro Services.
+- `/framework/test` - Unit und Coverage Tests der Micro Services. Ausführen via `npm run test`
+
 ## Demo
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/energychain/STROMDAO_EAFs)

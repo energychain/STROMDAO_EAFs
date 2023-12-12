@@ -54,10 +54,36 @@ describe("Test 'metering' service", () => {
 			let res = await broker.call("metering.lastReading",{meterId:meterId});
 			expect(res).toBe(null);
 		});
-	});
-
-	describe("Test 'metering.lastReading' action", () => {
+		it("should reject with false authorization", async () => {
+			expect.assertions(1);
 		
+			try {
+				await broker.call("metering.lastReading",{meterId:meterId},{
+					meta:{
+							user: {
+								meterId: Math.random()
+							}
+						}
+					}
+				);
+			} catch(err) {
+				const ApiGateway = require("moleculer-web");
+				expect(err).toBeInstanceOf(ApiGateway.Errors.UnAuthorizedError);
+			}
+		});
+		it("should pass with right authorization", async () => {
+				broker.meta = {
+					user: {
+						meterId:  meterId
+					}
+				}
+				let res = await broker.call("metering.lastReading",{meterId:meterId},{meta:{
+					user: {
+						meterId:  meterId
+					}
+				}});
+				expect(res).toBe(null);
+		});
 	});
 
 	describe("Test 'metering.updateReading' action", () => {
