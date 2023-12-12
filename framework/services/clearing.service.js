@@ -112,9 +112,10 @@ module.exports = {
 				if( 
 					(ctx.params.consumption >= 0)
 				) {
-						if(previousClearings.length == 0) {			
-							await ctx.call("clearing.insert",{entity:ctx.params});
+						if(previousClearings.length == 0) {	
+							ctx.params.jwt = await ctx.call("access.createClearingJWT",ctx.params);
 							ctx.params.processed = true;
+							await ctx.call("clearing.insert",{entity:ctx.params});
 						} else {
 							// Validate basic characteristics of clearing
 							let previousClearing = previousClearings[0];
@@ -137,6 +138,7 @@ module.exports = {
 								}
 								ctx.params["cost"] = totalCost;
 								ctx.params.processed = true;
+								ctx.params.jwt = await ctx.call("access.createClearingJWT",ctx.params);
 								await ctx.call("clearing.insert",{entity:ctx.params});
 								
 								// TODO validate virtual readings

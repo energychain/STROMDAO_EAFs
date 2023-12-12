@@ -15,5 +15,9 @@ module.exports = {
         "virtual_7": "",
         "virtual_8": "",
         "virtual_9": ""
-    }
+    },
+    JWT_SECRET: "******UnbedingtÄndern!******", // Secret for JSON-Web-Tokens 
+    JWT_EXPIRE_METERING: '7d', // Token expiration for reading updates
+    JWT_EXPIRE_CLEARING: '7d', // Token expiration for clearings
+    JWT_EXPIRE_READING: '7d', // Token expiration for processed readings
 }

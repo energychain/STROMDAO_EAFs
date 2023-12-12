@@ -7,6 +7,8 @@
  * @typedef {import('moleculer').Context} Context Moleculer's Context
  */
 
+const ApiGateway = require("moleculer-web"); // Included for Invalid Authentication Errors 
+
 /** @type {ServiceSchema} */
 module.exports = {
 	name: "metering",
@@ -80,6 +82,12 @@ module.exports = {
 			 * @return {Object|null} The previous reading object or null if not found.
 			 */
 			async handler(ctx) {
+				if((typeof ctx.meta.user !== 'undefined') &&(typeof ctx.meta.user.meterId !== 'undefined')) {
+					// Ensure Authenticated Token is authorized
+					if(ctx.meta.user.meterId !== ctx.params.meterId) {
+						throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
+					}
+				}
 				const _previousReading = await ctx.call("readings.find",{
 						query: {
 							meterId: ctx.params.meterId
@@ -175,6 +183,12 @@ module.exports = {
 			 * @return {object} transientReading - The updated transient reading object.
 			 */
 			async handler(ctx) {
+				if((typeof ctx.meta.user !== 'undefined') && (typeof ctx.meta.user.meterId !== 'undefined')) {
+					// Ensure Authenticated Token is authorized
+					if(ctx.meta.user.meterId !== ctx.params.meterId) {
+						throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
+					}
+				}
 				const _previousReading = await ctx.call("readings.find",{
 						query: {
 							meterId: ctx.params.meterId
@@ -233,6 +247,7 @@ module.exports = {
 						transientReading.reading = ctx.params.reading * 1;
 						transientReading.time = ctx.params.time * 1;
 						transientReading.id = transientReading._id;
+						transientReading.jwt = await ctx.call("access.createReadingJWT",transientReading);
 						await ctx.call("readings.update",transientReading);
 						transientReading.consumption = deltaConumption;
 						delete transientReading.id;

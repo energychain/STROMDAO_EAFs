@@ -28,7 +28,7 @@
         <form id="updateReading">
             <div class="card">
                 <div class="card-header">
-                    <h3>Übermittlung Ablesung Hauptzähler</h3>
+                    <h3>Manuelle Ablesung Hauptzähler</h3>
                 </div>
                 <div class="card-body">
                     <div class="input-group" style="margin-bottom: 15px;"><span class="input-group-text col-2">Zählerkennung</span><input class="form-control" type="text" id="meterId" name="meterId" required=""></div>
@@ -53,6 +53,24 @@
                 </div>
             </div>
         </form>
+        <form id="amr">
+            <div class="card" style="margin-top: 25px;">
+                <div class="card-header">
+                    <h3>Automatische Ablesung Hauptzähler&nbsp;</h3>
+                </div>
+                <div class="card-body">
+                    <div class="input-group col-2" style="margin-bottom: 15px;"><span class="input-group-text col-2">Zählerkennung</span><input class="form-control" type="text" id="amrMeterId" required=""></div>
+                    <div class="input-group col-2" style="margin-bottom: 15px;"><span class="input-group-text col-2">API URL</span><input class="form-control" type="text" id="amrUrl" disabled=""></div>
+                    <div class="input-group col-2" style="margin-bottom: 15px;"><span class="input-group-text col-2">Token</span><input class="form-control" type="text" id="amrToken" disabled=""></div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col"></div>
+                        <div class="col-2 text-end"><button class="btn btn-primary" type="submit">abrufen</button></div>
+                    </div>
+                </div>
+            </div>
+        </form>
         <div id="readingsBackend" style="display: none;margin-top: 25px;">
             <h3>Letzte Übermittlung</h3>
             <p id="lastReadingTime">-</p>
@@ -61,7 +79,7 @@
     </div>
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
-    <script src="assets/js/uc_meterreading.js?h=4e8da2c013e2df42105b112112bf633d"></script>
+    <script src="assets/js/uc_meterreading.js?h=b79240a4a863a19f08fae9a22ba58861"></script>
 </body>
 
 </html>

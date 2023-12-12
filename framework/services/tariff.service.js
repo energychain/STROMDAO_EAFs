@@ -319,7 +319,6 @@ module.exports = {
 
 					results.push(existingEpochs["epoch_"+i]);
 				}
-				console.log(results);
 				return results;
 			}
 		}

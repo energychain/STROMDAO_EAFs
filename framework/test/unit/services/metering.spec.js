@@ -8,6 +8,7 @@ const SettlementService = require("../../../services/settlement.service");
 const TariffService = require("../../../services/tariff.service");
 const ClearingService = require("../../../services/clearing.service");
 const PriceService = require("../../../services/price.service");
+const AccessService = require("../../../services/access.service");
 
 describe("Test 'metering' service", () => {
 	let broker = new ServiceBroker({ logger: false });
@@ -17,6 +18,7 @@ describe("Test 'metering' service", () => {
 	broker.createService(TariffService);
 	broker.createService(ClearingService);
 	broker.createService(PriceService);
+	broker.createService(AccessService);
 
 	beforeAll(() => broker.start());
 	afterAll(() => broker.stop());

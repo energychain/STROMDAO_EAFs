@@ -6,10 +6,19 @@ $(document).ready(function () {
         customLabels = data;
     });
 
+    const fetchApiToken = function() {
+        $.getJSON("/api/access/createJWT?meterId="+$('#amrMeterId').val(),function(data) {
+            $('#amrToken').val(data);
+            $('#amrUrl').val("http://localhost:3001/api/reading");
+        })
+    }
+
     const fetchLastReading = function() {
         $.getJSON("/api/metering/lastReading?meterId="+$('#meterId').val(), function(data) {
             if(typeof data.time !== 'undefined') {
+                $('#amrMeterId').val($('#meterId').val())
                 renderReadings(data);
+                fetchApiToken();
             } 
         });
     }
@@ -107,4 +116,9 @@ $(document).ready(function () {
        time += $(e.currentTarget).attr('data') * 1;
        $('#time').val(new Date(time).toISOString().substring(0,16));
    });
+
+   $('#amr').submit(function (event) {
+       event.preventDefault();
+        fetchApiToken();
+   })
 });
