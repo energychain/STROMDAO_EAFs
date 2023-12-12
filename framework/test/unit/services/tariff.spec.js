@@ -4,11 +4,13 @@ const { ServiceBroker } = require("moleculer");
 const { ValidationError } = require("moleculer").Errors;
 const TestService = require("../../../services/tariff.service");
 const PriceService = require("../../../services/price.service");
+const AccessService = require("../../../services/access.service");
 
 describe("Test 'tariff' service", () => {
 	let broker = new ServiceBroker({ logger: false });
 	broker.createService(TestService);
 	broker.createService(PriceService);
+	broker.createService(AccessService);
 
 	beforeAll(() => broker.start());
 	afterAll(() => broker.stop());

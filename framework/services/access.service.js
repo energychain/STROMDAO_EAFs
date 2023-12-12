@@ -86,6 +86,36 @@ module.exports = {
 				return token;
 			}
 		},
+		createTariffJWT: {
+			rest: {
+				method: "GET",
+				path: "/createTariffJWT"
+			},
+			openapi: {
+				summary: "Create Token to verify tariff labelsof this instance."
+			},
+			params: {
+				price: {
+					type:"number"
+
+				},
+				label: {
+					type:"string"
+				},
+				epoch: {
+					type:"number"
+				},
+				time: {
+					type: "number"
+				}
+			},
+			async handler(ctx) {
+				const signOptions = require("../runtime.settings.js").JWT_OPTIONS;
+				signOptions.expiresIn = require("../runtime.settings.js").JWT_EXPIRE_READING;
+				const token = jwt.sign(ctx.params, require("../runtime.settings.js").JWT_PRIVATEKEY,signOptions);
+				return token;
+			}
+		},
 		createClearingJWT: {
 			rest: {
 				method: "GET",

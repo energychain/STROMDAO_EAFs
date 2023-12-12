@@ -32,7 +32,8 @@ module.exports = {
 				whitelist: [
 					"metering.updateReading",
 					"metering.lastReading",
-					"access.publicKey"
+					"access.publicKey",
+					"tariff.prices"
 				],
 
 				// Route-level Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
@@ -53,7 +54,8 @@ module.exports = {
 
 				aliases: {
 					"POST /reading": "metering.updateReading",
-					"GET /reading": "metering.lastReading"
+					"GET /reading": "metering.lastReading",
+					"GET /tariff": "tariff.prices"
 				},
 
 				/**

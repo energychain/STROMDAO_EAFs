@@ -1,17 +1,37 @@
 $(document).ready(function () {
     const doFetch = function() {
-        $.getJSON("/api/tariff/labels?startTime="+new Date($('#time').val()+"Z").getTime(), function(data) {
-            let html = '<table class="table table-condensed">';
+        $.getJSON("/api/tariff/prices?startTime="+new Date($('#time').val()+"Z").getTime(), function(data) {
+            let html = '<table class="table table-condensed table-striped">';
+            let chartData = [];
+            let chartLabels = [];
             for(let i=0;i<data.length;i++) {
                     let displayLabel = data[i].label;
                     if(typeof customLabels[data[i].label] !== 'undefined') {
                         displayLabel = customLabels[data[i].label];
                     }
                     html += '<tr><td>'+new Date(data[i].time).toLocaleString()+'</td><td>'+displayLabel+'</td></tr>';
+                    chartData.push(data[i].price);
+                    chartLabels.push(new Date(data[i].time).toLocaleString());
             }
             html += '</table>';
             $('#tariffsBackend').html(html);
             $('#tariffsBackend').show();
+            // Charting
+            const ctxChart = document.getElementById('tariffLabelsChart');
+            if(typeof window.chartObject !== 'undefined') window.chartObject.destroy();
+
+            window.chartObject = new Chart(ctxChart, {
+                type: 'bar',
+                data: {
+                  labels: chartLabels,
+                  datasets: [{
+                    label: 'Preis je kWh',
+                    data: chartData
+                  }]
+                },
+                options: {
+                }
+              });
         })
     }
 
@@ -30,13 +50,18 @@ $(document).ready(function () {
             html += '</div>';
         }
         $('#tariffPrices').html(html);
+        $.getJSON("/api/tariff/getPrices", function(data) {
+            for (const [key, value] of Object.entries(data)) {
+                $('#'+key).val(value);
+            }
+        });
     });
 
     $('#frmPrices').submit(function(event) {
         event.preventDefault();
         var dataToSend = {};
         for (const [key, value] of Object.entries(customLabels)) {
-            dataToSend[key] = $('#'+key).val()
+            dataToSend[key] = 1 * $('#'+key).val()
         }
         $.ajax({
             type: 'POST',

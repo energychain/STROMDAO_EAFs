@@ -280,6 +280,7 @@ module.exports = {
 						epoch: labels[i].epoch
 					});
 					labels[i].price = prices[labels[i].label];
+					labels[i].jwt = await ctx.call("access.createTariffJWT",labels[i]);
 				}
 				return labels;
 			}
@@ -319,12 +320,15 @@ module.exports = {
 
 				// Fill gaps if they exist and provde results array
 				let results = [];
+				const DynamicSource = require(require("../runtime.settings.js").DYNAMIC_SIGNAL);
+				const dynamic = new DynamicSource();
+
 				for(let i=startingEpoch;i<=endingEpoch;i++) {
 					if(typeof existingEpochs["epoch_"+i] == 'undefined') {
-						existingEpochs["epoch_"+i] = {
-							epoch: i,
-							label: "virtual_"+(Math.floor(Math.random() * TARIFF_SEGMENTS) + 1)
-						};
+
+						// Implementation for actual dynamics source
+						
+						existingEpochs["epoch_"+i] = await dynamic.lookup(i);
 
 						await ctx.call("tariff.insert",{
 							entity:existingEpochs["epoch_"+i]

@@ -6,7 +6,9 @@ module.exports = {
     db_adapter: null,  // Use for MondoDB: new MongoDBAdapter("mongodb://HOSTNAME/stromdao_eafs")
     EPOCH_DURATION: 3600000, // Milliseconds of a tariff epoch 
     TARIFF_SEGMENTS: 3, // Number of segments this framework's tariff uses
+    DEFAULT_SEGMENT: 2, // In case dynamic source does not provide value this segment is used
     AUTO_CLEARING: true, // Performe clearing directly after reading completed
+    DYNAMIC_SIGNAL: "../dynamicsignal/gruenstromindex.js",
     TARIFF_LABELS: {
         "virtual_1": "Niedertarif",
         "virtual_2": "Mitteltarif",
