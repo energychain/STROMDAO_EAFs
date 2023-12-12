@@ -24,7 +24,7 @@
   ],
   "author": "STROMDAO GmbH <dev@stromdao.com>",
   "devDependencies": {
-    "@spailybot/moleculer-auto-openapi": "^0.1.15",
+    "@spailybot/moleculer-auto-openapi": "^1.2.0",
     "eslint": "^8.25.0",
     "jest": "^27.5.1",
     "jest-cli": "^29.7.0",
