@@ -11,7 +11,6 @@
     <link rel="icon" type="image/png" sizes="512x512" href="/assets/img/Icon%20SD_512.png?h=c4b71354901b5849ca6522954cc82bb9">
     <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css?h=cd822b7fd22c8a95a68470c795adea69">
 <base href="/" />
-<script type="module" src="/@vite/client"></script>
 </head>
 
 <body class="d-flex flex-column h-100">
@@ -29,72 +28,105 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <div class="card" style="margin-bottom: 25px;">
-            <div class="card-body">
-                <h4 class="card-title">Strompreis</h4><canvas id="forecastChart"></canvas>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Aktuelle Abrechnungsperiode</h4>
-                <div class="row" style="margin-bottom: 25px;">
-                    <div class="col">
-                        <div class="card">
-                            <div class="card-body">
-                                <h6 class="text-center text-muted card-subtitle mb-2">Niedertarif</h6>
-                                <h5 class="text-center card-title" style="color: #147a50;"><span id="consumption_virtual_1">-</span>kWh /&nbsp;<span id="cost_virtual_1">-</span>€</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card">
-                            <div class="card-body">
-                                <h6 class="text-center text-muted card-subtitle mb-2">Mitteltarif</h6>
-                                <h5 class="text-center card-title" style="color: #c69006;"><span id="consumption_virtual_2">-</span>kWh /&nbsp;<span id="cost_virtual_2">-</span>€</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card">
-                            <div class="card-body">
-                                <h6 class="text-center text-muted card-subtitle mb-2">Hochtarif</h6>
-                                <h5 class="text-center card-title" style="color: #a0a0a0;"><span id="consumption_virtual_3">-</span>kWh /&nbsp;<span id="cost_virtual_3">-</span>€</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card">
-                            <div class="card-body">
-                                <h6 class="text-center text-muted card-subtitle mb-2">Gesamt</h6>
-                                <h5 class="text-center card-title"><span id="consumption">-</span>kWh /&nbsp;<span id="cost">-</span>€</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" style="margin-bottom: 35px;">
-                    <div class="col">
-                        <h5 class="text-center card-title">Verbrauch</h5><canvas id="consumptionChart"></canvas>
-                    </div>
-                    <div class="col">
-                        <h5 class="text-center card-title">Kosten</h5><canvas id="costChart"></canvas>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col"><canvas id="timeline"></canvas></div>
+    <div class="container h-100">
+        <section id="pageVorhersage" style="padding-bottom: 25px;">
+            <div class="card" style="margin-bottom: 100px;">
+                <div class="card-body">
+                    <h4 class="card-title">Strompreis</h4><canvas id="forecastChart"></canvas>
                 </div>
             </div>
-        </div>
+        </section>
+        <section id="pageAbrechnung" style="padding-bottom: 25px;">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Aktuelle Abrechnungsperiode</h4>
+                    <div class="row" style="margin-bottom: 25px;">
+                        <div class="col d-none d-sm-grid d-md-grid d-lg-none d-xl-none d-xxl-none">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="text-center text-muted card-subtitle mb-2">Untermessungen</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr></tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="color: #147a50;">Nieder</td>
+                                                    <td style="color: #147a50;"><span class="consumption_virtual_1">-</span>kWh</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="color: #c69006;">Mittel</td>
+                                                    <td style="color: #c69006;"><span class="consumption_virtual_2">-</span>kWh</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="color: #a0a0a0;">Hoch</td>
+                                                    <td style="color: #a0a0a0;"><span class="consumption_virtual_3">-</span>kWh</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col d-none d-print-none d-sm-none d-md-none d-lg-grid d-xl-grid d-xxl-grid">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="text-center text-muted card-subtitle mb-2">Niedertarif</h6>
+                                    <h5 class="text-center card-title" style="color: #147a50;"><span class="consumption_virtual_1">-</span>kWh /&nbsp;<span class="cost_virtual_1">-</span>€</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col d-none d-print-none d-sm-none d-md-none d-lg-grid d-xl-grid d-xxl-grid">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="text-center text-muted card-subtitle mb-2">Mitteltarif</h6>
+                                    <h5 class="text-center card-title" style="color: #c69006;"><span class="consumption_virtual_2">-</span>kWh /&nbsp;<span class="cost_virtual_2">-</span>€</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col d-none d-print-none d-sm-none d-md-none d-lg-grid d-xl-grid d-xxl-grid">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="text-center text-muted card-subtitle mb-2">Hochtarif</h6>
+                                    <h5 class="text-center card-title" style="color: #a0a0a0;"><span class="consumption_virtual_3">-</span>kWh /&nbsp;<span class="cost_virtual_3">-</span>€</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col d-grid">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="text-center text-muted card-subtitle mb-2">Gesamt</h6>
+                                    <h5 class="text-center card-title"><span class="consumption">-</span>kWh /&nbsp;<span class="cost">-</span>€</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 35px;">
+                        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 text-center">
+                            <h5 class="text-center card-title">Verbrauch</h5><canvas id="consumptionChart"></canvas>
+                        </div>
+                        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 text-center">
+                            <h5 class="text-center card-title">Kosten</h5><canvas id="costChart"></canvas>
+                        </div>
+                    </div>
+                    <h5 class="text-center card-title">Verlauf</h5>
+                    <div class="row">
+                        <div class="col"><canvas id="timeline" class="w-100"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer class="footer mt-auto py-3 bg-white">
+            <p class="text-center">powered by <a href="https://github.com/energychain/STROMDAO_EAFs" target="_blank"><strong>STROM</strong></a><a href="https://github.com/energychain/STROMDAO_EAFs" target="_blank">DAO Energy Application Frameworks</a></p>
+        </footer>
     </div>
-    <footer class="footer mt-auto py-3 bg-white">
-        <p class="text-center">powered by <a href="https://github.com/energychain/STROMDAO_EAFs" target="_blank"><strong>STROM</strong></a><a href="https://github.com/energychain/STROMDAO_EAFs" target="_blank">DAO Energy Application Frameworks</a></p>
-    </footer>
     <script src="/assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="/assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
     <script src="/assets/js/3party/chart.js?h=eeca2582f0217edc4ac85af347e0d4ad"></script>
     <script src="/assets/js/3party/datalabels.js?h=4879bedcdfd7f4f370fa4388df9637a2"></script>
     <script src="/assets/js/3party/sw.js?h=d33bbbb42139bf22a4037dcd32be35ad"></script>
-    <script src="/assets/js/index.js?h=39b29c5ef28fba31626dc41363c05d87"></script>
+    <script src="/assets/js/index.js?h=2abfcd6e318a8c6cedec25b67400b6df"></script>
 </body>
 
 </html>

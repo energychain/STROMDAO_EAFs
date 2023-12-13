@@ -36,6 +36,7 @@ const app = async function(token) {
               }]
             },
             options: {
+                responsive: true,
                 plugins: {
                     tooltip: {
                         callbacks: {
@@ -43,6 +44,9 @@ const app = async function(token) {
                                 return context.parsed.y.toFixed(2).replace('.',',') + ' €/kWh';
                             }
                         }
+                    },
+                    legend: {
+                        display:false
                     }
                 }
             }
@@ -168,13 +172,13 @@ const app = async function(token) {
         });
 
         for (let [key, value] of Object.entries(aggregationCost)) {
-            $('#'+key).html(value.toFixed(2).replace('.',','));
+            $('.'+key).html(value.toFixed(2).replace('.',','));
         }
         for (let [key, value] of Object.entries(aggregationConsumption)) {
-            $('#'+key).html((value/1000).toFixed(3).replace('.',','));
+            $('.'+key).html((value/1000).toFixed(3).replace('.',','));
         }
-        $('#consumption').html((totalConsumption/1000).toFixed(3).replace('.',','));
-        $('#cost').html(totalCost.toFixed(2).replace('.',','));
+        $('.consumption').html((totalConsumption/1000).toFixed(3).replace('.',','));
+        $('.cost').html(totalCost.toFixed(2).replace('.',','));
 
         const ctxCostChart = document.getElementById('costChart');
         if(typeof window.costChartObject !== 'undefined') window.costChartObject.destroy();

@@ -111,7 +111,7 @@ module.exports = {
 				path: "/createTariffJWT"
 			},
 			openapi: {
-				summary: "Create Token to verify tariff labelsof this instance."
+				summary: "Create Token to verify tariff labels of this instance."
 			},
 			params: {
 				price: {

@@ -20,6 +20,17 @@ module.exports = {
         "virtual_8": "",
         "virtual_9": ""
     },
+    DEFAULT_PRICING: [
+        {label: 'virtual_1', price: 0.2},
+        {label: 'virtual_2', price: 0.3},
+        {label: 'virtual_3', price: 0.4},
+        {label: 'virtual_4', price: 0.5},
+        {label: 'virtual_5', price: 0.6},
+        {label: 'virtual_6', price: 0.7},
+        {label: 'virtual_7', price:0.1},
+        {label: 'virtual_8', price:9.99},
+        {label: 'virtual_9', price:9.99} 
+    ],
     JWT_PRIVATEKEY: fs.readFileSync("./runtime.privateKey.pem"), // Private Key - Regenerate Keypair with 'openssl genrsa -out runtime.privateKey.pem 2048' 
     JWT_PUBLICKEY: fs.readFileSync("./runtime.publicKey.pem"), // Public Key - Regenerate Keypair with 'openssl genrsa -out runtime.privateKey.pem 2048' 
     JWT_OPTIONS: {

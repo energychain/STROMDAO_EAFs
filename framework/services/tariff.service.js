@@ -243,6 +243,9 @@ module.exports = {
 					},
 					sort:"-epoch"
 				});
+				if(results.length == 0) {
+					results = require("../runtime.settings.js").DEFAULT_PRICING;
+				}
 				let labels = await ctx.call("tariff.customLabels");
 				let prices = {};
 				for (const [key, value] of Object.entries(labels)) {
