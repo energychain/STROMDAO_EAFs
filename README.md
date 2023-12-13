@@ -77,6 +77,7 @@ So unterstützt das STROMDAO EAF Energieversorger dabei, ihren Kunden maßgeschn
 - `/framework/` - Laufzeitumgebung von STROMDAO EAF basierend auf der Moleculer Service Microservice Umgebung.
 - `/framework/public` - Statische Entwickler UI (Zugriff via [[https://localhost:3000/]]).
 - `/framework/public_metering` - Statische MeterPointOperations UI (Zugriff via [[https://localhost:3001/]]).
+- `/framework/public_pwa` - Endanwender APP (Zugriff via [[https://localhost:3002/]]) [README](./framework/public_pwa/README.md).
 - `/framework/services` - Implementierung der einzelnen Micro Services.
 - `/framework/test` - Unit und Coverage Tests der Micro Services. Ausführen via `npm run test`.
 - `/framework/dynamicsignal` - Beispiele für die Implementierung von Preissignale zur Verwendung in Stromtarifen.
