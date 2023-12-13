@@ -17,7 +17,7 @@ module.exports = {
 	/** @type {ApiSettingsSchema} More info about settings: https://moleculer.services/docs/0.14/moleculer-web.html */
 	settings: {
 		// Exposed port
-		port: process.env.METERING_PORT || 3001,
+		port: process.env.PWA_PORT || 3002,
 
 		// Exposed IP
 		ip: "0.0.0.0",
@@ -30,9 +30,9 @@ module.exports = {
 				path: "/api",
 				
 				whitelist: [
-					"metering.updateReading",
-					"metering.lastReading",
 					"access.publicKey",
+					"access.demo",
+					"clearing.retrieve",
 					"tariff.prices"
 				],
 
@@ -50,13 +50,15 @@ module.exports = {
 
 				// The auto-alias feature allows you to declare your route alias directly in your services.
 				// The gateway will dynamically build the full routes from service schema.
-				autoAliases: false,
+				autoAliases: true,
 
+				/*
 				aliases: {
 					"POST /reading": "metering.updateReading",
 					"GET /reading": "metering.lastReading",
 					"GET /tariff": "tariff.prices"
 				},
+				*/
 
 				/**
 				 * Before call hook. You can check the request.
@@ -115,7 +117,7 @@ module.exports = {
 
 		// Serve assets from "public" folder. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Serve-static-files
 		assets: {
-			folder: "public_metering",
+			folder: "public_pwa",
 
 			// Options to `server-static` module
 			options: {}
@@ -135,6 +137,9 @@ module.exports = {
 		 */
 		async authenticate(ctx, route, req) {
 			let auth = req.headers["authorization"];
+			if(ctx.params.req.parsedUrl == '/api/access/demo') {
+				return { meterId: 'demo' };
+			}
 
 			if(typeof ctx.params.req.query.token !== 'undefined') {
 				auth = ctx.params.req.query.token;

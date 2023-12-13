@@ -59,6 +59,25 @@ module.exports = {
 				return token;
 			}
 		},
+		demo: {
+			openapi: {
+				summary: "Create Token to authorize with demo user"
+			},
+			rest: {
+				method: "GET",
+				path: "/createJWT"
+			},
+			params: {
+			},
+			async handler(ctx) {
+				const signOptions = require("../runtime.settings.js").JWT_OPTIONS;
+				signOptions.expiresIn = require("../runtime.settings.js").JWT_EXPIRE_METERING;
+				const token = jwt.sign({
+					meterId: 'demo' 
+				  }, require("../runtime.settings.js").JWT_PRIVATEKEY,signOptions);
+				return token;
+			}
+		},
 		createReadingJWT: {
 			rest: {
 				method: "GET",

@@ -17,38 +17,24 @@ $(document).ready(function() {
                 });     
             })
         }
-        // Add three readings
+        // Add  readings
         let meterReading = Math.round(Math.random() * 100000);
-        let meterTime = new Date().getTime() - (86400000);
+        let meterTime = new Date().getTime();
         await submitReading({
                     meterId: 'demo',
                     reading: meterReading,
                     time: meterTime
         });
 
-        meterReading +=  1 +  Math.round(Math.random() * 1000);
-        meterTime += 1 + Math.round(Math.random() * 4 * 3600000);
-        await submitReading({
-            meterId: 'demo',
-            reading: meterReading,
-            time: meterTime
-        });
-
-        meterReading +=  1 +  Math.round(Math.random() * 1000);
-        meterTime += 1 + Math.round(Math.random() * 4 * 3600000);
-        await submitReading({
-            meterId: 'demo',
-            reading: meterReading,
-            time: meterTime
-        });
-
-        meterReading +=  1 +  Math.round(Math.random() * 1000);
-        meterTime += 1 + Math.round(Math.random() * 4 * 3600000);
-        await submitReading({
-            meterId: 'demo',
-            reading: meterReading,
-            time: meterTime
-        });
+        for(let i=0;i<16;i++) {
+            meterReading +=  1 +  Math.round(Math.random() * 1000);
+            meterTime += 1800000 + Math.round(Math.random() * 3600000);
+            await submitReading({
+                meterId: 'demo',
+                reading: meterReading,
+                time: meterTime
+            });
+        }
         
         location.reload();
     }
