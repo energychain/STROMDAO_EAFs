@@ -1,1 +1,37 @@
-{"short_name":"eaf_tarif","name":"Dynamischer Stromtarif UI","icons":[{"src":"/assets/img/Icon%20SD_512.png?h=c4b71354901b5849ca6522954cc82bb9","type":"image/png","sizes":"512x512","purpose":"any maskable"},{"src":"/assets/img/Icon%20SD_512.png?h=c4b71354901b5849ca6522954cc82bb9","type":"image/png","sizes":"512x512","purpose":"any maskable"}],"start_url":"/index.html","background_color":"#ffffff","theme_color":"#919191","display":"fullscreen"}
+{
+    "short_name": "eaf_tarif",
+    "name": "Dynamischer Stromtarif UI",
+    "icons": [
+      {
+        "src": "/assets/img/android/android-launchericon-512-512.png",
+        "type": "image/png",
+        "sizes": "512x512",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/assets/img/android/android-launchericon-192-192.png",
+        "type": "image/png",
+        "sizes": "192x192",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/assets/img/ios/180.png",
+        "type": "image/png",
+        "sizes": "180x180",
+        "purpose": "any maskable"
+      }
+    ],
+    "start_url": "/index.html",
+    "background_color": "#ffffff",
+    "theme_color": "#919191",
+    "display": "fullscreen",
+    "id": "dyntarif.stromdao.de",
+    "description": "Die App \"Dynamischer Stromtarif UI\" ist eine Whitelabel-Referenzimplementierung der STROMDAO GmbH für die Einführung eines netzdienlichen, dynamischen Stromtarifs im Sinne des EAF-10 für Elektrizität. Sie bietet Verbrauchern und Erzeugern kurzfristig variable Tarife für bestimmte Zeitfenster, welche durch Energielieferanten oder Aggregatoren über das intelligente Messsystem (iMSys) zur Verfügung gestellt werden. Diese Tarife sind eventspezifisch und treten im Gegensatz zu zeitvariablen Tarifen einmalig für ein spezifisches Zeitfenster auf. Nutzer haben die Möglichkeit, auf diese variablen Tarife zu reagieren, um ihre Energiekosten bei Vorhandensein von flexiblen Verbrauchs-, Erzeugungs- oder Speicheranlagen zu optimieren.\n\nFeatures der App beinhalten:\n\n-   Verarbeitung von Zählerstandsgängen über eine REST-API\n-   Anwendung eines dynamischen Preissignals für die Strompreisabrechnung (Settlement)\n-   Anlegen von Unterzählern (Submetering) für verschiedene Tarifstufen\n-   Erstellung von Abrechnungen (Clearing)\n\nNeben diesen funktionalen Aspekten sorgt die App für eine zeitaufgelöste und transparente Abrechnung durch das Zusammenspiel von iMSys und Backend. Dies stellt sicher, dass Nutzer eine Übersicht über die vergangenen Verbräuche und die dafür abgerechneten Preise erhalten können.\n\nDie App nutzt digitale Identitäten und erfüllt damit die Anforderungen der eIDAS-Verordnung. Sie ist Teil des \"STROMDAO EAF\" Frameworks, einer hochskalierenden Lösung für Stromversorger, um ihren Kunden einen variablen Stromtarif anzubieten.\n\nWenn Sie weitere Informationen benötigen oder einen Blick in die App werfen möchten, können Sie die App über folgenden Link in einer Demo-Umgebung ausprobieren: [Open in Gitpod](https://gitpod.io/#https://github.com/energychain/STROMDAO_EAFs).",
+    "dir": "auto",
+    "lang": "de",
+    "orientation": "any",
+    "categories": [
+      "business",
+      "utilities"
+    ]
+  }

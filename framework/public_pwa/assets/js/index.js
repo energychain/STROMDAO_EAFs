@@ -1,3 +1,9 @@
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register(
+      '/assets/js/3party/sw.js'
+    );
+}
+
 const app = async function(token) {
     $.getJSON("/api/tariff/prices?token="+token, function(data) {
         let chartLabels = [];
