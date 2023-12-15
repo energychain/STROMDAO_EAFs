@@ -62,14 +62,6 @@ module.exports = function(overwrites) {
         }
     }
 
-    // demangle JSON strings
-    /*
-    for (const [key, value] of Object.entries(process.env)) {
-        if((typeof value == 'string') && (value.indexOf('{') == 0)) {
-            process.env[key] = JSON.parse(value);
-        }
-    }
-    */
     if(process.env["db_adapter"] == 'null') {
         delete process.env["db_adapter"];
     }

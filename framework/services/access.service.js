@@ -196,7 +196,7 @@ module.exports = {
 				if(results.length == 1) {
 					let reactivationSecret = ctx.params.activationSecret;
 					
-					if(process.env.ACTIVATIONMULTIUSE == false) {
+					if(JSON.parse(process.env.ACTIVATIONMULTIUSE) == false) {
 						await ctx.call("clientactivation.remove",{id:results[0]._id});
 						reactivationSecret = await ctx.call("access.randomString",{length:12});
 

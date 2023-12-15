@@ -45,6 +45,18 @@ describe("Test 'clearing' service", () => {
 			});
 			expect(res.processed).toBe(true);
 		});
+		it("Should not be processed with negative consumption", async () => {
+			let res =await broker.call("clearing.commit", {
+				meterId: "test0_"+Math.random(),
+				startTime: new Date().getTime() - 1000,
+				endTime: new Date().getTime(),
+				consumption: -10,
+				virtual_0: 5,
+				virtual_1:20,
+				reading:123
+			});
+			expect(res.processed).toBe(false);
+		});
 	});
 
 	const meterId = 'test_' + Math.random();
