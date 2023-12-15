@@ -13,19 +13,19 @@ const DbService = require("moleculer-db");
 
 /** @type {ServiceSchema} */
 module.exports = {
-	name: "price",
+	name: "clientactivation",
 	
 	adapter: process.env.db_adapter,
 	
-	collection: "price",
+	collection: "clientactivation",
 
 	mixins: [DbService],
 	/**
 	 * Settings
 	 */
 	settings: {
-		fields: ["_id", "epoch","label","price"],
-   },
+		fields: ["_id", "meterId", "activationSecret"],
+    },
 
 	/**
 	 * Dependencies

@@ -5,6 +5,6 @@ module.exports = {
     mixins: [Laboratory.AgentService],
     settings: {
         token: "NeedToBeSetForSecurity",
-        apiKey: require("../runtime.settings.js").MOLECULAR_LAB_KEY
+        apiKey: process.env.MOLECULAR_LAB_KEY
     }
 };

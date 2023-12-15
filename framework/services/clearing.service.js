@@ -7,7 +7,6 @@ const DbService = require("moleculer-db");
  * @typedef {import('moleculer').ServiceSchema} ServiceSchema Moleculer's Service Schema
  * @typedef {import('moleculer').Context} Context Moleculer's Context
  */
-const EPOCH_DURATION =  require("../runtime.settings.js").EPOCH_DURATION; // Defines how long an Epoch is.
 
 /** @type {ServiceSchema} */
 module.exports = {
@@ -15,7 +14,7 @@ module.exports = {
 
 	mixins: [DbService],
 	
-	adapter: require("../runtime.settings.js").db_adapter,
+	adapter: process.env.db_adapter,
 	
 	collection: "clearing",
 
@@ -99,7 +98,7 @@ module.exports = {
 			},
 			async handler(ctx) {
 				ctx.params.processed= false;
-				ctx.params.epoch = Math.floor(ctx.params.endTime / EPOCH_DURATION);
+				ctx.params.epoch = Math.floor(ctx.params.endTime / process.env.EPOCH_DURATION);
 				// Check if previous clearing exists for given meter
 				let previousClearings = await ctx.call("clearing.find",{
 					query: {

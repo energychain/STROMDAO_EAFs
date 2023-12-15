@@ -1,5 +1,5 @@
 module.exports =  function(params) {
-    const TARIFF_SEGMENTS = require("../runtime.settings.js").TARIFF_SEGMENTS;
+    const TARIFF_SEGMENTS = JSON.parse(process.env.TARIFF_SEGMENTS);
 
     return {
         lookup: async function(epoch) {

@@ -261,7 +261,7 @@ module.exports = {
 					  }
 				}
 				delete transientReading._id; // For operational safety we do not provide our db IDs to the client.
-				if((transientReading.processed) && (require("../runtime.settings.js").AUTO_CLEARING)) {
+				if((transientReading.processed) && (process.env.AUTO_CLEARING)) {
 					transientReading.endTime = transientReading.time;
 					const transientClearing = {
 						"meterId": transientReading.meterId, 

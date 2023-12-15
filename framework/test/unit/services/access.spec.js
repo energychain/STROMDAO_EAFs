@@ -3,8 +3,10 @@
 const { ServiceBroker } = require("moleculer");
 const { ValidationError } = require("moleculer").Errors;
 const TestService = require("../../../services/access.service");
+require("../../../runtime.settings.js")();
 
 describe("Test 'access' service", () => {
+	
 	let broker = new ServiceBroker({ logger: false });
 	broker.createService(TestService);
 

@@ -9,6 +9,7 @@ const TariffService = require("../../../services/tariff.service");
 const ClearingService = require("../../../services/clearing.service");
 const PriceService = require("../../../services/price.service");
 const AccessService = require("../../../services/access.service");
+require("../../../runtime.settings.js")();
 
 describe("Test 'metering' service", () => {
 	let broker = new ServiceBroker({ logger: false });
@@ -163,6 +164,7 @@ describe("Test 'metering' service", () => {
 	describe("Test 'metering.lastReading' action", () => {
 		it("should give second reading values", async () => {
 			let res = await broker.call("metering.lastReading",{meterId:meterId});
+			
 			expect(res.reading).toBe(secondReading);
 			expect(res.time).toBe(secondTime);
 			expect(res.virtual_0).toBe(secondReading - initialReading);

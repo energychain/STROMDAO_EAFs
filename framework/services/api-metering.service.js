@@ -33,7 +33,8 @@ module.exports = {
 					"metering.updateReading",
 					"metering.lastReading",
 					"access.publicKey",
-					"tariff.prices"
+					"tariff.prices",
+					"access.activation"
 				],
 
 				// Route-level Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
@@ -53,6 +54,8 @@ module.exports = {
 				autoAliases: false,
 
 				aliases: {
+					"GET /publicKey": "access.publicKey",
+					"POST /activation": "access.activation",
 					"POST /reading": "metering.updateReading",
 					"GET /reading": "metering.lastReading",
 					"GET /tariff": "tariff.prices"
@@ -135,6 +138,14 @@ module.exports = {
 		 */
 		async authenticate(ctx, route, req) {
 			let auth = req.headers["authorization"];
+
+			if(ctx.params.req.parsedUrl == '/api/publicKey') {
+				return { public:true };
+			}
+
+			if(ctx.params.req.parsedUrl == '/api/activation') {
+				return { public:true };
+			}
 
 			if(typeof ctx.params.req.query.token !== 'undefined') {
 				auth = ctx.params.req.query.token;

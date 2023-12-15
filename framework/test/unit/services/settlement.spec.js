@@ -4,6 +4,7 @@ const { ServiceBroker } = require("moleculer");
 const { ValidationError } = require("moleculer").Errors;
 const TestService = require("../../../services/settlement.service");
 const TariffService = require("../../../services/tariff.service");
+require("../../../runtime.settings.js")();
 
 describe("Test 'settlement' service", () => {
 	let broker = new ServiceBroker({ logger: false });

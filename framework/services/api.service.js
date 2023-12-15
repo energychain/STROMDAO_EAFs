@@ -183,5 +183,8 @@ module.exports = {
 			}
 		}
 
-	}
+	},
+	created() {
+		require("../runtime.settings.js")();
+	},
 };

@@ -12,8 +12,8 @@ const axios = require("axios");
  */
 
 module.exports =  function(params) {
-    const TARIFF_SEGMENTS = require("../runtime.settings.js").TARIFF_SEGMENTS;
-    const EPOCH_DURATION = require("../runtime.settings.js").EPOCH_DURATION;
+    const TARIFF_SEGMENTS = JSON.parse(process.env.TARIFF_SEGMENTS);
+    const EPOCH_DURATION = process.env.EPOCH_DURATION;
 
     let gsiCache = null;
     let epochData = {};
@@ -34,7 +34,7 @@ module.exports =  function(params) {
                 await fetcher();                
             }
             
-            let segment = require("../runtime.settings.js").DEFAULT_SEGMENT;
+            let segment = JSON.parse(process.env.DEFAULT_SEGMENT);
 
             if(typeof epochData["epoch_"+epoch] !== 'undefined') {
                 segment = epochData["epoch_"+epoch];

@@ -15,7 +15,7 @@ const DbService = require("moleculer-db");
 module.exports = {
 	name: "readings",
 	
-	adapter: require("../runtime.settings.js").db_adapter,
+	adapter: process.env.db_adapter,
 	
 	collection: "readings",
 

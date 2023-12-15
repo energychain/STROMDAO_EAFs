@@ -6,6 +6,7 @@ const TestService = require("../../../services/clearing.service");
 const TariffService = require("../../../services/tariff.service");
 const PriceService = require("../../../services/price.service");
 const AccessService = require("../../../services/access.service");
+require("../../../runtime.settings.js")();
 
 describe("Test 'clearing' service", () => {
 	let broker = new ServiceBroker({ logger: false });

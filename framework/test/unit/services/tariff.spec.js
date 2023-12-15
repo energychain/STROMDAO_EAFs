@@ -5,6 +5,7 @@ const { ValidationError } = require("moleculer").Errors;
 const TestService = require("../../../services/tariff.service");
 const PriceService = require("../../../services/price.service");
 const AccessService = require("../../../services/access.service");
+require("../../../runtime.settings.js")();
 
 describe("Test 'tariff' service", () => {
 	let broker = new ServiceBroker({ logger: false });
@@ -73,7 +74,7 @@ describe("Test 'tariff' service", () => {
 			let res =await broker.call("tariff.prices");
 			expect(typeof res[0].price !== 'undefined').toBe(true);
 			let found = false;
-			if((res[0].price == 0.1)  && (res[0].label == 'virtual_1')) found = true;
+			if((res[0].price == 0.2)  && (res[0].label == 'virtual_1')) found = true;
 			if((res[0].price == 0.4)  && (res[0].label == 'virtual_2')) found = true;
 			if((res[0].price == 0.7)  && (res[0].label == 'virtual_3')) found = true;
 			expect(found).toBe(true);

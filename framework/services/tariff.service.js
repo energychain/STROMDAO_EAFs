@@ -1,6 +1,5 @@
 "use strict";
-const EPOCH_DURATION =  require("../runtime.settings.js").EPOCH_DURATION; // Defines how long an Epoch is. 
-const TARIFF_SEGMENTS = require("../runtime.settings.js").TARIFF_SEGMENTS; // Number of Tariff segments to create
+
 
 /**
  * Tariff service providing labels for dynamic pricing model
@@ -17,7 +16,7 @@ module.exports = {
 
 	mixins: [DbService],
 	
-	adapter: require("../runtime.settings.js").db_adapter,
+	adapter: process.env.db_adapter,
 	
 	collection: "tariff",
 
@@ -96,7 +95,7 @@ module.exports = {
 				},
 			},
 			async handler(ctx) {
-				let labels = require("../runtime.settings.js").TARIFF_LABELS;
+				let labels = JSON.parse(process.env.TARIFF_LABELS);
 				let res = {};
 
 				for (const [key, value] of Object.entries(labels)) {
@@ -233,7 +232,7 @@ module.exports = {
 			},
 			async handler(ctx) {
 				if(typeof ctx.params.epoch == 'undefined') {
-					ctx.params.epoch = Math.floor(new Date().getTime() / require("../runtime.settings.js").EPOCH_DURATION);
+					ctx.params.epoch = Math.floor(new Date().getTime() / process.env.EPOCH_DURATION * 1);
 				}
 				let results =  await ctx.call("price.find",{
 					query:{
@@ -244,7 +243,7 @@ module.exports = {
 					sort:"-epoch"
 				});
 				if(results.length == 0) {
-					results = require("../runtime.settings.js").DEFAULT_PRICING;
+					results = JSON.parse(process.env.DEFAULT_PRICING);
 				}
 				let labels = await ctx.call("tariff.customLabels");
 				let prices = {};
@@ -265,7 +264,7 @@ module.exports = {
 				path: "/epochDuration"
 			},
 			async handler(ctx) {
-				return EPOCH_DURATION;
+				return process.env.EPOCH_DURATION * 1;
 			}
 		},
 		prices: {
@@ -303,8 +302,8 @@ module.exports = {
 				if(typeof ctx.params.startTime == 'undefined') ctx.params.startTime = new Date().getTime();
 				if(typeof ctx.params.endTime == 'undefined') ctx.params.endTime = (1 * ctx.params.startTime) + 24*60*60*1000;
 
-				let startingEpoch = Math.floor(ctx.params.startTime/EPOCH_DURATION);
-				let endingEpoch = Math.floor(ctx.params.endTime/EPOCH_DURATION);
+				let startingEpoch = Math.floor(ctx.params.startTime/process.env.EPOCH_DURATION * 1);
+				let endingEpoch = Math.floor(ctx.params.endTime/process.env.EPOCH_DURATION * 1);
 
 				let labels = await ctx.call("tariff.find",{
 					query: {
@@ -323,7 +322,7 @@ module.exports = {
 
 				// Fill gaps if they exist and provde results array
 				let results = [];
-				const DynamicSource = require(require("../runtime.settings.js").DYNAMIC_SIGNAL);
+				const DynamicSource = require(process.env.DYNAMIC_SIGNAL);
 				const dynamic = new DynamicSource();
 
 				for(let i=startingEpoch;i<=endingEpoch;i++) {
@@ -337,7 +336,7 @@ module.exports = {
 							entity:existingEpochs["epoch_"+i]
 						});
 					}
-					existingEpochs["epoch_"+i].time = i*EPOCH_DURATION;
+					existingEpochs["epoch_"+i].time = i*process.env.EPOCH_DURATION * 1;
 					delete existingEpochs["epoch_"+i].id;
 					delete existingEpochs["epoch_"+i]._id;
 

@@ -33,7 +33,45 @@ module.exports = {
 				path: "/publicKey"
 			},
 			async handler(ctx) {
-				return {publicKey:"" + require("../runtime.settings.js").JWT_PUBLICKEY}
+				const verifyOptions = JSON.parse(process.env.JWT_OPTIONS);
+				verifyOptions.expiresIn = process.env.JWT_EXPIRE_METERING;
+				return {publicKey:"" + process.env.JWT_PUBLICKEY,options:verifyOptions}
+			}
+		},
+		createMeterActivationCode: {
+			openapi: {
+				summary: "Creates pre shared activation code for given meter"
+			},
+			rest: {
+				method: "GET",
+				path: "/createMeterActivationCode"
+			},
+			params: {
+				meterId: {
+					type:"string",
+					$$t: "MeterId of the meter to create activation code for"
+				}
+			},
+			async handler(ctx) {
+				let results = await ctx.call("clientactivation.find",{query:{
+					meterId:ctx.params.meterId
+				}});
+				for(let i=0;i<results.length;i++) {
+					await ctx.call("clientactivation.remove",{id:results[i]._id});
+				}
+					
+				let reactivationSecret = await ctx.call("access.randomString",{length:12});
+
+				await ctx.call("clientactivation.insert",{entity:{
+					meterId:ctx.params.meterId,
+					activationSecret:reactivationSecret
+				}});
+
+				const token = await ctx.call("access.createMeterJWT",ctx.params);
+				return {
+					token:token,
+					activationSecret:reactivationSecret
+				};
 			}
 		},
 		createMeterJWT: {
@@ -42,7 +80,7 @@ module.exports = {
 			},
 			rest: {
 				method: "GET",
-				path: "/createJWT"
+				path: "/createMeterJWT"
 			},
 			params: {
 				meterId: {
@@ -51,11 +89,11 @@ module.exports = {
 				}
 			},
 			async handler(ctx) {
-				const signOptions = require("../runtime.settings.js").JWT_OPTIONS;
-				signOptions.expiresIn = require("../runtime.settings.js").JWT_EXPIRE_METERING;
+				const signOptions = JSON.parse(process.env.JWT_OPTIONS);
+				signOptions.expiresIn = process.env.JWT_EXPIRE_METERING;
 				const token = jwt.sign({
 					meterId: ctx.params.meterId 
-				  }, require("../runtime.settings.js").JWT_PRIVATEKEY,signOptions);
+				  }, process.env.JWT_PRIVATEKEY,signOptions);
 				return token;
 			}
 		},
@@ -70,11 +108,11 @@ module.exports = {
 			params: {
 			},
 			async handler(ctx) {
-				const signOptions = require("../runtime.settings.js").JWT_OPTIONS;
-				signOptions.expiresIn = require("../runtime.settings.js").JWT_EXPIRE_METERING;
+				const signOptions = JSON.parse(process.env.JWT_OPTIONS);
+				signOptions.expiresIn = process.env.JWT_EXPIRE_METERING;
 				const token = jwt.sign({
 					meterId: 'demo' 
-				  }, require("../runtime.settings.js").JWT_PRIVATEKEY,signOptions);
+				  }, process.env.JWT_PRIVATEKEY,signOptions);
 				return token;
 			}
 		},
@@ -99,10 +137,83 @@ module.exports = {
 				}
 			},
 			async handler(ctx) {
-				const signOptions = require("../runtime.settings.js").JWT_OPTIONS;
-				signOptions.expiresIn = require("../runtime.settings.js").JWT_EXPIRE_READING;
-				const token = jwt.sign(ctx.params, require("../runtime.settings.js").JWT_PRIVATEKEY,signOptions);
+				const signOptions = JSON.parse(process.env.JWT_OPTIONS);
+				signOptions.expiresIn = process.env.JWT_EXPIRE_READING;
+				const token = jwt.sign(ctx.params, process.env.JWT_PRIVATEKEY,signOptions);
 				return token;
+			}
+		},
+		randomString: {
+			rest: {
+				method: "GET",
+				path: "/randomString"
+			},
+			openapi: {
+				summary: "Creates a random String of given length."
+			},
+			params: {
+				length: {
+					type:"number"
+				}
+			},
+			async handler(ctx) {
+				const allowedChars = '123456789QWERTZUPASDFGHJKYXCVBNM*#!§&qwertzupasdfghjklyxcvbnm';
+				let randomString = '';
+			  
+				for (let i = 0; i < ctx.params.length; i++) {
+				  const randomIndex = Math.floor(Math.random() * allowedChars.length);
+				  randomString += allowedChars.charAt(randomIndex);
+				}
+			  
+				return randomString;
+			}
+		},
+		/*
+		* Allows activation of  a meter reading client with a code (pre shared secred).
+		* Returns token to be used for a meter reading update and new activation secret		
+		 */ 
+		activation: {
+			rest: {
+				method: "POST",
+				path: "/activiation"
+			},
+			openapi: {
+				summary: "Provides update token for automated meter readings."
+			},
+			params: {
+				activationSecret: {
+					type:"string"
+				},
+				meterId: {
+					type:"string"
+				}
+			},
+			async handler(ctx) {
+				let results = await ctx.call("clientactivation.find",{query:{
+					activationSecret:ctx.params.activationSecret,
+					meterId:ctx.params.meterId
+				}});
+				if(results.length == 1) {
+					let reactivationSecret = ctx.params.activationSecret;
+					
+					if(process.env.ACTIVATIONMULTIUSE == false) {
+						await ctx.call("clientactivation.remove",{id:results[0]._id});
+						reactivationSecret = await ctx.call("access.randomString",{length:12});
+
+						await ctx.call("clientactivation.insert",{entity:{
+							meterId:ctx.params.meterId,
+							activationSecret:reactivationSecret
+						}});	
+					}
+
+					let token = await ctx.call("access.createMeterJWT",ctx.params);
+					return {
+						token:token,
+						activationSecret:reactivationSecret
+					};
+				} else {
+					throw new Error("Activation failed");
+				}
 			}
 		},
 		createTariffJWT: {
@@ -129,9 +240,9 @@ module.exports = {
 				}
 			},
 			async handler(ctx) {
-				const signOptions = require("../runtime.settings.js").JWT_OPTIONS;
-				signOptions.expiresIn = require("../runtime.settings.js").JWT_EXPIRE_READING;
-				const token = jwt.sign(ctx.params, require("../runtime.settings.js").JWT_PRIVATEKEY,signOptions);
+				const signOptions = JSON.parse(process.env.JWT_OPTIONS);
+				signOptions.expiresIn = process.env.JWT_EXPIRE_READING;
+				const token = jwt.sign(ctx.params, process.env.JWT_PRIVATEKEY,signOptions);
 				return token;
 			}
 		},
@@ -166,9 +277,9 @@ module.exports = {
 				},
 			},
 			async handler(ctx) {
-				const signOptions = require("../runtime.settings.js").JWT_OPTIONS;
-				signOptions.expiresIn = require("../runtime.settings.js").JWT_EXPIRE_CLEARING;
-				const token = jwt.sign(ctx.params, require("../runtime.settings.js").JWT_PRIVATEKEY,signOptions);
+				const signOptions = JSON.parse(process.env.JWT_OPTIONS);
+				signOptions.expiresIn = process.env.JWT_EXPIRE_CLEARING;
+				const token = jwt.sign(ctx.params, process.env.JWT_PRIVATEKEY,signOptions);
 				return token;
 			}
 		},
@@ -189,9 +300,9 @@ module.exports = {
 				}
 			},
 			async handler(ctx) {
-				const verifyOptions = require("../runtime.settings.js").JWT_OPTIONS;
-				verifyOptions.expiresIn = require("../runtime.settings.js").JWT_EXPIRE_METERING;
-				const token = jwt.verify(ctx.params.token,require("../runtime.settings.js").JWT_PUBLICKEY, verifyOptions);
+				const verifyOptions = JSON.parse(process.env.JWT_OPTIONS);
+				verifyOptions.expiresIn = process.env.JWT_EXPIRE_METERING;
+				const token = jwt.verify(ctx.params.token,process.env.JWT_PUBLICKEY, verifyOptions);
 				return token;
 			}
 		}
