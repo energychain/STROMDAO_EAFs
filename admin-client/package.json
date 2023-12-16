@@ -1,6 +1,6 @@
 {
   "name": "eaf-admin-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Administration Client for STROMDAO Energy Application Framework",
   "main": "cli.js",
   "scripts": {
