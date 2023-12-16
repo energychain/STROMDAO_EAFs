@@ -7,8 +7,11 @@ const runtimeDefaults = {
     EPOCH_DURATION: 3600000, // Milliseconds of a tariff epoch 
     TARIFF_SEGMENTS: 3, // Number of segments this framework's tariff uses
     DEFAULT_SEGMENT: 2, // In case dynamic source does not provide value this segment is used
-    AUTO_CLEARING: true, // Performe clearing directly after reading completed
-    DYNAMIC_SIGNAL: "../dynamicsignal/random.js",
+    AUTO_CLEARING: true, // Performe clearing directly after reading completed,
+    PORT_API: 3000,
+    PORT_METERING: 3001, // Port to listen for metering API request
+    PORT_PWA: 3002,
+    DYNAMIC_SIGNAL: "../dynamicsignal/gruenstromindex.js",
     TARIFF_LABELS: JSON.stringify({
         "virtual_1": "Niedertarif",
         "virtual_2": "Mitteltarif",
@@ -39,10 +42,10 @@ const runtimeDefaults = {
         audience:  "https://tariff.stadtwerk-musterstadt.de",
         algorithm:  "RS256"
        }),
-    JWT_EXPIRE_METERING: '7d', // Token expiration for reading updates
+    JWT_EXPIRE_METERING: '7d', // Token expiration for reading updates: 
     JWT_EXPIRE_CLEARING: '7d', // Token expiration for clearings
     JWT_EXPIRE_READING: '7d', // Token expiration for processed readings
-    ACTIVATIONMULTIUSE: true, // Allow Multi use of meter reading activation codes
+    ACTIVATIONMULTIUSE: "true", // Allow Multi use of meter reading activation codes
     MOLECULAR_LAB_KEY:process.env.MOLECULAR_LAB_KEY,
     DEFAULTS_LOADED:new Date().getTime()
 }

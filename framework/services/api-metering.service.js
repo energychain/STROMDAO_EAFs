@@ -17,7 +17,7 @@ module.exports = {
 	/** @type {ApiSettingsSchema} More info about settings: https://moleculer.services/docs/0.14/moleculer-web.html */
 	settings: {
 		// Exposed port
-		port: process.env.METERING_PORT || 3001,
+		port: (process.env.PORT_METERING * 1) || 3001,
 
 		// Exposed IP
 		ip: "0.0.0.0",

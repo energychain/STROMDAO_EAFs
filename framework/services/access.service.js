@@ -103,7 +103,7 @@ module.exports = {
 			},
 			rest: {
 				method: "GET",
-				path: "/createJWT"
+				path: "/demo"
 			},
 			params: {
 			},
@@ -196,7 +196,7 @@ module.exports = {
 				if(results.length == 1) {
 					let reactivationSecret = ctx.params.activationSecret;
 					
-					if(JSON.parse(process.env.ACTIVATIONMULTIUSE) == false) {
+					if(process.env.ACTIVATIONMULTIUSE !== "true") {
 						await ctx.call("clientactivation.remove",{id:results[0]._id});
 						reactivationSecret = await ctx.call("access.randomString",{length:12});
 

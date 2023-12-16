@@ -1,6 +1,6 @@
 {
   "name": "stromdao-eaf",
-  "version": "0.2.14",
+  "version": "0.2.15",
   "description": "Referenzimplementierung: Zählerstandsgangmessung für dynamische Stromtarife",
   "scripts": {
     "dev": "moleculer-runner --hot services/**/*.service.js",
