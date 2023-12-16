@@ -189,15 +189,19 @@ module.exports = {
 						throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
 					}
 				}
-				const _previousReading = await ctx.call("readings.find",{
+				let _previousReading = await ctx.call("readings.find",{
 						query: {
 							meterId: ctx.params.meterId
 						}
 					}
 				);
+
+
+
+
 				ctx.params.time *= 1;
 				ctx.params.reading  *= 1;
-
+				
 				let transientReading = {
 					"meterId": ctx.params.meterId, 
 					"reading":ctx.params.reading * 1,
@@ -208,10 +212,32 @@ module.exports = {
 				}
 				const labels = await ctx.call("tariff.customLabels");
 
+
 				for (const [key, value] of Object.entries(labels)) {
 					transientReading[key] = 0;
 				}
+				// test if we received a valid re-entry reading with a signed clearing token from us. 
+				if(typeof ctx.params.clearing !== 'undefined') {
+					if(typeof ctx.params.clearing.jwt !==  'undefined') {
+						try {
+							const trustedClearing = await ctx.call("access.verifySelf",{token:ctx.params.clearing.jwt});
+							delete trustedClearing.exp;
+							delete trustedClearing.iat;
+							delete trustedClearing.aud;
+							delete trustedClearing.sub;
+							delete trustedClearing.iss;
 
+							if(trustedClearing.meterId == ctx.params.meterId) {
+								_previousReading = [trustedClearing];
+							}
+
+							_previousReading[0].time = trustedClearing.endTime;
+						} catch(e) {
+							console.error("Error verifying clearing token",e);
+							delete ctx.params.clearing;
+						}
+					}
+				}
 				// Check if we know this meter by testing the length of the result (0 = not known, 1 = known)
 				if(_previousReading.length == 0) {
 					transientReading = await ctx.call("readings.insert",{entity:transientReading});
@@ -220,7 +246,6 @@ module.exports = {
 				} else {
 					transientReading = _previousReading[0];
 					delete transientReading.processed;
-
 					// Validate that we could update
 					if( 
 						(transientReading.time  < ctx.params.time)	&& // new reading needs to be newer than previous
@@ -248,7 +273,23 @@ module.exports = {
 						transientReading.time = ctx.params.time * 1;
 						transientReading.id = transientReading._id;
 						transientReading.jwt = await ctx.call("access.createReadingJWT",transientReading);
-						await ctx.call("readings.update",transientReading);
+						if(typeof ctx.params.clearing !== 'undefined') {
+							// in case we received a clearing we might need to insert first
+							const findExisting = await ctx.call("readings.find",{
+								query: {
+									meterId: ctx.params.meterId
+								}
+							});
+							if(findExisting.length == 0) {
+								await ctx.call("readings.insert",{entity:transientReading});
+							} else {
+								transientReading["_id"] = findExisting[0]._id;
+								transientReading["id"] = findExisting[0].id;
+								await ctx.call("readings.update",transientReading);
+							}
+						} else {
+							await ctx.call("readings.update",transientReading);
+						}
 						transientReading.consumption = deltaConumption;
 						delete transientReading.id;
 						transientReading.processed = true;

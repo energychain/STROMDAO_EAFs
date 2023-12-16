@@ -7,6 +7,7 @@ const DbService = require("moleculer-db");
  * @typedef {import('moleculer').ServiceSchema} ServiceSchema Moleculer's Service Schema
  * @typedef {import('moleculer').Context} Context Moleculer's Context
  */
+const ApiGateway = require("moleculer-web"); // Included for Invalid Authentication Errors 
 
 /** @type {ServiceSchema} */
 module.exports = {
@@ -47,6 +48,12 @@ module.exports = {
 				}
 			},
 			async handler(ctx) {
+				if((typeof ctx.meta.user !== 'undefined') && (typeof ctx.meta.user.meterId !== 'undefined')) {
+					// Ensure Authenticated Token is authorized
+					if(ctx.meta.user.meterId !== ctx.params.meterId) {
+						throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
+					}
+				}
 				let results =  await ctx.call("clearing.find",{
 					query: {
 						meterId: ctx.params.meterId

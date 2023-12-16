@@ -7,7 +7,7 @@ $(document).ready(function () {
     });
 
     const fetchApiToken = function() {
-        $.getJSON("/api/access/createJWT?meterId="+$('#amrMeterId').val(),function(data) {
+        $.getJSON("/api/access/createMeterJWT?meterId="+$('#amrMeterId').val(),function(data) {
             $('#amrToken').val(data);
             $('#amrUrl').val("http://localhost:3001/api/reading");
         })

@@ -34,7 +34,8 @@ module.exports = {
 					"metering.lastReading",
 					"access.publicKey",
 					"tariff.prices",
-					"access.activation"
+					"access.activation",
+					"clearing.retrieve"
 				],
 
 				// Route-level Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
@@ -58,7 +59,8 @@ module.exports = {
 					"POST /activation": "access.activation",
 					"POST /reading": "metering.updateReading",
 					"GET /reading": "metering.lastReading",
-					"GET /tariff": "tariff.prices"
+					"GET /tariff": "tariff.prices",
+					"GET /clearing": "clearing.retrieve"
 				},
 
 				/**
