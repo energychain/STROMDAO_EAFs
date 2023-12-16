@@ -5,7 +5,7 @@ tasks:
       before: |
           cd ./framework
       init: |
-          npm install
+          npm install; npm install -g eaf-admin-client; npm install -g eaf-amr-client
       command: |
          npm run dev
 ports:
