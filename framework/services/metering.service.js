@@ -283,6 +283,10 @@ module.exports = {
 							if(findExisting.length == 0) {
 								await ctx.call("readings.insert",{entity:transientReading});
 							} else {
+								if(typeof transientReading["_id"] !== 'undefined') {
+									transientReading["_id"] = findExisting[0]._id;
+									transientReading["id"] = findExisting[0]._id;
+								}
 								transientReading["_id"] = findExisting[0]._id;
 								transientReading["id"] = findExisting[0].id;
 								await ctx.call("readings.update",transientReading);
