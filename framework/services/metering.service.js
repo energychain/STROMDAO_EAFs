@@ -283,13 +283,14 @@ module.exports = {
 							if(findExisting.length == 0) {
 								await ctx.call("readings.insert",{entity:transientReading});
 							} else {
-								if(typeof transientReading["_id"] !== 'undefined') {
-									transientReading["_id"] = findExisting[0]._id;
-									transientReading["id"] = findExisting[0]._id;
+								for(let i=0;i<findExisting.length;i++) {
+									try {
+										await ctx.call("readings.remove",{id:findExisting[i]._id});
+									} catch(e) {
+										console.error("Error removing transient reading",e);
+									} 
 								}
-								transientReading["_id"] = findExisting[0]._id;
-								transientReading["id"] = findExisting[0].id;
-								await ctx.call("readings.update",transientReading);
+								await ctx.call("readings.insert",{entity:transientReading});
 							}
 						} else {
 							await ctx.call("readings.update",transientReading);
