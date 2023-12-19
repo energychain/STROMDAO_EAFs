@@ -342,6 +342,16 @@ module.exports = {
 
 					results.push(existingEpochs["epoch_"+i]);
 				}
+				if(typeof ctx.params.injectedTariff !== 'undefined') {
+					for(let i=0;i<ctx.params.injectedTariff.length;i++) {
+						for(let j=0;j<results.length;j++) {
+							if(results[j].epoch == ctx.params.injectedTariff[i].epoch) {
+								results[j] = ctx.params.injectedTariff[i];
+								results[j].injected = new Date().getTime();
+							}
+						}
+					}
+				}
 				return results;
 			}
 		}

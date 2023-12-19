@@ -254,10 +254,20 @@ module.exports = {
 					  ) {
 						// Valid Reading to update transient virtual metering points
 						const deltaConumption = ctx.params.reading - transientReading.reading;
+						
+						let tariff = [];
+						// use tariff source if given in request and validate before					
+						if(typeof ctx.params.tariff !== 'undefined') {
+							for(let j=0;j<ctx.params.tariff.length;j++) {
+								tariff.push(await ctx.call("access.verifySelf".ctx.params.tariff[j].jwt));
+							}
+						}
+						
 						const settlement = await ctx.call("settlement.retrieve",{
 							consumption: deltaConumption,
 							startTime: transientReading.time,
-							endTime: ctx.params.time
+							endTime: ctx.params.time,
+							injectedTariff: tariff // this is a trusted array as signature got validated before
 						});
 
 						transientReading.virtual_0 += 1 * deltaConumption;
@@ -320,6 +330,8 @@ module.exports = {
 							transientClearing[key] = value;
 						}
 					}
+					//TODO Inject Tariff based consensus clearing of ctx.params.tariff is set
+
 					let clearing = await ctx.call("clearing.commit",transientClearing);
 					transientReading.clearing = clearing;
 				}

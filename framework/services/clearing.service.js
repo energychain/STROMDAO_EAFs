@@ -114,7 +114,7 @@ module.exports = {
 					sort: "-epoch"
 				});
 				ctx.params.clearingTime = new Date().getTime();
-
+				
 				if( 
 					(ctx.params.consumption >= 0)
 				) {

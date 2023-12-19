@@ -117,7 +117,8 @@ module.exports = {
 				// Retrieve labels for tariff
 				let labels = await ctx.call("tariff.labels",{
 					startTime: ctx.params.startTime,
-					endTime: ctx.params.endTime					
+					endTime: ctx.params.endTime,
+					injectedTariff:	ctx.params.injectedTariff // metering might have received signed labels that will overwrite actual 				
 				});
 				
 				const EPOCH_DURATION = await ctx.call("tariff.epochDuration");
