@@ -38,6 +38,36 @@ module.exports = {
 				return {publicKey:"" + process.env.JWT_PUBLICKEY,options:verifyOptions}
 			}
 		},
+		refresh: {
+			openapi: {
+				summary: "Allows to refresh JWT of a metering token (extend time to expiration)"
+			},
+			rest: {
+				method: "GET",
+				path: "/refresh"
+			},
+			params: {
+				token: {
+					type:"string"
+				},
+				meterId: {
+					type:"string"
+				}
+			},
+			async handler(ctx) {
+				const verificationExisting = await ctx.call("access.verifySelf",ctx.params);
+				if(
+					(verificationExisting.meterId == ctx.params.meterId)
+				) {
+					const token = await ctx.call("access.createMeterJWT",ctx.params);
+					return {
+						token:token
+					};
+				} else {
+					throw new Error("Invalid token");
+				}
+			}
+		},
 		createMeterActivationCode: {
 			openapi: {
 				summary: "Creates pre shared activation code for given meter"

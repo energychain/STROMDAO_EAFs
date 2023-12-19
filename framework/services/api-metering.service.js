@@ -33,6 +33,7 @@ module.exports = {
 					"metering.updateReading",
 					"metering.lastReading",
 					"access.publicKey",
+					"access.refresh",
 					"tariff.prices",
 					"access.activation",
 					"clearing.retrieve"
@@ -60,7 +61,8 @@ module.exports = {
 					"POST /reading": "metering.updateReading",
 					"GET /reading": "metering.lastReading",
 					"GET /tariff": "tariff.prices",
-					"GET /clearing": "clearing.retrieve"
+					"GET /clearing": "clearing.retrieve",
+					"POST /refresh": "access.refresh"
 				},
 
 				/**
