@@ -259,7 +259,7 @@ module.exports = {
 						// use tariff source if given in request and validate before					
 						if(typeof ctx.params.tariff !== 'undefined') {
 							for(let j=0;j<ctx.params.tariff.length;j++) {
-								tariff.push(await ctx.call("access.verifySelf".ctx.params.tariff[j].jwt));
+								tariff.push(await ctx.call("access.verifySelf",ctx.params.tariff[j].jwt));
 							}
 						}
 						
