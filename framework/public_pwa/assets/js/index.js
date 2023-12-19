@@ -5,6 +5,7 @@ if ('serviceWorker' in navigator) {
 }
 
 const app = async function(token) {
+    $('.appcontent').show();
     $.getJSON("/api/tariff/prices?token="+token, function(data) {
         let chartLabels = [];
         let chartData = [];
@@ -52,7 +53,7 @@ const app = async function(token) {
             }
           });
     });
-    $.getJSON("/api/clearing/retrieve?meterId=demo&token="+token, function(data) {
+    $.getJSON("/api/clearing/retrieve?meterId="+window.meterId+"&token="+token, function(data) {
         let aggregationCost = {};
         let aggregationConsumption = {};
         let totalConsumption =  0;
@@ -123,8 +124,10 @@ const app = async function(token) {
 
         const ctxTimelineChart = document.getElementById('timeline');
         if(typeof window.timelineChartObject !== 'undefined') window.timelineChartObject.destroy();
+        let demofy = 0;
+        if(window.meterId == 'demo') demofy = 86400000;
 
-        const xValues = consumptionChart.map(point => new Date( (point.x * 3600000)-86400000 ).toLocaleString());
+        const xValues = consumptionChart.map(point => new Date( (point.x * 3600000)-demofy ).toLocaleString());
         const yValues = consumptionChart.map(point => (point.y/1000));
         const yValues2 = costChart.map(point => point.y);
 
@@ -247,7 +250,28 @@ const app = async function(token) {
 }
 
 $(document).ready(function() {
-    $.getJSON("/api/access/demo", function(data) {
-        app(data); 
-    });
+    $('#meterId').val(window.localStorage.getItem("meterId"));
+    $('#token').val(window.localStorage.getItem("token"));
+    $('#demoButton').click(function() {
+        $('#meterId').val('demo');
+        $('#token').val('');
+    })
+    $('#loginModal').modal('show');
+    $('#loginForm').submit(function(e) {
+        e.preventDefault();
+        if($('#meterId').val() == 'demo') {
+            window.meterId = 'demo';
+            $.getJSON("/api/access/demo", function(data) {
+                app(data); 
+            }); 
+        } else {
+            window.localStorage.setItem("token", $('#token').val());
+            window.localStorage.setItem("meterId", $('#meterId').val());
+            window.meterId = $('#meterId').val();
+            app($('#token').val());
+        }
+       
+        $('#loginModal').modal('hide');
+    })
+
 })
