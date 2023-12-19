@@ -151,6 +151,10 @@ module.exports = {
 				return { public:true };
 			}
 
+			if(ctx.params.req.parsedUrl == '/api/refresh') {
+				return { public:true };
+			}
+
 			if(typeof ctx.params.req.query.token !== 'undefined') {
 				auth = ctx.params.req.query.token;
 			}
