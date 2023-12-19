@@ -348,6 +348,7 @@ module.exports = {
 							if(results[j].epoch == ctx.params.injectedTariff[i].epoch) {
 								results[j] = ctx.params.injectedTariff[i];
 								results[j].injected = new Date().getTime();
+								console.log("APPLY Injected Tariff information",ctx.params.injectedTariff[i]);
 							}
 						}
 					}
