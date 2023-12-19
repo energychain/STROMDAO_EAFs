@@ -36,7 +36,8 @@ module.exports = {
 					"access.refresh",
 					"tariff.prices",
 					"access.activation",
-					"clearing.retrieve"
+					"clearing.retrieve",
+					"access.demo"
 				],
 
 				// Route-level Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
@@ -62,7 +63,8 @@ module.exports = {
 					"GET /reading": "metering.lastReading",
 					"GET /tariff": "tariff.prices",
 					"GET /clearing": "clearing.retrieve",
-					"POST /refresh": "access.refresh"
+					"POST /refresh": "access.refresh",
+					"GET /demo": "access.demo"
 				},
 
 				/**
@@ -152,6 +154,10 @@ module.exports = {
 			}
 
 			if(ctx.params.req.parsedUrl == '/api/refresh') {
+				return { public:true };
+			}
+
+			if(ctx.params.req.parsedUrl == '/api/demo') {
 				return { public:true };
 			}
 
