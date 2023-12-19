@@ -15,7 +15,7 @@ const DbService = require("moleculer-db");
 module.exports = {
 	name: "clientactivation",
 	
-	adapter: process.env.db_adapter,
+	adapter: process.db_adapter,
 	
 	collection: "clientactivation",
 

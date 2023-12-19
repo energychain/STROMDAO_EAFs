@@ -67,6 +67,10 @@ module.exports = function(overwrites) {
 
     if(process.env["db_adapter"] == 'null') {
         delete process.env["db_adapter"];
+        process.db_adapter = null;
+    } else {
+        process.db_adapter = new MongoDBAdapter(process.env["db_adapter"]);
     }
+   
     return process.env;
 }

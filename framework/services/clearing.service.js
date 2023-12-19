@@ -15,7 +15,7 @@ module.exports = {
 
 	mixins: [DbService],
 	
-	adapter: process.env.db_adapter,
+	adapter: process.db_adapter,
 	
 	collection: "clearing",
 
