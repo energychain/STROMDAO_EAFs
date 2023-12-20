@@ -69,7 +69,11 @@ module.exports = function(overwrites) {
         delete process.env["db_adapter"];
         process.db_adapter = null;
     } else {
-        process.db_adapter = new MongoDBAdapter(process.env["db_adapter"]);
+        process.db_adapter = new MongoDBAdapter(process.env["db_adapter"],{
+            poolSize: 100,
+            wtimeout: 2500,
+            connectTimeoutMS: 10000,
+        });
     }
    
     return process.env;
