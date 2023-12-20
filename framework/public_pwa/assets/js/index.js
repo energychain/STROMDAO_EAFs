@@ -61,6 +61,7 @@ const app = async function(token) {
         let consumptionChart = [];
         let costChart = [];
         let oldEpoch  = -1;
+        let timeSpan = Math.abs(data[0].endTime - data[data.length - 1].endTime);
 
         for(let i=0;i<data.length;i++) {
             for (let [key, value] of Object.entries(data[i])) {
@@ -182,6 +183,21 @@ const app = async function(token) {
         }
         $('.consumption').html((totalConsumption/1000).toFixed(3).replace('.',','));
         $('.cost').html(totalCost.toFixed(2).replace('.',','));
+
+        // prepare Stats
+        let htmlCost = '<table class="table table-condensed">';
+        htmlCost += '<tr><td>&#8960; Preis je kWh</td><td>'+(totalCost/(totalConsumption/1000)).toFixed(3).replace('.',',')+'€</td></tr>';
+        htmlCost += '<tr><td>&#8960; Kosten je Tag</td><td>'+(totalCost/(timeSpan/86400000)).toFixed(2).replace('.',',')+'€</td></tr>';
+        htmlCost += '<tr><td>&#8960; Kosten je Monat</td><td>'+(totalCost/(timeSpan/(30*86400000))).toFixed(2).replace('.',',')+'€</td></tr>';
+        htmlCost += '</table>';
+        $('#statsCost').html(htmlCost);
+
+        let htmlConsumption = '<table class="table table-condensed">';
+        htmlConsumption += '<tr><td>&#8960; kWh je Euro</td><td>'+((totalConsumption/1000)/totalCost).toFixed(1).replace('.',',')+'</td></tr>';
+        htmlConsumption += '<tr><td>&#8960; kWh je Tag</td><td>'+((totalConsumption/1000)/(timeSpan/86400000)).toFixed(1).replace('.',',')+'</td></tr>';
+        htmlConsumption += '<tr><td>&#8960; kWh je Monat</td><td>'+((totalConsumption/1000)/(timeSpan/(30*86400000))).toFixed(1).replace('.',',')+'</td></tr>';
+        htmlConsumption += '</table>';
+        $('#statsConsumption').html(htmlConsumption);
 
         const ctxCostChart = document.getElementById('costChart');
         if(typeof window.costChartObject !== 'undefined') window.costChartObject.destroy();
