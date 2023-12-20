@@ -89,7 +89,10 @@ const app = async function(token) {
                 oldEpoch = epoch;
             }
         }
-
+        totalConsumption = 0;
+        for (let [key, value] of Object.entries(aggregationConsumption)) {
+            totalConsumption += 1 * value;
+        }
         function interPolateChartArray(inputArray) {
             inputArray.reverse();
             function interpolateY(point1, point2, xValue) {
