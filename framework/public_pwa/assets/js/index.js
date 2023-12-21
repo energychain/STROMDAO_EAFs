@@ -308,5 +308,6 @@ $(document).ready(function() {
         $('#meterId').val($.urlParam('meterId'));
         window.meterId = $('#meterId').val();
         app($.urlParam('token'));
+        $('#loginModal').modal('hide');
     }
 })
