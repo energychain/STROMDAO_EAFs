@@ -5,7 +5,7 @@ $(document).ready(function() {
         $('#searchResults').html('Searching...');
         $.getJSON("/api/debit/assets?q=" + $('#q').val(), function(data) {
             let html = '<table class="table table-condensed table-striped">';
-            html += '<thead><tr><th>Zählerkennung</th><th>Letzte Aktualisierung</th><th>Zählerstand</th><th>Bezug</th><th>Kosten</th></tr></thead>';
+            html += '<thead><tr><th>Zählerkennung</th><th>Letzte Aktualisierung</th><th>Zählerstand</th><th>Bezug</th><th>&#8960;Strompreis<th>Kosten</th></tr></thead>';
             html += '<tbody>';
             for(let i=0;i<data.length;i++) {
                 html += '<tr>';
@@ -13,6 +13,7 @@ $(document).ready(function() {
                 html += '<td>'+new Date(data[i].clearingTime).toLocaleString()+'</td>';
                 html += '<td>'+(data[i].reading/1000).toFixed(3).replace('.',',')+' kWh</td>';
                 html += '<td>'+(data[i].consumption/1000).toFixed(3).replace('.',',')+' kWh</td>';
+                html += '<td>'+(data[i].cost/(data[i].consumption/1000)).toFixed(4).replace('.',',')+'€</td>';
                 html += '<td>'+(data[i].cost).toFixed(2).replace('.',',')+' €</td>';
                 html += '</tr>';
             }
