@@ -295,5 +295,18 @@ $(document).ready(function() {
        
         $('#loginModal').modal('hide');
     })
+    $.urlParam = function (name) {
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)')
+                          .exec(window.location.search);
+    
+        return (results !== null) ? results[1] || 0 : false;
+    }
 
+    if($.urlParam('token')) {
+        $('#loginModal').modal('hide');
+        $('#token').val($.urlParam('token'));
+        $('#meterId').val($.urlParam('meterId'));
+        window.meterId = $('#meterId').val();
+        app($.urlParam('token'));
+    }
 })

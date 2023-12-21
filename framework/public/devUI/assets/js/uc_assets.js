@@ -8,18 +8,28 @@ $(document).ready(function() {
             html += '<thead><tr><th>Zählerkennung</th><th>Letzte Aktualisierung</th><th>Zählerstand</th><th>Bezug</th><th>&#8960;Strompreis<th>Kosten</th></tr></thead>';
             html += '<tbody>';
             for(let i=0;i<data.length;i++) {
-                html += '<tr>';
+                html += '<tr data-id="'+data[i].meterId+'">';
                 html += '<td>'+data[i].meterId+'</td>';
                 html += '<td>'+new Date(data[i].clearingTime).toLocaleString()+'</td>';
                 html += '<td>'+(data[i].reading/1000).toFixed(3).replace('.',',')+' kWh</td>';
                 html += '<td>'+(data[i].consumption/1000).toFixed(3).replace('.',',')+' kWh</td>';
                 html += '<td>'+(data[i].cost/(data[i].consumption/1000)).toFixed(4).replace('.',',')+'€</td>';
                 html += '<td>'+(data[i].cost).toFixed(2).replace('.',',')+' €</td>';
+                html += '<td><button class="btn btn-xs btn-dark btnClear openPWA" data-id="'+data[i].meterId+'"><i class="fa fa-window-restore"></i></button></td>';
                 html += '</tr>';
             }
             html += '</tbody>';
             html += '</table>';
             $('#searchResults').html(html);
+            $('.openPWA').off();
+            $('.openPWA').click(function() {
+                const meterId = $(this).data('id');
+                $.getJSON("/api/access/createMeterJWT?meterId="+meterId, function(data) {
+                    let url = location.protocol + '//' + location.hostname + ':' + ((location.port * 1)+2) + '/?token=' + data+'&meterId='+meterId;
+                    console.log("URL: "+url);
+                    window.open(url, '_blank');
+                });
+            });
         });
     }
 
