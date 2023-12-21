@@ -4,9 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Use Case: Clearing</title>
+    <title>Use Case: Assets</title>
     <meta name="description" content="Energy Application Frameworks">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css?h=cd822b7fd22c8a95a68470c795adea69">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css?h=d98553506d4393860db8a633e4842ead">
 </head>
 
 <body>
@@ -26,28 +27,19 @@
         </nav>
     </header>
     <div class="container">
-        <form id="retrieveClearing">
+        <form id="frmMeterSearch" style="margin-bottom: 25px;">
             <div class="card">
-                <div class="card-header">
-                    <h3>Abrechnung (Clearing)</h3>
-                </div>
                 <div class="card-body">
-                    <div class="input-group" style="margin-bottom: 15px;"><span class="input-group-text col-2">Zählerkennung</span><input class="form-control" type="text" id="meterId" name="meterId" required=""></div>
-                </div>
-                <div class="card-footer text-end">
-                    <div class="row">
-                        <div class="col float-end"></div>
-                        <div class="col-2"><button class="btn btn-primary" id="submitReading" type="submit">abrufen</button></div>
-                    </div>
+                    <h3>Zählerverwaltung</h3>
+                    <div class="input-group"><input class="form-control" type="search" id="q"><button class="btn btn-dark" type="submit"><i class="fa fa-search"></i></button></div>
+                    <div id="searchResults" style="margin-top: 25px;"></div>
                 </div>
             </div>
         </form>
-        <div id="clearingBackend" style="display: screen;margin-top: 25px;"></div>
     </div>
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
-    <script src="assets/js/3party/chart.js?h=eeca2582f0217edc4ac85af347e0d4ad"></script>
-    <script src="assets/js/uc_clearing.js?h=7151e0503a756a951ae325b1221e4386"></script>
+    <script src="assets/js/uc_assets.js?h=9b6d43ecd86b16ba04c12324c5d01c1b"></script>
 </body>
 
 </html>

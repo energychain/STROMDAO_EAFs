@@ -195,10 +195,6 @@ module.exports = {
 						}
 					}
 				);
-
-
-
-
 				ctx.params.time *= 1;
 				ctx.params.reading  *= 1;
 				
@@ -316,7 +312,7 @@ module.exports = {
 						if(transientReading.reading > ctx.params.reading) transientReading.debug = "reading";
 					  }
 				}
-				delete transientReading._id; // For operational safety we do not provide our db IDs to the client.
+
 				if((transientReading.processed) && (process.env.AUTO_CLEARING)) {
 					transientReading.endTime = transientReading.time;
 					const transientClearing = {
@@ -330,11 +326,18 @@ module.exports = {
 							transientClearing[key] = value;
 						}
 					}
-					//TODO Inject Tariff based consensus clearing of ctx.params.tariff is set
 
 					let clearing = await ctx.call("clearing.commit",transientClearing);
-					transientReading.clearing = clearing;
+					
+					transientReading.id = transientReading._id;
+					if(typeof transientReading._id !== 'undefined') {
+						transientReading.clearingJWT = clearing.jwt;
+						delete transientReading._id;
+						await ctx.call("readings.update",{id:transientReading.id,clearingJWT:transientReading.clearingJWT}); // ensures clearing to be part of.
+					}
 				}
+				delete transientReading._id; // For operational safety we do not provide our db IDs to the client.
+				delete transientReading.id;
 				return transientReading;
 			}
 		}

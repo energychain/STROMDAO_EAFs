@@ -9,6 +9,7 @@ const TariffService = require("../../../services/tariff.service");
 const ClearingService = require("../../../services/clearing.service");
 const PriceService = require("../../../services/price.service");
 const AccessService = require("../../../services/access.service");
+const DebitService = require("../../../services/debit.service");
 require("../../../runtime.settings.js")();
 
 describe("Test 'metering' service", () => {
@@ -20,6 +21,7 @@ describe("Test 'metering' service", () => {
 	broker.createService(ClearingService);
 	broker.createService(PriceService);
 	broker.createService(AccessService);
+	broker.createService(DebitService);
 
 	beforeAll(() => broker.start());
 	afterAll(() => broker.stop());

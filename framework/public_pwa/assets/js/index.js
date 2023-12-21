@@ -282,12 +282,15 @@ $(document).ready(function() {
             window.meterId = 'demo';
             $.getJSON("/api/access/demo", function(data) {
                 app(data); 
+                setInterval(function() { app(data) }, 60000);
             }); 
         } else {
             window.localStorage.setItem("token", $('#token').val());
             window.localStorage.setItem("meterId", $('#meterId').val());
             window.meterId = $('#meterId').val();
             app($('#token').val());
+            // Trigger Auto-Reload
+            setInterval(function() { app($('#token').val()) }, 60000);
         }
        
         $('#loginModal').modal('hide');

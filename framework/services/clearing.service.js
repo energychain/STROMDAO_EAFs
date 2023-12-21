@@ -35,7 +35,15 @@ module.exports = {
 	 * Actions
 	 */
 	actions: {
-
+		assets: {
+			rest: {
+				method: "GET",
+				path: "/assets"
+			},
+			async handler(ctx) {
+				return await ctx.call("clearing.find",{search:ctx.params.q,searchFields:['meterId'],sort:"-clearingTime"});
+			}
+		},
 		retrieve: {
 			rest: {
 				method: "GET",
@@ -146,7 +154,7 @@ module.exports = {
 								ctx.params.processed = true;
 								ctx.params.jwt = await ctx.call("access.createClearingJWT",ctx.params);
 								await ctx.call("clearing.insert",{entity:ctx.params});
-								
+								await ctx.call("debit.invoice",ctx.params);
 								// TODO validate virtual readings
 							} 
 						}
