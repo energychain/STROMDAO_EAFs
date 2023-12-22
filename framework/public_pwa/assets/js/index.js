@@ -269,13 +269,29 @@ const app = async function(token) {
 }
 
 $(document).ready(function() {
+    $.urlParam = function (name) {
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)')
+                          .exec(window.location.search);
+    
+        return (results !== null) ? results[1] || 0 : false;
+    }
+    
     $('#meterId').val(window.localStorage.getItem("meterId"));
     $('#token').val(window.localStorage.getItem("token"));
     $('#demoButton').click(function() {
         $('#meterId').val('demo');
         $('#token').val('');
     })
-    $('#loginModal').modal('show');
+    if($.urlParam('token')) {
+        $('#loginModal').modal('hide');
+        $('#token').val($.urlParam('token'));
+        $('#meterId').val($.urlParam('meterId'));
+        window.meterId = $('#meterId').val();
+        app($.urlParam('token'));
+        $('#loginModal').modal('hide');
+    } else {
+        $('#loginModal').modal('show');
+    }
     $('#loginForm').submit(function(e) {
         e.preventDefault();
         if($('#meterId').val() == 'demo') {
@@ -295,19 +311,7 @@ $(document).ready(function() {
        
         $('#loginModal').modal('hide');
     })
-    $.urlParam = function (name) {
-        var results = new RegExp('[\?&]' + name + '=([^&#]*)')
-                          .exec(window.location.search);
-    
-        return (results !== null) ? results[1] || 0 : false;
-    }
 
-    if($.urlParam('token')) {
-        $('#loginModal').modal('hide');
-        $('#token').val($.urlParam('token'));
-        $('#meterId').val($.urlParam('meterId'));
-        window.meterId = $('#meterId').val();
-        app($.urlParam('token'));
-        $('#loginModal').modal('hide');
-    }
+
+
 })

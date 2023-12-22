@@ -153,6 +153,8 @@ module.exports = {
 								ctx.params["cost"] = totalCost;
 								ctx.params.processed = true;
 								ctx.params.jwt = await ctx.call("access.createClearingJWT",ctx.params);
+								ctx.params.startReading = previousClearing.reading;
+								ctx.params.startTime = previousClearing.endTime + 1; 
 								await ctx.call("clearing.insert",{entity:ctx.params});
 								await ctx.call("debit.invoice",ctx.params);
 								// TODO validate virtual readings

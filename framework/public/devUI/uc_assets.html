@@ -20,7 +20,7 @@
                         <li class="nav-item"><a class="nav-link" href="uc_tariff.html">Tarif</a></li>
                         <li class="nav-item"><a class="nav-link" href="uc_settlement.html">Settlement</a></li>
                         <li class="nav-item"><a class="nav-link" href="uc_clearing.html">Abrechnung</a></li>
-                        <li class="nav-item"><a class="nav-link" href="uc_assets.html">Verwaltung</a></li>
+                        <li class="nav-item"><a class="nav-link" href="uc_assets.html">Messstellen</a></li>
                     </ul>
                 </div>
             </div>
@@ -30,8 +30,11 @@
         <form id="frmMeterSearch" style="margin-bottom: 25px;">
             <div class="card">
                 <div class="card-body">
-                    <h3>Zählerverwaltung</h3>
-                    <div class="input-group"><input class="form-control" type="search" id="q"><button class="btn btn-dark" type="submit"><i class="fa fa-search"></i></button></div>
+                    <h3>Messstellen</h3>
+                    <div class="input-group" style="margin-bottom: 15px;"><input class="form-control" type="search" id="q"><button class="btn btn-dark" type="submit"><i class="fa fa-search"></i></button></div>
+                    <div class="text-center" style="margin-bottom: 25px;">
+                        <div class="btn-group col-6" role="group"><button class="btn btn-success btn-sm col-2 delayBtn" type="button" data="3600000"><i class="fa fa-clock-o"></i>&nbsp;&gt; 1h</button><button class="btn btn-warning btn-sm col-2 delayBtn" type="button" data="86400000"><i class="fa fa-clock-o"></i>&nbsp;&gt; 24h</button><button class="btn btn-danger btn-sm col-2 delayBtn" type="button" data="604800000"><i class="fa fa-clock-o"></i>&nbsp;&gt; 7d</button></div>
+                    </div>
                     <div id="searchResults" style="margin-top: 25px;"></div>
                 </div>
             </div>
@@ -39,7 +42,7 @@
     </div>
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
-    <script src="assets/js/uc_assets.js?h=113d50ee5c4089fca87d5fd0844a867c"></script>
+    <script src="assets/js/uc_assets.js?h=6a2f00c06c94919ddcee264259f65fa3"></script>
 </body>
 
 </html>

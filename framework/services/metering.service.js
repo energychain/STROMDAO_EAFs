@@ -183,10 +183,14 @@ module.exports = {
 			 * @return {object} transientReading - The updated transient reading object.
 			 */
 			async handler(ctx) {
-				if((typeof ctx.meta.user !== 'undefined') && (typeof ctx.meta.user.meterId !== 'undefined')) {
+				if((typeof ctx.meta.user !== 'undefined') && ((typeof ctx.meta.user.meterId !== 'undefined') || (typeof ctx.meta.user.concentratorId !== 'undefined'))) {
 					// Ensure Authenticated Token is authorized
-					if(ctx.meta.user.meterId !== ctx.params.meterId) {
-						throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
+					if(typeof ctx.meta.user.concentratorId !== 'undefined') {
+							// a Concentrator is a wildcard MPO allowed to update any meterId.
+					} else {
+						if(ctx.meta.user.meterId !== ctx.params.meterId) {
+							throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
+						}
 					}
 				}
 				let _previousReading = await ctx.call("readings.find",{

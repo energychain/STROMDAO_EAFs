@@ -171,6 +171,7 @@ module.exports = {
 				}
 				try {
 					const accessValidation = await ctx.call("access.verifySelf", {"token": token});
+					console.log("aV",accessValidation);
 					if(typeof accessValidation.meterId == 'undefined') {
 						throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
 					} else {

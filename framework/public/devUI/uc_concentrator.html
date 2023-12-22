@@ -4,9 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>STROMDAO Energy Application Frameworks</title>
+    <title>Use Case: Assets</title>
     <meta name="description" content="Energy Application Frameworks">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css?h=cd822b7fd22c8a95a68470c795adea69">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css?h=d98553506d4393860db8a633e4842ead">
 </head>
 
 <body>
@@ -26,37 +27,19 @@
         </nav>
     </header>
     <div class="container">
-        <div class="card" style="margin-bottom: 25px;">
-            <div class="card-header">
-                <h3>Demo Daten</h3>
+        <form id="frmConcentrator" style="margin-bottom: 25px;">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Messstellenbetreiber</h3>
+                    <div class="input-group" style="margin-bottom: 15px;"><input class="form-control" type="search" id="concentratorId" required="" minlength="1"></div>
+                    <div class="text-end"><button class="btn btn-dark" type="submit"><i class="fa fa-key" style="margin-right: 5px;"></i>Token abrufen</button></div><label class="form-label" style="margin-top: 25px;">Token</label><input class="form-control" type="text" id="token" disabled=""><small class="form-text">Erlaubt die Übermittlung von Zählerständen einer belieben meterId</small>
+                </div>
             </div>
-            <div class="card-body">
-                <p>Initialisiert das System mit einem Zähler "<a href="/devUI/uc_clearing.html?meterId=demo">demo</a>" mit 12 Ablesungen und setzt Preise für 3 Tarifstufen. Die Verbrauchswerte werden zufällig gewählt.</p>
-            </div>
-            <div class="card-footer text-end"><button class="btn btn-primary disabled" id="addDemo" type="button" disabled="">Einspielen</button></div>
-        </div>
-        <div class="card" style="margin-bottom: 25px;">
-            <div class="card-header">
-                <h3>OpenAPI</h3>
-            </div>
-            <div class="card-body">
-                <p>API Beschreibung für Entwickler</p>
-            </div>
-            <div class="card-footer text-end"><a class="btn btn-primary" role="button" id="addDemo-1" href="/api/openapi/ui">Öffnen</a></div>
-        </div>
-        <div class="card" style="margin-bottom: 25px;">
-            <div class="card-header">
-                <h3>Service Monitoring</h3>
-            </div>
-            <div class="card-body">
-                <p>Systemüberwachung und Microservices</p>
-            </div>
-            <div class="card-footer text-end"><a class="btn btn-primary" role="button" id="addDemo-2" href="/moleculer.html">Öffnen</a></div>
-        </div>
+        </form>
     </div>
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
-    <script src="assets/js/index.js?h=8a86c3e9781a9460ddf36d2151061a0c"></script>
+    <script src="assets/js/uc_concentrator.js?h=fbba0621430a4ed762a7c3bd5111e11f"></script>
 </body>
 
 </html>

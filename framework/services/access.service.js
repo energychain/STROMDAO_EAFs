@@ -56,15 +56,24 @@ module.exports = {
 			},
 			async handler(ctx) {
 				const verificationExisting = await ctx.call("access.verifySelf",ctx.params);
-				if(
-					(verificationExisting.meterId == ctx.params.meterId)
-				) {
-					const token = await ctx.call("access.createMeterJWT",ctx.params);
+				if(typeof verificationExisting.concentratorId !== 'undefined') {
+					const token = await ctx.call("access.createConcentratorJWT",{
+						concentratorId:verificationExisting.concentratorId
+					});
 					return {
-						token:token
+							token:token
 					};
 				} else {
-					throw new Error("Invalid token");
+					if(
+						(verificationExisting.meterId == ctx.params.meterId)
+					) {
+						const token = await ctx.call("access.createMeterJWT",ctx.params);
+						return {
+							token:token
+						};
+					} else {
+						throw new Error("Invalid token");
+					}
 				}
 			}
 		},
@@ -170,6 +179,29 @@ module.exports = {
 				const signOptions = JSON.parse(process.env.JWT_OPTIONS);
 				signOptions.expiresIn = process.env.JWT_EXPIRE_READING;
 				const token = jwt.sign(ctx.params, process.env.JWT_PRIVATEKEY,signOptions);
+				return token;
+			}
+		},
+		createConcentratorJWT: {
+			openapi: {
+				summary: "Create wildcard Token to authorize external reading updates of meter"
+			},
+			rest: {
+				method: "POST",
+				path: "/createConcentratorJWT"
+			},
+			params: {
+				concentratorId: {
+					type:"string",
+					$$t: "ConcentratorId to authorize wildcard reading updates for"
+				}
+			},
+			async handler(ctx) {
+				const signOptions = JSON.parse(process.env.JWT_OPTIONS);
+				signOptions.expiresIn = process.env.JWT_EXPIRE_METERING;
+				const token = jwt.sign({
+					concentratorId: ctx.params.concentratorId 
+				  }, process.env.JWT_PRIVATEKEY,signOptions);
 				return token;
 			}
 		},

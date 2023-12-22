@@ -24,7 +24,7 @@ module.exports = {
 	 * Settings
 	 */
 	settings: {
-		fields: ["_id", "meterId", "clearingTime","reading","cost","consumption","consumption_virtual_1","consumption_virtual_2","consumption_virtual_3","consumption_virtual_4","consumption_virtual_5","consumption_virtual_6","consumption_virtual_7","consumption_virtual_8","consumption_virtual_9","cost_virtual_1","cost_virtual_2","cost_virtual_3","cost_virtual_4","cost_virtual_5","cost_virtual_6","cost_virtual_7","cost_virtual_8","cost_virtual_9"],
+		fields: ["_id", "meterId", "clearingTime","reading","startReading","startTime","cost","consumption","consumption_virtual_1","consumption_virtual_2","consumption_virtual_3","consumption_virtual_4","consumption_virtual_5","consumption_virtual_6","consumption_virtual_7","consumption_virtual_8","consumption_virtual_9","cost_virtual_1","cost_virtual_2","cost_virtual_3","cost_virtual_4","cost_virtual_5","cost_virtual_6","cost_virtual_7","cost_virtual_8","cost_virtual_9"],
     },
 
 	/**
@@ -48,6 +48,17 @@ module.exports = {
 				} else {
 					return await ctx.call("debit.find",{search:ctx.params.q,searchFields:['meterId']});
 				}
+			}
+		},
+		delayed: {
+			rest: {
+				method: "GET",
+				path: "/delayed"
+			},
+			async handler(ctx) {
+				if(typeof ctx.params.delay == 'undefined') ctx.params.delay = 86400000;
+				return await ctx.call("debit.find",{query:{"clearingTime": {"$lt": new Date().getTime()-(1 * ctx.params.delay)}}});
+				
 			}
 		},
 		invoice: {
