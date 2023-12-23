@@ -24,6 +24,25 @@ module.exports = {
 	 * Actions
 	 */
 	actions: {
+		settings: {
+			openapi: {
+				summary: "Retrieve internal settings."
+			},
+			rest: {
+				method: "GET",
+				path: "/settings"
+			},
+			async handler(ctx) {
+				return {
+					EPOCH_DURATION: process.env.EPOCH_DURATION,
+					PORT_PWA: process.env.PORT_PWA,
+					PWA_URL: process.env.PWA_URL,
+					PORT_METERING: process.env.PORT_METERING,
+					TARIFF_SEGMENTS: process.env.TARIFF_SEGMENTS,
+					JWT_EXPIRE_METERING: process.env.JWT_EXPIRE_METERING,
+				}
+			}
+		},
 		publicKey: {
 			openapi: {
 				summary: "Retrieve public key of this instance."

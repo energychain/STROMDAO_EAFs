@@ -11,7 +11,6 @@ $(document).ready(function() {
             contentType: 'application/json',
             success: function(response) {
                 $('#token').val(response);
-                 console.log(response);
             },
             error: function(error) {
                 console.error(error);

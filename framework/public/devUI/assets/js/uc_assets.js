@@ -1,5 +1,8 @@
 
 $(document).ready(function() {
+    $.getJSON("/api/access/settings",function(data) {
+        window.eaf_settings = data;
+    });
     const renderResultSet = function(data) {
         let html = '<table class="table table-condensed table-striped">';
         html += '<thead><tr><th>Kennung</th><th>Aktualisierung</th><th>Zählerstand</th><th>Bezug</th><th>&#8960;Strompreis<th>Kosten</th></tr></thead>';
@@ -22,8 +25,11 @@ $(document).ready(function() {
         $('.openPWA').click(function() {
             const meterId = $(this).data('id');
             $.getJSON("/api/access/createMeterJWT?meterId="+meterId, function(data) {
-                let url = location.protocol + '//' + location.hostname + ':' + ((location.port * 1)+2) + '/?token=' + data+'&meterId='+meterId;
-                console.log("URL: "+url);
+                let baseUrl = location.protocol + '//' + location.hostname + ':' + window.eaf_settings.PORT_PWA;
+                if((typeof window.eaf_settings.PWA_URL !== 'undefined') && (window.eaf_settings.PWA_URL !== '') && (window.eaf_settings.PWA_URL !== null)) {
+                    baseUrl = window.eaf_settings.PWA_URL;
+                }
+                let url = baseUrl + '/?token=' + data+'&meterId='+meterId;
                 window.open(url, '_blank');
             });
         });
