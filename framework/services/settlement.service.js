@@ -134,6 +134,14 @@ module.exports = {
 							settlement[labels[0].label] = 0;
 						}
 						settlement[labels[0].label] += remain_consumption;
+						if(typeof ctx.params.meterId !== 'undefined') {
+								await ctx.call("loadprofile.addSettlement",{
+									meterId: ctx.params.meterId,
+									epoch: labels[0].epoch,
+									consumption: remain_consumption,
+									label: labels[0].label							
+								})
+						}
 						remain_consumption = 0;
 					}  else {
 						let avgepoch_consumption = ctx.params.consumption /  ((ctx.params.endTime - ctx.params.startTime)/EPOCH_DURATION);
@@ -145,6 +153,14 @@ module.exports = {
 						let partOfFirstEpoch = 1-((ctx.params.startTime - (labels[0].epoch * EPOCH_DURATION))/EPOCH_DURATION);	
 						let epochConsumption = partOfFirstEpoch * avgepoch_consumption;				
 						settlement[labels[0].label] += epochConsumption;
+						if(typeof ctx.params.meterId !== 'undefined') {
+							await ctx.call("loadprofile.addSettlement",{
+								meterId: ctx.params.meterId,
+								epoch: labels[0].epoch,
+								consumption: epochConsumption,
+								label: labels[0].label							
+							});
+						}
 						remain_consumption -= epochConsumption;
 
 						for(let i=1;i<labels.length;i++) {
@@ -157,6 +173,14 @@ module.exports = {
 							}
 							remain_consumption -= epochConsumption;
 							settlement[labels[i].label] += epochConsumption;
+							if(typeof ctx.params.meterId !== 'undefined') { 
+								await ctx.call("loadprofile.addSettlement",{
+									meterId: ctx.params.meterId,
+									epoch: labels[i].epoch,
+									consumption: epochConsumption,
+									label: labels[i].label							
+								});
+							}
 						}
 					}
 				} // endif labels.length == 0

@@ -267,6 +267,7 @@ module.exports = {
 							consumption: deltaConumption,
 							startTime: transientReading.time,
 							endTime: ctx.params.time,
+							meterId: ctx.params.meterId,
 							injectedTariff: tariff // this is a trusted array as signature got validated before
 						});
 
