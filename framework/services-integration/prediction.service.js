@@ -37,32 +37,40 @@ module.exports = {
 				method: "GET",
 				path: "/hello"
 			},
-			async handler() {
-                const dataset = tf.data.array([
-                    [1, 100],
-                    [2, 100],
-                    [3, 100],
-                    [4, 100],
-                    [5, 100],
-                  ]);
-                  
-                  const mappedDataset = dataset.map(row => ({dense_Dense1_input: row[0]}));
-                  
-                  // Erstellen Sie ein neuronales Netz
-                  const model = await tf.sequential();
-                  await model.add(tf.layers.dense({units: 1, inputShape: [1]}));
-                  
-                  // Trainieren Sie das neuronale Netz
-                  await model.compile({optimizer: 'adam', loss: 'meanSquaredError'});
-                  await model.fit(mappedDataset, {epochs: 100});
-                  
-                  // Verwenden Sie das neuronale Netz, um Vorhersagen zu generieren
-                  const predictions = await model.predict([6]);
-                  
-                  return predictions;
+			async handler(ctx) {
+				const data = (await ctx.call("loadprofile.list")).rows;
+				return await ctx.call("prediction.normalize",{settlements:data});
 			}
 		},
-
+		normalize: {
+			rest: {
+				method: "GET",
+				path: "/normalize"
+			},
+			async handler(ctx) {
+				let min = 999999999;
+				let max = 0;
+				let sum = 0;
+				for(let i=0;i<ctx.params.settlements.length;i++) {
+					sum += ctx.params.settlements[i].consumption;
+					if(ctx.params.settlements[i].consumption < min) {
+						min = ctx.params.settlements[i].consumption;
+					}
+					if(ctx.params.settlements[i].consumption > max) {
+						max = ctx.params.settlements[i].consumption;
+					}
+				}
+				let stats = {
+					min:min,
+					max:max,
+					sum:sum 
+				}
+				for(let i=0;i<ctx.params.settlements.length;i++) {
+					ctx.params.settlements[i].consumption_normalized = ctx.params.settlements[i].consumption/sum;
+				}
+				return ctx.params;
+			}
+		},
 		/**
 		 * Welcome, a username
 		 *

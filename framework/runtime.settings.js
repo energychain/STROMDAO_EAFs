@@ -47,7 +47,8 @@ const runtimeDefaults = {
     JWT_EXPIRE_READING: '7d', // Token expiration for processed readings
     ACTIVATIONMULTIUSE: "true", // Allow Multi use of meter reading activation codes
     MOLECULAR_LAB_KEY:process.env.MOLECULAR_LAB_KEY,
-    DEFAULTS_LOADED:new Date().getTime()
+    DEFAULTS_LOADED:new Date().getTime(),
+    TRANSPORTER: ""
 }
 
 module.exports = function(overwrites) {

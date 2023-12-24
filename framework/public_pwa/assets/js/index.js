@@ -174,6 +174,11 @@ const app = async function(token) {
                     grid: { display: false }
                   },
                   x: { ticks: { beginAtZero: true } }
+                },
+                datalabels: {
+                    formatter: (value) => {
+                        return value + '%';
+                    },
                 }
               }
         });
@@ -213,7 +218,12 @@ const app = async function(token) {
               datasets: [{
                 label: 'Kosten',
                 data: [aggregationCost["cost_virtual_1"],aggregationCost["cost_virtual_2"],aggregationCost["cost_virtual_3"]],
-                backgroundColor:["#147a50","#c69006","#a0a0a0"]
+                backgroundColor:["#147a50","#c69006","#a0a0a0"],
+                datalabels: {
+                    anchor: 'center',
+                    backgroundColor: null,
+                    borderWidth: 0
+                }
               }]
             },
             options: {
@@ -229,6 +239,24 @@ const app = async function(token) {
                     },
                     legend: {
                         display:false
+                    },
+                    datalabels: {
+                        color: '#606060',
+                        borderColor: 'white',
+                        borderRadius: 25,
+                        borderWidth: 2,
+                        display: function(context) {
+                            return 20;
+                          },
+                        formatter: (value) => {
+                            console.log("Formatter"+value);
+                            return value + '%';
+                        },
+                        font: {
+                            weight: 'bold'
+                          },
+                        padding: 6
+                  
                     }
                 }
             }
@@ -261,6 +289,11 @@ const app = async function(token) {
                     },
                     legend: {
                         display:false
+                    },
+                    datalabels: {
+                        formatter: (value) => {
+                            return value + '%';
+                        },
                     }
                 }
             }
