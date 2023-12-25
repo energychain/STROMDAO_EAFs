@@ -28,7 +28,23 @@ module.exports = {
 	 * Actions
 	 */
 	actions: {
-
+		test: {
+			rest: "/test",
+			params: {
+				meterId: {
+					type: "string",
+					optional:true
+				}
+			},
+			openapi: {
+				summary: "Statistical Load Profile of all or specific meter for a timeframe.",
+				description: "Returns array of epochs with its consumption and total consumption in timeframe of given meterId or all if no meterId is given."
+			},
+			/** @param {Context} ctx  */
+			async handler(ctx) {
+				ctx.broker.emit("settlement.created", {});
+			}
+		},
 	},
 
 	/**

@@ -96,6 +96,7 @@ module.exports = {
 				} else {
 					await ctx.call("debit.update",invoice);
 				}
+				ctx.broker.emit("debit.invoice", invoice);
 				return invoice;
 			}
 		}

@@ -156,6 +156,7 @@ module.exports = {
 								ctx.params.startReading = previousClearing.reading;
 								ctx.params.startTime = previousClearing.endTime + 1; 
 								await ctx.call("clearing.insert",{entity:ctx.params});
+								ctx.broker.emit("clearing.created", ctx.params);
 								await ctx.call("debit.invoice",ctx.params);
 								// TODO validate virtual readings
 							} 
