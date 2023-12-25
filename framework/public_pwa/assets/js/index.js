@@ -222,7 +222,7 @@ const app = async function(token) {
                 datalabels: {
                     anchor: 'center',
                     backgroundColor: null,
-                    borderWidth: 0
+                    borderWidth: 2
                 }
               }]
             },

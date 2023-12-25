@@ -91,7 +91,74 @@ module.exports = {
 				}
 				return;
 			}
+		},
+		load: {
+			rest: "/load",
+			params: {
+				meterId: {
+					type: "string",
+					optional:true
+				}
+			},
+			openapi: {
+				summary: "Statistical Load Profile of all or specific meter for a timeframe.",
+				description: "Returns array of epochs with its consumption and total consumption in timeframe of given meterId or all if no meterId is given."
+			},
+			/** @param {Context} ctx  */
+			async handler(ctx) {
+				const EPOCH_DURATION = process.env.EPOCH_DURATION * 1;
+				if((typeof ctx.params.start == 'undefined')  && (typeof ctx.params.end == 'undefined')) {
+					ctx.params.end = 1 * Math.floor(new Date().setHours(0,0,0,0)/EPOCH_DURATION); 
+					ctx.params.start = ctx.params.end - Math.floor(86400000 / EPOCH_DURATION);
+				} else {
+					if(typeof ctx.params.end == 'undefined') {
+						ctx.params.end = (1 * ctx.params.start) + Math.floor(86400000 / EPOCH_DURATION);
+					} else if(typeof ctx.params.start == 'undefined') {
+						ctx.params.start = ctx.params.end - Math.floor(86400000 / EPOCH_DURATION);
+					}
+				}
+				
+				let query = {
+					epoch: {
+						$gte: 1 * ctx.params.start,
+						$lte: 1 * ctx.params.end
+					}
+				}
+				console.log(query);
+				if(ctx.params.meterId) {
+					query.meterId = ctx.params.meterId;
+				}
+				let historical = await ctx.call("loadprofile.find",{
+					query: query,
+					limit:10000,
+					sort:"-epoch"
+				});
+				let sum = 0;
+				let epoch_consumptions = {};
+
+				for(let i=0;i<historical.length;i++) {
+					if(typeof epoch_consumptions["epoch_"+historical[i].epoch] == 'undefined') {
+						epoch_consumptions["epoch_"+historical[i].epoch] = {
+							epoch:historical[i].epoch,
+							epoch_of_day:historical[i].epoch_of_day,
+							consumption:0
+						}
+					}
+					epoch_consumptions["epoch_"+historical[i].epoch].consumption += Math.round(historical[i].consumption);
+					sum += Math.round(historical[i].consumption);
+				}	
+				let epochs = [];
+				for (const [key, value] of Object.entries(epoch_consumptions)) {
+					epochs.push(value);
+				}
+				epochs = epochs.sort((a,b) => a.epoch - b.epoch);
+				return {
+					epochs:epochs,
+					consumption:sum
+				};
+			}
 		}
+		
 	},
 
 	/**
