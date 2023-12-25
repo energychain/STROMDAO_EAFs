@@ -149,6 +149,7 @@ module.exports = {
 				}	
 				let epochs = [];
 				for (const [key, value] of Object.entries(epoch_consumptions)) {
+					value.time = value.epoch * EPOCH_DURATION;
 					epochs.push(value);
 				}
 				epochs = epochs.sort((a,b) => a.epoch - b.epoch);
