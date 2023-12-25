@@ -344,7 +344,7 @@ module.exports = {
 				delete transientReading._id; // For operational safety we do not provide our db IDs to the client.
 				delete transientReading.id;
 				if(transientReading.processed) {
-					ctx.broker.emit("reading.processed", transientReading);
+					await ctx.broker.emit("reading.processed", transientReading);
 				}
 				return transientReading;
 			}

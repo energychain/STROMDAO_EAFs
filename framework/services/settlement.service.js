@@ -197,7 +197,7 @@ module.exports = {
 				if(selectedKey !== null) {
 					settlement[selectedKey] += sum - ctx.params.consumption;
 				}
-				ctx.broker.emit("settlement.created", settlement);
+				await ctx.broker.emit("settlement.created", settlement);
 				return settlement;
 			}
 		}
