@@ -51,7 +51,13 @@ module.exports = {
 	 * Events
 	 */
 	events: {
-
+		"settlement.created": {
+            // Force to use context based signature
+            context: true,
+            async handler(other) {
+                console.log(`${this.broker.nodeID}:${this.fullName}: Event '${other.eventName}' received. Payload:`, other.params, other.meta);
+            }
+        }
 	},
 
 	/**

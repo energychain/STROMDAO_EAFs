@@ -15,7 +15,7 @@ $(document).ready(function() {
             html += '<td>'+(data[i].consumption/1000).toFixed(3).replace('.',',')+' kWh</td>';
             html += '<td>'+(data[i].cost/(data[i].consumption/1000)).toFixed(4).replace('.',',')+'€</td>';
             html += '<td>'+(data[i].cost).toFixed(2).replace('.',',')+' €</td>';
-            html += '<td><button class="btn btn-xs btn-dark btnClear openPWA" data-id="'+data[i].meterId+'"><i class="fa fa-window-restore"></i></button></td>';
+            html += '<td><button class="btn btn-xs btn-dark btnClear openPWA" data-id="'+data[i].meterId+'"><i class="fa fa-window-restore"></i></button><button class="btn btn-xs btn-dark btnClear openProfile" data-id="'+data[i].meterId+'"><i class="fa fa fa-bar-chart-o"></i></button></td>';
             html += '</tr>';
         }
         html += '</tbody>';
@@ -33,6 +33,12 @@ $(document).ready(function() {
                 window.open(url, '_blank');
             });
         });
+        $('.openProfile').off();
+        $('.openProfile').click(function() {
+            const meterId = $(this).data('id');
+            location.href="./uc_energyprofile.html?meterId="+meterId;
+        });
+
     }
 
     const runSearch = function() {
