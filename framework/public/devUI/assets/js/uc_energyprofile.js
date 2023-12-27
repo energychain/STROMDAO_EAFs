@@ -41,6 +41,7 @@ $(document).ready(function() {
         if(meterId.length > 0) {
             datasets.push({
                 label: 'Lastgang '+meterId + ' kWh',
+                fill:true,
                 data: chartDataMeter,
                 backgroundColor:["#147a50"],
                 yAxisID: 'B',
@@ -110,7 +111,7 @@ $(document).ready(function() {
                 chartDataPrediction.push(data[i].consumption/1000);
                 inPrediction = true;
             }
-            chartDataReference.push(window.epochData["e_"+data[i].epoch_of_day]);
+            chartDataReference.push(window.epochData["e_"+data[i].epoch_of_day]*100);
 
             chartLabels.push(data[i].epoch_of_day+":00");
         }
@@ -125,20 +126,20 @@ $(document).ready(function() {
             label: 'Profil',
             data: chartDataReference,
             backgroundColor:["#c69006"],
-            yAxisID: 'B',
+            yAxisID: 'A',
             fill:false
         },
         {
-            label: 'Tatsächlich',
+            label: 'Aktuell',
             data: chartDataActual,
             backgroundColor:["#147a50"],
-            yAxisID: 'A',
+            yAxisID: 'B',
         },
         {
             label: 'Vorhersage',
             data: chartDataPrediction,
             backgroundColor:["#c0c0c0"],
-            yAxisID: 'A',
+            yAxisID: 'B',
         }
         ];
 
@@ -165,14 +166,14 @@ $(document).ready(function() {
                     A: {
                       type: 'linear',
                       position: 'left',
-                      ticks: { beginAtZero: true, color: '#000000' },
+                      ticks: { beginAtZero: true, color: '#c69006' },
                       // Hide grid lines, otherwise you have separate grid lines for the 2 y axes
                       grid: { display: false }
                     },
                     B: {
                         type: 'linear',
                         position: 'right',
-                        ticks: { beginAtZero: true, color: '#c69006' },
+                        ticks: { beginAtZero: true, color: '#147a50' },
                         // Hide grid lines, otherwise you have separate grid lines for the 2 y axes
                         grid: { display: false }
                       },
