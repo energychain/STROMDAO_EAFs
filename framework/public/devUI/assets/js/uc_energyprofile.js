@@ -79,9 +79,88 @@ $(document).ready(function() {
         });
     }
 
+    const renderPrediction = function(data) {
+        data = data.slice(-24);
+        let chartDataActual = [];
+        let chartDataPrediction = [];
+        let chartLabels = [];
+        let meterId = '';
+        if(typeof data.meterId !== 'undefined') {
+            meterId = data.meterId;
+        }
+        let inPrediction = false;
+        for(let i=0;i<data.length;i++) {
+            if(data[i].type == 'actual') {
+                chartDataActual.push(data[i].consumption/1000);
+                chartDataPrediction.push(null);
+            } else {
+                if(!inPrediction) {
+                    chartDataActual.push(data[i].consumption/1000);
+                } else {
+                    chartDataActual.push(null);
+                }
+                
+                chartDataPrediction.push(data[i].consumption/1000);
+                inPrediction = true;
+            }
+            chartLabels.push(data[i].epoch_of_day+":00");
+        }
+        const ctxChart = document.getElementById('predictionChart');
+        if(typeof window.predictionObject !== 'undefined') window.predictionObject.destroy();
+
+        let unit = 'kWh';
+
+        datasets = [{
+            label: 'Tatsächlich',
+            data: chartDataActual,
+            backgroundColor:["#147a50"],
+            yAxisID: 'A',
+        },
+        {
+            label: 'Vorhersage',
+            data: chartDataPrediction,
+            backgroundColor:["#c0c0c0"],
+            yAxisID: 'A',
+        }
+        ];
+
+
+        
+        window.predictionObject = new Chart(ctxChart, {
+            type: 'line',
+            data: {
+              labels: chartLabels,
+              datasets: datasets
+            },
+            options: {
+                fill:true,
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            if(typeof context.parsed !== 'undefined') {
+                                return context.parsed + 'kWh';
+                            } else return '';
+                        }
+                    }
+                },
+                scales: {
+                    A: {
+                      type: 'linear',
+                      position: 'left',
+                      ticks: { beginAtZero: true, color: '#c69006' },
+                      // Hide grid lines, otherwise you have separate grid lines for the 2 y axes
+                      grid: { display: false }
+                    },
+                    x: { ticks: { beginAtZero: true } }
+                  },
+            }
+        });
+    }
+
     $('#frmProfile').submit(function(event) {
         event.preventDefault();
         $.getJSON("/api/prediction/epoch_of_day?meterId="+$('#meterId').val()+"", renderProfile); 
+        $.getJSON("/api/prediction/x_epochs?meterId="+$('#meterId').val()+"&x=12&predict=6", renderPrediction);
     });
 
     if($.urlParam('meterId')) {
@@ -89,6 +168,7 @@ $(document).ready(function() {
         $('#frmProfile').submit();
     } else {
         $.getJSON("/api/prediction/epoch_of_day", renderProfile);
+        $.getJSON("/api/prediction/x_epochs?&x=12&predict=6", renderPrediction);
     }
     
 });

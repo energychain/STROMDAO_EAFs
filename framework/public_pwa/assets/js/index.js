@@ -62,6 +62,7 @@ const app = async function(token) {
         let costChart = [];
         let oldEpoch  = -1;
         let timeSpan = Math.abs(data[0].endTime - data[data.length - 1].endTime);
+        console.log('daySpan',timeSpan/86400000);
 
         for(let i=0;i<data.length;i++) {
             for (let [key, value] of Object.entries(data[i])) {
@@ -175,14 +176,37 @@ const app = async function(token) {
                   },
                   x: { ticks: { beginAtZero: true } }
                 },
-                datalabels: {
-                    formatter: (value) => {
-                        return value + '%';
+                plugins: {
+                    zoom: {
+                        pan: {
+                            mode: 'x',
+                            enabled: true
+                        },
+                        zoom: {
+                            wheel: {
+                              enabled: true,
+                            },
+                            pinch: {
+                              enabled: true
+                            },
+                            mode: 'x',
+                          }
                     },
+                    datalabels: {
+                        formatter: (value) => {
+                            return value + '%';
+                        },
+                    }
                 }
+               
               }
         });
-
+        setTimeout(function() {
+            window.timelineChartObject.zoom( 2-(1/(timeSpan/86400000)) );
+            setTimeout(function() {
+                window.timelineChartObject.pan({x: -timeSpan});
+            },100);
+        },500);
         for (let [key, value] of Object.entries(aggregationCost)) {
             $('.'+key).html(value.toFixed(2).replace('.',','));
         }
