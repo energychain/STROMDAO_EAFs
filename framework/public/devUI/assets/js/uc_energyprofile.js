@@ -4,6 +4,8 @@ $(document).ready(function() {
         let chartDataMeter = [];
         let chartDataProfile = [];
         let chartLabels = [];
+        window.epochData = {};
+
         let meterId = '';
         if(typeof data.meterId !== 'undefined') {
             meterId = data.meterId;
@@ -13,10 +15,13 @@ $(document).ready(function() {
             chartDataMeter.push(data.settlements[i].consumption/1000);
             if(meterId.length > 0) {
                 chartDataProfile.push(Math.round(data.settlements[i].consumption_reference*10000)/100);
+                window.epochData["e_"+data.settlements[i].epoch_of_day] = data.settlements[i].consumption_reference;
             } else {
                 chartDataProfile.push(Math.round(data.settlements[i].consumption_normalized*10000)/100);
+                window.epochData["e_"+data.settlements[i].epoch_of_day] = data.settlements[i].consumption_normalized;
             }
             chartLabels.push(data.settlements[i].epoch_of_day+":00");
+
         }
         const ctxChart = document.getElementById('profileChart');
         if(typeof window.chartObject !== 'undefined') window.chartObject.destroy();
@@ -42,7 +47,6 @@ $(document).ready(function() {
             });
         } 
 
-        
         window.chartObject = new Chart(ctxChart, {
             type: 'line',
             data: {
@@ -77,6 +81,7 @@ $(document).ready(function() {
                   },
             }
         });
+        $.getJSON("/api/prediction/x_epochs?meterId="+$('#meterId').val()+"&x=12&predict=6", renderPrediction);
     }
 
     const renderPrediction = function(data) {
@@ -84,6 +89,8 @@ $(document).ready(function() {
         let chartDataActual = [];
         let chartDataPrediction = [];
         let chartLabels = [];
+        let chartDataReference = [];
+
         let meterId = '';
         if(typeof data.meterId !== 'undefined') {
             meterId = data.meterId;
@@ -103,14 +110,25 @@ $(document).ready(function() {
                 chartDataPrediction.push(data[i].consumption/1000);
                 inPrediction = true;
             }
+            chartDataReference.push(window.epochData["e_"+data[i].epoch_of_day]);
+
             chartLabels.push(data[i].epoch_of_day+":00");
         }
+
         const ctxChart = document.getElementById('predictionChart');
         if(typeof window.predictionObject !== 'undefined') window.predictionObject.destroy();
 
         let unit = 'kWh';
 
-        datasets = [{
+        datasets = [
+        {
+            label: 'Profil',
+            data: chartDataReference,
+            backgroundColor:["#c69006"],
+            yAxisID: 'B',
+            fill:false
+        },
+        {
             label: 'Tatsächlich',
             data: chartDataActual,
             backgroundColor:["#147a50"],
@@ -147,10 +165,17 @@ $(document).ready(function() {
                     A: {
                       type: 'linear',
                       position: 'left',
-                      ticks: { beginAtZero: true, color: '#c69006' },
+                      ticks: { beginAtZero: true, color: '#000000' },
                       // Hide grid lines, otherwise you have separate grid lines for the 2 y axes
                       grid: { display: false }
                     },
+                    B: {
+                        type: 'linear',
+                        position: 'right',
+                        ticks: { beginAtZero: true, color: '#c69006' },
+                        // Hide grid lines, otherwise you have separate grid lines for the 2 y axes
+                        grid: { display: false }
+                      },
                     x: { ticks: { beginAtZero: true } }
                   },
             }
@@ -160,7 +185,6 @@ $(document).ready(function() {
     $('#frmProfile').submit(function(event) {
         event.preventDefault();
         $.getJSON("/api/prediction/epoch_of_day?meterId="+$('#meterId').val()+"", renderProfile); 
-        $.getJSON("/api/prediction/x_epochs?meterId="+$('#meterId').val()+"&x=12&predict=6", renderPrediction);
     });
 
     if($.urlParam('meterId')) {
@@ -168,7 +192,6 @@ $(document).ready(function() {
         $('#frmProfile').submit();
     } else {
         $.getJSON("/api/prediction/epoch_of_day", renderProfile);
-        $.getJSON("/api/prediction/x_epochs?&x=12&predict=6", renderPrediction);
     }
     
 });
