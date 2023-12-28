@@ -79,7 +79,7 @@ module.exports = {
 			},
 			/** @param {Context} ctx  */
 			async handler(ctx) {
-					let res = await db.collection("assets").find({ctx.params}).toArray();
+					let res = await db.collection("assets").find(ctx.params).toArray();
 					for(let i=0;i<res.length;i++) {
 						delete res[i]._id;
 					}
