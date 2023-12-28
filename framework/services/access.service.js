@@ -405,7 +405,7 @@ module.exports = {
 				verifyOptions.expiresIn = process.env.JWT_EXPIRE_METERING;
 				const token = jwt.verify(ctx.params.token,process.env.JWT_PUBLICKEY, verifyOptions);
 				delete ctx.params.token;
-				return await ctx.call("asset.update",{assetId:'meter_'+token.meterId,clientMeta:ctx.params});
+				return await ctx.call("asset.upsert",{assetId:'meter_'+token.meterId,clientMeta:ctx.params});
 			}
 		},
 		getAssetMeta: {
