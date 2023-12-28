@@ -84,9 +84,8 @@ module.exports = {
 						delete res[i]._id;
 					}
 					return res;
-				}
 			}
-		},
+		}
 	},
 
 	/**

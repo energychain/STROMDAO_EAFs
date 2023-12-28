@@ -72,6 +72,20 @@ module.exports = {
 				}
 			}
 		},
+		find: {
+			rest: "/find",
+			openapi: {
+				summary: "Native MongoDB find.",
+			},
+			/** @param {Context} ctx  */
+			async handler(ctx) {
+					let res = await db.collection("assets").find({ctx.params}).toArray();
+					for(let i=0;i<res.length;i++) {
+						delete res[i]._id;
+					}
+					return res;
+			}
+		}
 	},
 
 	/**
