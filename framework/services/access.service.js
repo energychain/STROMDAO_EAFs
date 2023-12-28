@@ -393,10 +393,14 @@ module.exports = {
 				path: "/updateAssetMeta"
 			},
 			openapi: {
-				summary: "Update client specific asset meta data."
+				summary: "Update client specific asset meta data.",
+				description: "Use dot notation for nested fields (sub documents)"
 			},
 			params: {
 				token: {
+					type:"string"
+				},
+				meterId: {
 					type:"string"
 				}
 			},
@@ -406,7 +410,7 @@ module.exports = {
 				const token = jwt.verify(ctx.params.token,process.env.JWT_PUBLICKEY, verifyOptions);
 				delete ctx.params.token;
 				let updateObject = {
-					assetId:'meter_'+token.meterId
+					assetId:'meter_'+ctx.params.meterId
 				};
 				for (const [key, value] of Object.entries(ctx.params)) {
 					updateObject["clientMeta."+key] = value;
