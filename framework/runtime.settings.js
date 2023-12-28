@@ -66,7 +66,7 @@ module.exports = function(overwrites) {
         }
     }
 
-    if(process.env["db_adapter"] == 'null') {
+    if((typeof process.env["db_adapter"] == 'undefined')||(process.env["db_adapter"] == 'null')) { //Fix #8
         delete process.env["db_adapter"];
         process.db_adapter = null;
     } else {
