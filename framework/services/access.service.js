@@ -386,6 +386,48 @@ module.exports = {
 				const token = jwt.verify(ctx.params.token,process.env.JWT_PUBLICKEY, verifyOptions);
 				return token;
 			}
+		},
+		updateAssetMeta: {
+			rest: {
+				method: "POST",
+				path: "/updateAssetMeta"
+			},
+			openapi: {
+				summary: "Update client specific asset meta data."
+			},
+			params: {
+				token: {
+					type:"string"
+				}
+			},
+			async handler(ctx) {
+				const verifyOptions = JSON.parse(process.env.JWT_OPTIONS);
+				verifyOptions.expiresIn = process.env.JWT_EXPIRE_METERING;
+				const token = jwt.verify(ctx.params.token,process.env.JWT_PUBLICKEY, verifyOptions);
+				delete ctx.params.token;
+				return await ctx.call("asset.update",{assetId:'meter_'+token.meterId,clientMeta:ctx.params});
+			}
+		},
+		getAssetMeta: {
+			rest: {
+				method: "GET",
+				path: "/getAssetMeta"
+			},
+			openapi: {
+				summary: "Retrieve Metadata of client specific asset."
+			},
+			params: {
+				token: {
+					type:"string"
+				}
+			},
+			async handler(ctx) {
+				const verifyOptions = JSON.parse(process.env.JWT_OPTIONS);
+				verifyOptions.expiresIn = process.env.JWT_EXPIRE_METERING;
+				const token = jwt.verify(ctx.params.token,process.env.JWT_PUBLICKEY, verifyOptions);
+				delete ctx.params.token;
+				return (await ctx.call("asset.get",{assetId:'meter_'+token.meterId})).clientMeta;
+			}
 		}
 	},
 

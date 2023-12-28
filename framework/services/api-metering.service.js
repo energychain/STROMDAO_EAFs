@@ -37,6 +37,8 @@ module.exports = {
 					"tariff.prices",
 					"access.activation",
 					"clearing.retrieve",
+					"access.updateAssetMeta",
+					"access.getAssetMeta",
 					"access.demo"
 				],
 
@@ -64,6 +66,8 @@ module.exports = {
 					"GET /tariff": "tariff.prices",
 					"GET /clearing": "clearing.retrieve",
 					"POST /refresh": "access.refresh",
+					"POST /metadata": "access.updateAssetMeta",
+					"GET /metadata": "access.getAssetMeta",
 					"GET /demo": "access.demo"
 				},
 
