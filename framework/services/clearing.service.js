@@ -80,6 +80,9 @@ module.exports = {
 					}
 				}
 				results.sort((a,b) => b.endTime - a.endTime);
+				if(results.length > 200) {
+					results = results.slice(0,200);
+				}
 				return results;
 			}
 		},

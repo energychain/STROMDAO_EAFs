@@ -43,16 +43,6 @@ module.exports = {
 			},
 			/** @param {Context} ctx  */
 			async handler(ctx) {
-				if((typeof ctx.meta.user !== 'undefined') && ((typeof ctx.meta.user.meterId !== 'undefined') || (typeof ctx.meta.user.concentratorId !== 'undefined'))) {
-					// Ensure Authenticated Token is authorized
-					if(typeof ctx.meta.user.concentratorId !== 'undefined') {
-							// a Concentrator is a wildcard MPO allowed to update any meterId.
-					} else {
-						if(ctx.meta.user.meterId !== ctx.params.meterId) {
-							throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
-						}
-					}
-				}
 				if(db == null) {
 					return false;
 				} else {
@@ -73,20 +63,14 @@ module.exports = {
 			},
 			/** @param {Context} ctx  */
 			async handler(ctx) {
-				if((typeof ctx.meta.user !== 'undefined') && ((typeof ctx.meta.user.meterId !== 'undefined') || (typeof ctx.meta.user.concentratorId !== 'undefined'))) {
-					// Ensure Authenticated Token is authorized
-					if(typeof ctx.meta.user.concentratorId !== 'undefined') {
-							// a Concentrator is a wildcard MPO allowed to update any meterId.
-					} else {
-						if(ctx.meta.user.meterId !== ctx.params.meterId) {
-							throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
-						}
-					}
-				}
 				if(db == null) {
 					return false;
 				} else {
 					let result = await db.collection("assets").findOne({assetId:ctx.params.assetId});
+					if((typeof result == 'undefined') || (result == null)) {
+						result = {
+						};
+					}
 					delete result._id;
 					return result;
 				}
@@ -99,16 +83,6 @@ module.exports = {
 			},
 			/** @param {Context} ctx  */
 			async handler(ctx) {
-				if((typeof ctx.meta.user !== 'undefined') && ((typeof ctx.meta.user.meterId !== 'undefined') || (typeof ctx.meta.user.concentratorId !== 'undefined'))) {
-					// Ensure Authenticated Token is authorized
-					if(typeof ctx.meta.user.concentratorId !== 'undefined') {
-							// a Concentrator is a wildcard MPO allowed to update any meterId.
-					} else {
-						if(ctx.meta.user.meterId !== ctx.params.meterId) {
-							throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
-						}
-					}
-				}
 					let res = await db.collection("assets").find(ctx.params).toArray();
 					for(let i=0;i<res.length;i++) {
 						delete res[i]._id;

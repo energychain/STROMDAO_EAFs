@@ -67,6 +67,10 @@ module.exports = {
 					return false;
 				} else {
 					let result = await db.collection("assets").findOne({assetId:ctx.params.assetId});
+					if((typeof result == 'undefined') || (result == null)) {
+						result = {
+						};
+					}
 					delete result._id;
 					return result;
 				}

@@ -33,7 +33,9 @@ module.exports = {
 					"access.publicKey",
 					"access.demo",
 					"clearing.retrieve",
-					"tariff.prices"
+					"tariff.prices",
+					"access.updateAssetMeta",
+					"access.getAssetMeta"
 				],
 
 				// Route-level Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares

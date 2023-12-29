@@ -62,7 +62,6 @@ const app = async function(token) {
         let costChart = [];
         let oldEpoch  = -1;
         let timeSpan = Math.abs(data[0].endTime - data[data.length - 1].endTime);
-        console.log('daySpan',timeSpan/86400000);
 
         for(let i=0;i<data.length;i++) {
             for (let [key, value] of Object.entries(data[i])) {
@@ -321,6 +320,45 @@ const app = async function(token) {
                     }
                 }
             }
+        });
+    });
+    $.getJSON("/api/access/getAssetMeta?meterId="+window.meterId+"&token="+token, function(data) {
+        let customName = window.meterId;
+        if(typeof data.operationtMeta !== 'undefined') {
+            if(typeof data.operationtMeta.meterPointName !== 'undefined') {
+                customName = data.operationtMeta.meterPointName;
+            }
+        }
+
+        if(typeof data.clientMeta !== 'undefined') {
+            if(typeof data.clientMeta.meterPointName !== 'undefined') {
+                customName = data.clientMeta.meterPointName;
+            }
+        }
+
+        $('#meterPointName').html(customName);
+        $('.editable').editable().on('editsubmit', function (event, val) {
+            let dataToSend = {
+                token: token,
+                meterId: window.meterId
+            }
+            dataToSend[event.currentTarget.id] = val;
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/access/updateAssetMeta', 
+                data: JSON.stringify(dataToSend),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer '+token);
+                },
+                contentType: 'application/json',
+                success: function(response) {
+                  console.log(response);
+                },
+                error: function(error) {
+                  console.error(error);
+                }
+            });     
         });
     });
 }
