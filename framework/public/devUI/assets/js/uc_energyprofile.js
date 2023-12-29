@@ -32,7 +32,7 @@ $(document).ready(function() {
         }
 
         datasets = [{
-            label: 'Portfolio Profil %',
+            label: 'EVU Standard Profil',
             data: chartDataProfile,
             backgroundColor:["#c69006"],
             yAxisID: 'A',
@@ -123,7 +123,7 @@ $(document).ready(function() {
 
         datasets = [
         {
-            label: 'Profil',
+            label: 'EVU Standard Profil',
             data: chartDataReference,
             backgroundColor:["#c69006"],
             yAxisID: 'A',
