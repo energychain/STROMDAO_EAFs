@@ -39,7 +39,8 @@ module.exports = {
 					"clearing.retrieve",
 					"access.updateAssetMeta",
 					"access.getAssetMeta",
-					"access.demo"
+					"access.demo",
+					"access.settings"
 				],
 
 				// Route-level Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
@@ -68,7 +69,8 @@ module.exports = {
 					"POST /refresh": "access.refresh",
 					"POST /metadata": "access.updateAssetMeta",
 					"GET /metadata": "access.getAssetMeta",
-					"GET /demo": "access.demo"
+					"GET /demo": "access.demo",
+					"GET /settings": "access.settings"
 				},
 
 				/**
@@ -158,6 +160,10 @@ module.exports = {
 			}
 
 			if(ctx.params.req.parsedUrl == '/api/refresh') {
+				return { public:true };
+			}
+
+			if(ctx.params.req.parsedUrl == '/api/settings') {
 				return { public:true };
 			}
 

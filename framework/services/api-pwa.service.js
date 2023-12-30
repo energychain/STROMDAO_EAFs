@@ -27,6 +27,14 @@ module.exports = {
 
 		routes: [
 			{
+				path: '/api/openapi',
+				aliases: {
+				  'GET /openapi.json': 'openapi.generateDocs', // swagger scheme
+				  'GET /ui': 'openapi.ui', // ui
+				  'GET /assets/:file': 'openapi.assets', // js/css files
+				},
+			},
+			{
 				path: "/api",
 				
 				whitelist: [
@@ -35,7 +43,8 @@ module.exports = {
 					"clearing.retrieve",
 					"tariff.prices",
 					"access.updateAssetMeta",
-					"access.getAssetMeta"
+					"access.getAssetMeta",
+					"access.settings"
 				],
 
 				// Route-level Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares

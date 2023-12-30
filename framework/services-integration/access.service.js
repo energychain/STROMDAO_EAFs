@@ -26,7 +26,7 @@ module.exports = {
 	actions: {
 		settings: {
 			openapi: {
-				summary: "Retrieve internal settings."
+				summary: "Retrieve settings for example for client configuration."
 			},
 			rest: {
 				method: "GET",
@@ -37,6 +37,7 @@ module.exports = {
 					EPOCH_DURATION: process.env.EPOCH_DURATION,
 					PORT_PWA: process.env.PORT_PWA,
 					PWA_URL: process.env.PWA_URL,
+					METERING_URL: process.env.METERING_URL,
 					PORT_METERING: process.env.PORT_METERING,
 					TARIFF_SEGMENTS: process.env.TARIFF_SEGMENTS,
 					JWT_EXPIRE_METERING: process.env.JWT_EXPIRE_METERING,

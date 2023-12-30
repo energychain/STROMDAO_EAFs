@@ -33,7 +33,7 @@ module.exports = {
 				  'GET /ui': 'openapi.ui', // ui
 				  'GET /assets/:file': 'openapi.assets', // js/css files
 				},
-			  },
+			},
 			{
 				path: "/api",
 				

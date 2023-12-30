@@ -53,6 +53,7 @@ const app = async function(token) {
             }
           });
     });
+    
     $.getJSON("/api/clearing/retrieve?meterId="+window.meterId+"&token="+token, function(data) {
         let aggregationCost = {};
         let aggregationConsumption = {};
@@ -322,17 +323,34 @@ const app = async function(token) {
             }
         });
     });
+
+    $.getJSON("/api/access/settings?meterId="+window.meterId+"&token="+token, function(data) {
+        for (const [key, value] of Object.entries(data)) { 
+            $(".meta_value_"+key).html(value);
+            $(".meta_visibility_"+key).show();
+        }
+    })
+
     $.getJSON("/api/access/getAssetMeta?meterId="+window.meterId+"&token="+token, function(data) {
         let customName = window.meterId;
-        if(typeof data.operationtMeta !== 'undefined') {
-            if(typeof data.operationtMeta.meterPointName !== 'undefined') {
-                customName = data.operationtMeta.meterPointName;
+        if(typeof data.operationMeta !== 'undefined') {
+            if(typeof data.operationMeta.meterPointName !== 'undefined') {
+                customName = data.operationMeta.meterPointName;
+            }
+            for (const [key, value] of Object.entries(data.operationMeta)) { 
+                $(".meta_value_"+key).html(value);
+                $(".meta_visibility_"+key).show();
             }
         }
 
         if(typeof data.clientMeta !== 'undefined') {
             if(typeof data.clientMeta.meterPointName !== 'undefined') {
                 customName = data.clientMeta.meterPointName;
+            }
+            for (const [key, value] of Object.entries(data.clientMeta)) { 
+                console.log(".meta_value_".key,value);
+                $(".meta_value_"+key).html(value);
+                $(".meta_visibility_"+key).show();
             }
         }
 
