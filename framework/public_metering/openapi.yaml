@@ -1,0 +1,885 @@
+---
+openapi: 3.0.3
+info:
+  title: STROMDAO EAF - Metering
+  description: "The STROMDAO Energy Applications Framework (EAF) Metering API provides a robust interface for automated, high-frequency meter readings essential for dynamic electricity tariffs. Designed to cater to utilities and energy service providers, the API simplifies data submission for settlement, clearing, and balancing operations. Developers can leverage this API to integrate various meter data sources, enact real-time energy usage analyses, and facilitate accurate and transparent billing cycles. Ease of use is underscored by thorough documentation, standardized endpoint methodologies, and extensive support for the quick incorporation of new metering devices or services. This API stands as a fundamental component of the EAF's commitment to driving innovation within the energy sector by enabling smart and flexible tariff management."
+  version: 0.2.30
+servers:
+- url: http://localhost:3001/
+  description: Local instance using the default port
+- url: https://eaf-metering.corrently.cloud/
+  description: Public demo service provided by STROMDAO GmbH
+tags:
+- name: auth
+  description: <a href='https://stromdao.de/'>STROMDAO GmbH</a> <dev@stromdao.com>
+paths:
+  /api/publicKey:
+    get:
+      tags:
+      - validation
+      - public key
+      summary: Retrieve the Public Key and Signature Information
+      description: "This endpoint provides external parties with the public key associated with the current instance of the STROMDAO EAF. Accessing this key allows for the verification of digital signatures and tokens, confirming the authenticity of data or communications from this service instance."
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "401":
+          description: Need auth
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Unauth error message
+                  code: 401
+        "422":
+          description: Fields invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Error message
+                  code: 422
+                  data:
+                  - name: fieldName
+                    message: Field invalid
+                  - name: "arrayField[0].fieldName"
+                    message: Whats wrong
+                  - name: object.fieldName
+                    message: Whats wrong
+        default:
+          description: "Server errors: 500, 501, 400, 404 and etc..."
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Server error message
+                  code: 500
+  /api/activation:
+    post:
+      tags:
+      - access
+      summary: |-
+        Provides update token for automated meter readings.
+                    (access.activation)
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/access.activation'
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "401":
+          description: Need auth
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Unauth error message
+                  code: 401
+        "422":
+          description: Fields invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Error message
+                  code: 422
+                  data:
+                  - name: fieldName
+                    message: Field invalid
+                  - name: "arrayField[0].fieldName"
+                    message: Whats wrong
+                  - name: object.fieldName
+                    message: Whats wrong
+        default:
+          description: "Server errors: 500, 501, 400, 404 and etc..."
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Server error message
+                  code: 500
+  /api/reading:
+    post:
+      tags:
+      - metering
+      - reading
+      summary: |-
+        Update a meter reading
+                    (metering.updateReading)
+      description: "Clients such as energy management systems or smart meter gateways can use this endpoint to push new meter readings to the STROMDAO EAF system at a high frequency. This data is critical for accurately tracking energy consumption and ensuring that customers are billed correctly based on their energy usage patterns. To submit a reading, the client should send a POST request to the /api/reading endpoint with the JSON object containing the meterId, time, and reading."
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/metering.updateReading'
+      responses:
+        "200":
+          description: Indicates that the meter reading has been received by the system. Check the processed response to validate if it got processed or ignored.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+              example:
+                meterId: demo
+                reading: 67589
+                time: 1702135605721
+                virtual_0: 910
+                virtual_1: 688
+                virtual_2: 222
+                virtual_3: 0
+                processed: true
+        "401":
+          description: Need auth
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Unauth error message
+                  code: 401
+        "422":
+          description: Fields invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Error message
+                  code: 422
+                  data:
+                  - name: fieldName
+                    message: Field invalid
+                  - name: "arrayField[0].fieldName"
+                    message: Whats wrong
+                  - name: object.fieldName
+                    message: Whats wrong
+        default:
+          description: "Server errors: 500, 501, 400, 404 and etc..."
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Server error message
+                  code: 500
+      security:
+      - bearerAuth: []
+      - queryTokenAuth: []
+  /api/tariff:
+    get:
+      tags:
+      - tariff
+      summary: Retrieve Tariff Labels and Pricing for Cost-Efficient Consumption Scheduling
+      description: |-
+        This endpoint provides access to the current tariff information, including price labels and associated costs. This data is essential for Energy Management Systems (EMS) that aim to optimize consumption patterns based on cost-efficiency, allowing them to schedule energy usage during periods of least cost.
+
+        The response contains a comprehensive list of tariff labels, each associated with its respective pricing information. This can be used to make informed decisions on when to consume or conserve energy, based on dynamic pricing structures. The returned tariffs are up-to-date, reflecting any variable rates that may be in effect due to demand, time of day, or other considerations.
+
+        Clients are encouraged to utilize the information from this endpoint to enhance energy consumption strategies, potentially leading to significant cost savings and improved energy utilization.
+
+        Authentication is required to access this endpoint, and clients may authenticate using either bearer tokens or query parameter tokens. The proper use of security schemes ensures that tariff data can be retrieved safely and remains protected.
+
+        Note that response data should be considered in the context of the local timezone where the meter is located, as energy prices and labels may vary accordingly. Developers are advised to always confirm that their systems handle timezones and DST changes appropriately to align with the tariff information retrieved.
+      parameters: []
+      responses:
+        "200":
+          description: Successfully retrieved tariff labels and their corresponding pricing data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+        "401":
+          description: Need auth
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Unauth error message
+                  code: 401
+        "422":
+          description: Fields invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Error message
+                  code: 422
+                  data:
+                  - name: fieldName
+                    message: Field invalid
+                  - name: "arrayField[0].fieldName"
+                    message: Whats wrong
+                  - name: object.fieldName
+                    message: Whats wrong
+        default:
+          description: "Server errors: 500, 501, 400, 404 and etc..."
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Server error message
+                  code: 500
+      security:
+      - bearerAuth: []
+      - queryTokenAuth: []
+  /api/clearing:
+    get:
+      tags:
+      - clearing
+      summary: (clearing.retrieve)
+      parameters:
+      - name: meterId
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: ""
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "401":
+          description: Need auth
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Unauth error message
+                  code: 401
+        "422":
+          description: Fields invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Error message
+                  code: 422
+                  data:
+                  - name: fieldName
+                    message: Field invalid
+                  - name: "arrayField[0].fieldName"
+                    message: Whats wrong
+                  - name: object.fieldName
+                    message: Whats wrong
+        default:
+          description: "Server errors: 500, 501, 400, 404 and etc..."
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Server error message
+                  code: 500
+  /api/refresh:
+    post:
+      tags:
+      - access
+      summary: |-
+        Allows to refresh JWT of a metering token (extend time to expiration)
+                    (access.refresh)
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/access.refresh'
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "401":
+          description: Need auth
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Unauth error message
+                  code: 401
+        "422":
+          description: Fields invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Error message
+                  code: 422
+                  data:
+                  - name: fieldName
+                    message: Field invalid
+                  - name: "arrayField[0].fieldName"
+                    message: Whats wrong
+                  - name: object.fieldName
+                    message: Whats wrong
+        default:
+          description: "Server errors: 500, 501, 400, 404 and etc..."
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Server error message
+                  code: 500
+  /api/metadata:
+    get:
+      tags:
+      - access
+      - asset
+      summary: Retrieve Metadata of Client-Specific Asset
+      description: |-
+        This endpoint allows clients to retrieve custom metadata associated with a specific meter point. Upon successful authentication, clients can obtain metadata details such as the physical location or technical specifications of the meter. The metadata is returned in a JSON format with properties using dot notation where nested documents are involved.
+
+        To retrieve specific metadata, a client should send a GET request with the necessary authentication credentials. Clients have the option of utilizing a bearer token in the header or a query parameter token for authentication.
+
+        Here is an example of how a client might receive nested metadata in the response:
+
+        ```json
+        {
+          "location": {
+            "zipcode": "12345",
+            "street": "Hauptstraße"
+          },
+          "serialNumber": "SN123456789"
+        }
+        ```
+
+        The endpoint is designed to facilitate easy access to metadata needed for managing dynamic electricity tariffs and other energy-related services.
+      parameters:
+      - name: token
+        in: query
+        description: Optional JWT token used for authentication if not providing bearer token.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: your.jwt.token.here
+      responses:
+        "200":
+          description: Metadata successfully retrieved for the client-specific asset.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+        "401":
+          description: Need auth
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Unauth error message
+                  code: 401
+        "422":
+          description: Fields invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Error message
+                  code: 422
+                  data:
+                  - name: fieldName
+                    message: Field invalid
+                  - name: "arrayField[0].fieldName"
+                    message: Whats wrong
+                  - name: object.fieldName
+                    message: Whats wrong
+        default:
+          description: "Server errors: 500, 501, 400, 404 and etc..."
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Server error message
+                  code: 500
+      security:
+      - bearerAuth: []
+      - queryTokenAuth: []
+    post:
+      tags:
+      - access
+      - asset
+      summary: Update client specific asset meta data.
+      description: |-
+        Allows clients to submit custom metadata for a specific meter point, such as the physical address or serial number. Metadata should be provided in JSON format, and for nested documents or sub-documents, dot notation must be used. Dot notation involves prefixing the name of the nested field with its parent field's name followed by a period.
+
+        For example, to update the address, which is a nested document containing a zipcode and a street name, you would format the fields like:
+
+        ```json
+        {
+          "location.zipcode": "12345",
+          "location.street": "Hauptstraße"
+        }
+        ```
+
+        This notation allows the complex structure of nested objects to be flattened while clearly indicating the relationship between fields.
+      parameters: []
+      requestBody:
+        description: JSON object containing the metadata to be updated using dot notation for nested fields.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/access.updateAssetMeta'
+        required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "401":
+          description: Need auth
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Unauth error message
+                  code: 401
+        "422":
+          description: Fields invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Error message
+                  code: 422
+                  data:
+                  - name: fieldName
+                    message: Field invalid
+                  - name: "arrayField[0].fieldName"
+                    message: Whats wrong
+                  - name: object.fieldName
+                    message: Whats wrong
+        default:
+          description: "Server errors: 500, 501, 400, 404 and etc..."
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Server error message
+                  code: 500
+      security:
+      - bearerAuth: []
+      - queryTokenAuth: []
+  /api/demo:
+    get:
+      tags:
+      - access
+      summary: |-
+        Create Token to authorize with demo user
+                    (access.demo)
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "401":
+          description: Need auth
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Unauth error message
+                  code: 401
+        "422":
+          description: Fields invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Error message
+                  code: 422
+                  data:
+                  - name: fieldName
+                    message: Field invalid
+                  - name: "arrayField[0].fieldName"
+                    message: Whats wrong
+                  - name: object.fieldName
+                    message: Whats wrong
+        default:
+          description: "Server errors: 500, 501, 400, 404 and etc..."
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Server error message
+                  code: 500
+  /api/access/demo:
+    get:
+      tags:
+      - access
+      summary: Obtain a JSON Web Token for Testing with a Shared Demo Meter
+      description: "This endpoint generates a JSON Web Token (JWT) that grants temporary authorization to interact with a shared demo meter. Ideal for development and testing, it allows clients to experience the full functionality of the Metering API without needing to connect a real meter. \n\nThe provided JWT can be used as a bearer token for authenticating API requests, enabling developers to test the submission of meter readings and other API operations. However, as the demo meter is commonly shared among all developers and users of this STROMDAO EAF instance, the data associated with the meter might be subject to changes by other users. Therefore, it should be used strictly for testing purposes and not for production environments.\n\nThe token is signed with the instance's private key, ensuring it's valid for authentication against the Metering API's secured endpoints. Upon successful retrieval of the token, developers can proceed with API calls to test meter updates and other functionalities provided by this service.\n\nBe mindful that the JWT provided is for demonstration purposes and should not be considered secure or private since it allows access to a commonly shared resource. The usage of this token should be limited to non-sensitive and non-production testing scenarios."
+      parameters: []
+      responses:
+        "200":
+          description: Successfully created a JSON Web Token for demonstration purposes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+              examples:
+                application/json:
+                  value:
+                    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        "401":
+          description: Need auth
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Unauth error message
+                  code: 401
+        "422":
+          description: Fields invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Error message
+                  code: 422
+                  data:
+                  - name: fieldName
+                    message: Field invalid
+                  - name: "arrayField[0].fieldName"
+                    message: Whats wrong
+                  - name: object.fieldName
+                    message: Whats wrong
+        default:
+          description: "Server errors: 500, 501, 400, 404 and etc..."
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Server error message
+                  code: 500
+  /api/settings:
+    get:
+      tags:
+      - access
+      summary: |-
+        Retrieve settings for example for client configuration.
+                    (access.settings)
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "401":
+          description: Need auth
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Unauth error message
+                  code: 401
+        "422":
+          description: Fields invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Error message
+                  code: 422
+                  data:
+                  - name: fieldName
+                    message: Field invalid
+                  - name: "arrayField[0].fieldName"
+                    message: Whats wrong
+                  - name: object.fieldName
+                    message: Whats wrong
+        default:
+          description: "Server errors: 500, 501, 400, 404 and etc..."
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: MoleculerClientError
+                  message: Server error message
+                  code: 500
+components:
+  schemas:
+    Item:
+      type: object
+    access.activation:
+      required:
+      - activationSecret
+      - meterId
+      type: object
+      properties:
+        activationSecret:
+          type: string
+          example: ""
+        meterId:
+          type: string
+          example: ""
+    metering.updateReading:
+      required:
+      - meterId
+      - reading
+      type: object
+      properties:
+        meterId:
+          type: string
+          description: A unique identifier for the meter whose reading is being updated. This is often in the form of a MeLoId or a similar standardized identifier.
+          example: DE1234567890abc
+        time:
+          type: number
+          description: "The UNIX timestamp, in milliseconds, indicating when the meter reading was taken, based on UTC. If this parameter is omitted, the system's current time will be used by default."
+          example: 1703980252992
+        reading:
+          type: number
+          description: "The actual energy consumption measurement from the meter, recorded in watt-hours (Wh) at the time specified by the `time` parameter."
+          example: 1024001
+    access.refresh:
+      required:
+      - meterId
+      - token
+      type: object
+      properties:
+        token:
+          type: string
+          example: ""
+        meterId:
+          type: string
+          example: ""
+    access.updateAssetMeta:
+      required:
+      - meterId
+      - token
+      type: object
+      properties:
+        token:
+          type: string
+          example: ""
+        meterId:
+          type: string
+          example: ""
+    inline_response_200:
+      oneOf:
+      - $ref: '#/components/schemas/Item'
+    inline_response_200_1:
+      type: object
+      properties:
+        processed:
+          type: boolean
+          description: "A flag indicating whether the submitted meter reading has been successfully processed and is valid for update operations. A value of `true` signifies a successful processing, whereas `false` indicates a failure or rejection of the data."
+          example: true
+        reading:
+          type: number
+          description: "Confirms the meter reading value in watt-hours (Wh) that was submitted, provided the `processed` flag is `true`."
+          example: 1350
+    inline_response_200_2:
+      type: object
+      properties:
+        tariffs:
+          type: array
+          items:
+            $ref: '#/components/schemas/inline_response_200_2_tariffs'
+      example:
+        tariffs:
+        - label: Peak
+          price: 0.3
+        - label: Off-Peak
+          price: 0.15
+    inline_response_200_3:
+      type: object
+      properties:
+        location:
+          $ref: '#/components/schemas/inline_response_200_3_location'
+        serialNumber:
+          type: string
+          example: SN123456789
+    inline_response_200_4:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The JWT provided for authentication with the demo meter.
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+    inline_response_200_2_tariffs:
+      type: object
+      properties:
+        label:
+          type: string
+          description: The human-readable label identifying the tariff segment.
+        price:
+          type: number
+          description: "The cost associated with the tariff label, expressed per unit of energy."
+    inline_response_200_3_location:
+      type: object
+      properties:
+        zipcode:
+          type: string
+          example: "12345"
+        street:
+          type: string
+          example: Hauptstraße
+  responses:
+    ServerError:
+      description: "Server errors: 500, 501, 400, 404 and etc..."
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              name: MoleculerClientError
+              message: Server error message
+              code: 500
+    UnauthorizedError:
+      description: Need auth
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              name: MoleculerClientError
+              message: Unauth error message
+              code: 401
+    ValidationError:
+      description: Fields invalid
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              name: MoleculerClientError
+              message: Error message
+              code: 422
+              data:
+              - name: fieldName
+                message: Field invalid
+              - name: "arrayField[0].fieldName"
+                message: Whats wrong
+              - name: object.fieldName
+                message: Whats wrong
+    ReturnedData:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_response_200'
+    FileNotExist:
+      description: File not exist
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              name: MoleculerClientError
+              message: File missing in the request
+              code: 400
+    FileTooBig:
+      description: File too big
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              name: PayloadTooLarge
+              message: Payload too large
+              code: 413
+              type: PAYLOAD_TOO_LARGE
+              data:
+                fieldname: file
+                filename: 4b2005c0b8.png
+                encoding: 7bit
+                mimetype: image/png
+  securitySchemes:
+    bearerAuth:
+      type: http
+      description: Enter your JWT in the format Bearer token
+      scheme: bearer
+      bearerFormat: JWT
+    queryTokenAuth:
+      type: apiKey
+      description: Pass your JWT as a query parameter in the format token=YourToken
+      name: token
+      in: query

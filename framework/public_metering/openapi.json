@@ -1,0 +1,506 @@
+info:
+  description: The STROMDAO Energy Applications Framework (EAF) Metering API provides a robust interface for automated, high-frequency meter readings essential for dynamic electricity tariffs. Designed to cater to utilities and energy service providers, the API simplifies data submission for settlement, clearing, and balancing operations. Developers can leverage this API to integrate various meter data sources, enact real-time energy usage analyses, and facilitate accurate and transparent billing cycles. Ease of use is underscored by thorough documentation, standardized endpoint methodologies, and extensive support for the quick incorporation of new metering devices or services. This API stands as a fundamental component of the EAF's commitment to driving innovation within the energy sector by enabling smart and flexible tariff management.
+  title: STROMDAO EAF - Metering
+  version: 0.2.30
+servers:
+  - url: http://localhost:3001/
+    description: Local instance using the default port
+  - url: https://eaf-metering.corrently.cloud/
+    description: Public demo service provided by STROMDAO GmbH
+tags:
+  - name: auth
+    description: <a href='https://stromdao.de/'>STROMDAO GmbH</a> <dev@stromdao.com>
+components:
+  securitySchemes:
+    bearerAuth: # Arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Enter your JWT in the format Bearer token
+    queryTokenAuth:
+      type: apiKey
+      in: query
+      name: token
+      description: Pass your JWT as a query parameter in the format token=YourToken
+  schemas:
+    Item:
+      type: object
+    access.activation:
+      type: object
+      properties:
+        activationSecret:
+          example: ''
+          type: string
+        meterId:
+          example: ''
+          type: string
+      required:
+        - activationSecret
+        - meterId
+    metering.updateReading:
+      type: object
+      properties:
+        meterId:
+          description: A unique identifier for the meter whose reading is being updated. This is often in the form of a MeLoId or a similar standardized identifier.
+          example: 'DE1234567890abc'
+          type: string
+        time:
+          description: The UNIX timestamp, in milliseconds, indicating when the meter reading was taken, based on UTC. If this parameter is omitted, the system's current time will be used by default.
+          example: 1703980252992
+          type: number
+        reading:
+          description: The actual energy consumption measurement from the meter, recorded in watt-hours (Wh) at the time specified by the `time` parameter.
+          example: 1024001
+          type: number
+      required:
+        - meterId
+        - reading
+    access.refresh:
+      type: object
+      properties:
+        token:
+          example: ''
+          type: string
+        meterId:
+          example: ''
+          type: string
+      required:
+        - token
+        - meterId
+    access.updateAssetMeta:
+      type: object
+      properties:
+        token:
+          example: ''
+          type: string
+        meterId:
+          example: ''
+          type: string
+      required:
+        - token
+        - meterId
+  responses:
+    ServerError:
+      description: 'Server errors: 500, 501, 400, 404 and etc...'
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              name: MoleculerClientError
+              message: Server error message
+              code: 500
+    UnauthorizedError:
+      description: Need auth
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              name: MoleculerClientError
+              message: Unauth error message
+              code: 401
+    ValidationError:
+      description: Fields invalid
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              name: MoleculerClientError
+              message: Error message
+              code: 422
+              data:
+                - name: fieldName
+                  message: Field invalid
+                - name: arrayField[0].fieldName
+                  message: Whats wrong
+                - name: object.fieldName
+                  message: Whats wrong
+    ReturnedData:
+      description: ''
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/Item'
+    FileNotExist:
+      description: File not exist
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              name: MoleculerClientError
+              message: File missing in the request
+              code: 400
+    FileTooBig:
+      description: File too big
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              name: PayloadTooLarge
+              message: Payload too large
+              code: 413
+              type: PAYLOAD_TOO_LARGE
+              data:
+                fieldname: file
+                filename: 4b2005c0b8.png
+                encoding: 7bit
+                mimetype: image/png
+openapi: 3.0.3
+paths:
+  /api/publicKey:
+    get:
+      summary: Retrieve the Public Key and Signature Information
+      description: |-
+        This endpoint provides external parties with the public key associated with the current instance of the STROMDAO EAF. Accessing this key allows for the verification of digital signatures and tokens, confirming the authenticity of data or communications from this service instance.
+      tags:
+        - validation
+        - public key
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/ReturnedData'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        default:
+          $ref: '#/components/responses/ServerError'
+  /api/activation:
+    post:
+      summary: |-
+        Provides update token for automated meter readings.
+                    (access.activation)
+      tags:
+        - access
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/ReturnedData'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        default:
+          $ref: '#/components/responses/ServerError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/access.activation'
+  /api/reading:
+    post:
+      summary: |-
+        Update a meter reading
+                    (metering.updateReading)
+      tags:
+        - metering
+        - reading
+      parameters: []
+      security: 
+        - bearerAuth: []
+        - queryTokenAuth: [] 
+      responses:
+        '200':
+          description: Indicates that the meter reading has been received by the system. Check the processed response to validate if it got processed or ignored.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  processed:
+                    type: boolean
+                    description: A flag indicating whether the submitted meter reading has been successfully processed and is valid for update operations. A value of `true` signifies a successful processing, whereas `false` indicates a failure or rejection of the data.
+                    example: true
+                  reading:
+                    type: number
+                    description: Confirms the meter reading value in watt-hours (Wh) that was submitted, provided the `processed` flag is `true`.
+                    example: 1350
+              example:
+                meterId: demo
+                reading: 67589
+                time: 1702135605721
+                virtual_0: 910
+                virtual_1: 688
+                virtual_2: 222
+                virtual_3: 0
+                processed: true
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        default:
+          $ref: '#/components/responses/ServerError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/metering.updateReading'
+      description: >-
+        Clients such as energy management systems or smart meter gateways can use this endpoint to push new meter readings to the STROMDAO EAF system at a high frequency. This data is critical for accurately tracking energy consumption and ensuring that customers are billed correctly based on their energy usage patterns.
+        To submit a reading, the client should send a POST request to the /api/reading endpoint with the JSON object containing the meterId, time, and reading.
+  /api/tariff:
+    get:
+      summary: Retrieve Tariff Labels and Pricing for Cost-Efficient Consumption Scheduling
+      description: |-
+        This endpoint provides access to the current tariff information, including price labels and associated costs. This data is essential for Energy Management Systems (EMS) that aim to optimize consumption patterns based on cost-efficiency, allowing them to schedule energy usage during periods of least cost.
+
+        The response contains a comprehensive list of tariff labels, each associated with its respective pricing information. This can be used to make informed decisions on when to consume or conserve energy, based on dynamic pricing structures. The returned tariffs are up-to-date, reflecting any variable rates that may be in effect due to demand, time of day, or other considerations.
+
+        Clients are encouraged to utilize the information from this endpoint to enhance energy consumption strategies, potentially leading to significant cost savings and improved energy utilization.
+
+        Authentication is required to access this endpoint, and clients may authenticate using either bearer tokens or query parameter tokens. The proper use of security schemes ensures that tariff data can be retrieved safely and remains protected.
+
+        Note that response data should be considered in the context of the local timezone where the meter is located, as energy prices and labels may vary accordingly. Developers are advised to always confirm that their systems handle timezones and DST changes appropriately to align with the tariff information retrieved.
+      tags:
+        - tariff
+      security: 
+        - bearerAuth: []
+        - queryTokenAuth: [] 
+      parameters: []
+      responses:
+        '200':
+          description: Successfully retrieved tariff labels and their corresponding pricing data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tariffs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        label:
+                          type: string
+                          description: The human-readable label identifying the tariff segment.
+                        price:
+                          type: number
+                          description: The cost associated with the tariff label, expressed per unit of energy.
+                example:
+                  tariffs: 
+                    - label: 'Peak'
+                      price: 0.30
+                    - label: 'Off-Peak'
+                      price: 0.15
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        default:
+          $ref: '#/components/responses/ServerError'
+  /api/clearing:
+    get:
+      summary: (clearing.retrieve)
+      tags:
+        - clearing
+      parameters:
+        - in: query
+          name: meterId
+          schema:
+            example: ''
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/ReturnedData'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        default:
+          $ref: '#/components/responses/ServerError'
+  /api/refresh:
+    post:
+      summary: |-
+        Allows to refresh JWT of a metering token (extend time to expiration)
+                    (access.refresh)
+      tags:
+        - access
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/ReturnedData'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        default:
+          $ref: '#/components/responses/ServerError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/access.refresh'
+  /api/metadata:
+    post:
+      summary: Update client specific asset meta data.
+      description: |-
+        Allows clients to submit custom metadata for a specific meter point, such as the physical address or serial number. Metadata should be provided in JSON format, and for nested documents or sub-documents, dot notation must be used. Dot notation involves prefixing the name of the nested field with its parent field's name followed by a period.
+  
+        For example, to update the address, which is a nested document containing a zipcode and a street name, you would format the fields like:
+  
+        ```json
+        {
+          "location.zipcode": "12345",
+          "location.street": "Hauptstraße"
+        }
+        ```
+  
+        This notation allows the complex structure of nested objects to be flattened while clearly indicating the relationship between fields.
+      tags:
+        - access
+        - asset
+      security: 
+        - bearerAuth: []
+        - queryTokenAuth: []
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/ReturnedData'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        default:
+          $ref: '#/components/responses/ServerError'
+      requestBody:
+        required: true
+        description: JSON object containing the metadata to be updated using dot notation for nested fields.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/access.updateAssetMeta'
+    get:
+      summary: Retrieve Metadata of Client-Specific Asset
+      description: |-
+        This endpoint allows clients to retrieve custom metadata associated with a specific meter point. Upon successful authentication, clients can obtain metadata details such as the physical location or technical specifications of the meter. The metadata is returned in a JSON format with properties using dot notation where nested documents are involved.
+        
+        To retrieve specific metadata, a client should send a GET request with the necessary authentication credentials. Clients have the option of utilizing a bearer token in the header or a query parameter token for authentication.
+  
+        Here is an example of how a client might receive nested metadata in the response:
+  
+        ```json
+        {
+          "location": {
+            "zipcode": "12345",
+            "street": "Hauptstraße"
+          },
+          "serialNumber": "SN123456789"
+        }
+        ```
+  
+        The endpoint is designed to facilitate easy access to metadata needed for managing dynamic electricity tariffs and other energy-related services.
+      tags:
+        - access
+        - asset
+      parameters:
+        - in: query
+          name: token
+          required: false
+          description: Optional JWT token used for authentication if not providing bearer token.
+          schema:
+            example: 'your.jwt.token.here'
+            type: string
+      security: 
+        - bearerAuth: []
+        - queryTokenAuth: []       
+      responses:
+        '200':
+          description: Metadata successfully retrieved for the client-specific asset.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  location:
+                    type: object
+                    properties:
+                      zipcode:
+                        type: string
+                        example: '12345'
+                      street:
+                        type: string
+                        example: 'Hauptstraße'
+                  serialNumber:
+                    type: string
+                    example: 'SN123456789'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        default:
+          $ref: '#/components/responses/ServerError'
+  /api/demo:
+    get:
+      summary: |-
+        Create Token to authorize with demo user
+                    (access.demo)
+      tags:
+        - access
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/ReturnedData'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        default:
+          $ref: '#/components/responses/ServerError'
+  /api/access/demo:
+    get:
+      summary: Obtain a JSON Web Token for Testing with a Shared Demo Meter
+      description: |-
+        This endpoint generates a JSON Web Token (JWT) that grants temporary authorization to interact with a shared demo meter. Ideal for development and testing, it allows clients to experience the full functionality of the Metering API without needing to connect a real meter. 
+
+        The provided JWT can be used as a bearer token for authenticating API requests, enabling developers to test the submission of meter readings and other API operations. However, as the demo meter is commonly shared among all developers and users of this STROMDAO EAF instance, the data associated with the meter might be subject to changes by other users. Therefore, it should be used strictly for testing purposes and not for production environments.
+
+        The token is signed with the instance's private key, ensuring it's valid for authentication against the Metering API's secured endpoints. Upon successful retrieval of the token, developers can proceed with API calls to test meter updates and other functionalities provided by this service.
+
+        Be mindful that the JWT provided is for demonstration purposes and should not be considered secure or private since it allows access to a commonly shared resource. The usage of this token should be limited to non-sensitive and non-production testing scenarios.
+      tags:
+        - access
+      parameters: []
+      responses:
+        '200':
+          description: Successfully created a JSON Web Token for demonstration purposes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: The JWT provided for authentication with the demo meter.
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+              examples:
+                application/json:
+                  value:
+                    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        default:
+          $ref: '#/components/responses/ServerError'
+  /api/settings:
+    get:
+      summary: |-
+        Retrieve settings for example for client configuration.
+                    (access.settings)
+      tags:
+        - access
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/ReturnedData'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        default:
+          $ref: '#/components/responses/ServerError'

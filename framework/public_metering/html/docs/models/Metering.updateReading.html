@@ -1,0 +1,17 @@
+
+<h2>Metering.updateReading</h2>
+<ul class="parameter">
+  <li class="param-required-true">meterId : String
+    <br/>A unique identifier for the meter whose reading is being updated. This is often in the form of a MeLoId or a similar standardized identifier.
+  </li>
+</ul>
+<ul class="parameter">
+  <li class="param-required-false">time : BigDecimal
+    <br/>The UNIX timestamp, in milliseconds, indicating when the meter reading was taken, based on UTC. If this parameter is omitted, the system&#x27;s current time will be used by default.
+  </li>
+</ul>
+<ul class="parameter">
+  <li class="param-required-true">reading : BigDecimal
+    <br/>The actual energy consumption measurement from the meter, recorded in watt-hours (Wh) at the time specified by the &#x60;time&#x60; parameter.
+  </li>
+</ul>

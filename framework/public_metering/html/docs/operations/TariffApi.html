@@ -1,0 +1,18 @@
+<div class="main-content">
+  <h2><a name=""></a></h2>
+  <p>This is the  API</p>
+
+  <h2><a name="apiTariffGet"></a>apiTariffGet</h2>
+  <hr>
+  <p></p>
+  <p>This endpoint provides access to the current tariff information, including price labels and associated costs. This data is essential for Energy Management Systems (EMS) that aim to optimize consumption patterns based on cost-efficiency, allowing them to schedule energy usage during periods of least cost.  The response contains a comprehensive list of tariff labels, each associated with its respective pricing information. This can be used to make informed decisions on when to consume or conserve energy, based on dynamic pricing structures. The returned tariffs are up-to-date, reflecting any variable rates that may be in effect due to demand, time of day, or other considerations.  Clients are encouraged to utilize the information from this endpoint to enhance energy consumption strategies, potentially leading to significant cost savings and improved energy utilization.  Authentication is required to access this endpoint, and clients may authenticate using either bearer tokens or query parameter tokens. The proper use of security schemes ensures that tariff data can be retrieved safely and remains protected.  Note that response data should be considered in the context of the local timezone where the meter is located, as energy prices and labels may vary accordingly. Developers are advised to always confirm that their systems handle timezones and DST changes appropriately to align with the tariff information retrieved.</p>
+  <h3 class="section">URL</h3>
+  <code>http://localhost:3001//api/tariff</code>
+  <h3 class="section">HTTP Method</h3>
+  <code>GET</code>
+  <h3 class="section">Response Type</h3>
+  <div class="model" data-model="inline_response_200_2"><a href="">inline_response_200_2</a></div>
+  <h3 class="section">Parameters</h3>
+  <ul>
+  </ul>
+</div>
