@@ -41,20 +41,29 @@ $(document).ready(function () {
     $.getJSON("/api/tariff/customLabels", function(data) {
         customLabels = data;
         doFetch();
-        let html = '';
+        let html = '<div id="nextChangeLabel"></div>';       
         for (const [key, value] of Object.entries(data)) {
             html += '<div class="input-group" style="margin-bottom: 15px;">';
             html += '<span class="input-group-text col-3">'+value+'</span>';
-            html += '<input class="form-control" type="number" step="0.01" min="0.01" name="'+key+'"  id="'+key+'" required/>';
-//            html += '<button class="btn btn-primary" type="button">Speichern</button>';
+            html += '<input class="form-control" type="number" step="0.0001" min="0.01" name="'+key+'"  id="'+key+'" required/>';
             html += '</div>';
         }
         $('#tariffPrices').html(html);
         $.getJSON("/api/tariff/getPrices", function(data) {
+            if(typeof data.nextChange !== 'undefined') {
+               
+                $('#nextChangeLabel').html('<div class="alert alert-warning" role="alert"><span><strong>Geplante Änderung</strong> gültig ab '+new Date(data.nextChange.afterTime).toLocaleString()+'</span></div>');
+                $('#afterTime').val(new Date(data.nextChange.afterTime).toISOString().substring(0,16));
+                data = data.nextChange;
+            } else {
+                $('#nextChangeLabel').html("");
+            }
             for (const [key, value] of Object.entries(data)) {
                 $('#'+key).val(value);
             }
         });
+        const d = (new Date(new Date().getTime()+(1*86400000)).toISOString()).substring(0,11)+"00:00";
+        $('#afterTime').val(d);
     });
 
     $('#frmPrices').submit(function(event) {
@@ -63,6 +72,7 @@ $(document).ready(function () {
         for (const [key, value] of Object.entries(customLabels)) {
             dataToSend[key] = 1 * $('#'+key).val()
         }
+        dataToSend.afterTime = new Date($('#afterTime').val()+"Z").getTime();
         $.ajax({
             type: 'POST',
             url: '/api/tariff/setPrices', 

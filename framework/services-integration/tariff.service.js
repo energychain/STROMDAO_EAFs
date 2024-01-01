@@ -120,7 +120,8 @@ module.exports = {
 				virtual_6: { $$t: "Price for `virtual_6` tariff segment", type: "number", optional: true , example:0.5 },
 				virtual_7: { $$t: "Price for `virtual_7` tariff segment", type: "number", optional: true , example:0.5 },
 				virtual_8: { $$t: "Price for `virtual_8` tariff segment", type: "number", optional: true , example:0.5 },
-				virtual_9: { $$t: "Price for `virtual_9` tariff segment", type: "number", optional: true , example:0.5 }	
+				virtual_9: { $$t: "Price for `virtual_9` tariff segment", type: "number", optional: true , example:0.5 },
+				afterTime: { $$t: "Valid from time (will be converted to epoch number)", type: "number", optional: true , example:1704120883259 }	
 			},
 			openapi: {
 				summary: "Specify kWh price per tariff segment.",
@@ -161,13 +162,18 @@ module.exports = {
 				},
 			},
 			async handler(ctx) {
+				if(typeof ctx.params.afterTime == 'undefined') {
+					ctx.params.fromEpoch = 0;
+				} else {
+					ctx.params.fromEpoch = Math.floor(ctx.params.afterTime / process.env.EPOCH_DURATION);
+				}
 				let labels = await ctx.call("tariff.customLabels");
 				for (const [key, value] of Object.entries(labels)) {
 					if(typeof ctx.params[key] !== 'undefined') {
 						let previousDeclarations = await ctx.call("price.find",{
 							query: {
 								label: key,
-								epoch: { $gte : 0}
+								epoch: { $gte : ctx.params.fromEpoch}
 							}
 						});
 						for(let j=0;j<previousDeclarations.length;j++) {
@@ -176,7 +182,7 @@ module.exports = {
 							});
 						}
 						await ctx.call("price.insert",{entity:{
-							epoch: 0,
+							epoch: ctx.params.fromEpoch,
 							label: key,
 							price: ctx.params[key] * 1
 						}});
@@ -254,7 +260,28 @@ module.exports = {
 						}
 					}
 				}
-				
+				let changeResults =  await ctx.call("price.find",{
+					query:{
+						epoch: {
+							$gte: ctx.params.epoch * 1
+						}
+					},
+					sort:"-epoch"
+				});
+				if(changeResults.length > 0) {
+					let pricesNew = {};
+					for (const [key, value] of Object.entries(labels)) {
+						console.log(changeResults);
+						for(let i=0;(i<changeResults.length) && (typeof pricesNew[key] == 'undefined') ;i++) {
+							if(changeResults[i].label == key) {
+								pricesNew[key] = changeResults[i].price;
+								pricesNew.afterEpoch = changeResults[i].epoch;
+								pricesNew.afterTime = changeResults[i].epoch * process.env.EPOCH_DURATION;
+							}
+						}
+					}
+					prices.nextChange = pricesNew;
+				}
 				return prices;
 			}
 		},

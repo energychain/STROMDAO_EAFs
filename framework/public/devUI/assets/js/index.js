@@ -3,7 +3,7 @@ $(document).ready(function() {
     const updateMeteringStatistics = async function() {
         $.getJSON("/api/tariff/getPrices", function(tariff) {
             for (const [key, value] of Object.entries(tariff)) {
-                $('#price_'+key).html(value.toFixed(2).replace('.',','));
+                $('#price_'+key).html(value.toFixed(4).replace('.',','));
             }
             $.getJSON("/api/prediction/statistics?delay=86400000",function(data) {
                 data.total = (1* data.delayed) + (1* data.active);
@@ -36,6 +36,11 @@ $(document).ready(function() {
     const updateMeteringPrediction = async function() {
     
         const renderPrediction = function(data) {
+            if(data.length == 0) {
+                $('#predictionDiv').hide();
+            } else {
+                $('#predictionDiv').show();
+            }
             data = data.slice(-24);
             let chartDataActual = [];
             let chartDataPrediction = [];
@@ -154,7 +159,7 @@ $(document).ready(function() {
 
         }
         
-        $.getJSON("/api/prediction/x_epochs?x=12&predict=6", renderPrediction);
+            $.getJSON("/api/prediction/x_epochs?x=12&predict=6", renderPrediction);
         }
         $.getJSON("/api/prediction/epoch_of_day", renderProfile);
     }
