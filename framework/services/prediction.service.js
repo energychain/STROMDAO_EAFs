@@ -294,7 +294,11 @@ module.exports = {
 				model.compile({ loss: 'meanSquaredError', optimizer: 'adam' });
 			  
 				// Convert the training data to a TensorFlow tensor
-			
+				if((typeof train_X == 'undefined') || typeof train_X[0] == 'undefined') {
+					return {
+						error:"No data to train on"
+					}
+				}
 				const xs = tf.tensor2d(train_X, [train_X.length, train_X[0].length]);
 			  
 				// Convert the target values to a TensorFlow tensor with the correct shape
