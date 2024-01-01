@@ -52,8 +52,8 @@ $(document).ready(function () {
         $.getJSON("/api/tariff/getPrices", function(data) {
             if(typeof data.nextChange !== 'undefined') {
                
-                $('#nextChangeLabel').html('<div class="alert alert-warning" role="alert"><span><strong>Geplante Änderung</strong> gültig ab '+new Date(data.nextChange.afterTime).toLocaleString()+'</span></div>');
-                $('#afterTime').val(new Date(data.nextChange.afterTime).toISOString().substring(0,16));
+                $('#nextChangeLabel').html('<div class="alert alert-warning" role="alert"><span><strong>Geplante Änderung</strong> gültig ab '+new Date(data.nextChange.fromTime).toLocaleString()+'</span></div>');
+                $('#fromTime').val(new Date(data.nextChange.fromTime).toISOString().substring(0,16));
                 data = data.nextChange;
             } else {
                 $('#nextChangeLabel').html("");
@@ -63,7 +63,7 @@ $(document).ready(function () {
             }
         });
         const d = (new Date(new Date().getTime()+(1*86400000)).toISOString()).substring(0,11)+"00:00";
-        $('#afterTime').val(d);
+        $('#fromTime').val(d);
     });
 
     $('#frmPrices').submit(function(event) {

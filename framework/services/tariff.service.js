@@ -257,9 +257,13 @@ module.exports = {
 					for(let i=0;(i<results.length) && (typeof prices[key] == 'undefined') ;i++) {
 						if(results[i].label == key) {
 							prices[key] = results[i].price;
+							prices.fromEpoch = results[i].epoch;
+							prices.fromTime = results[i].epoch * process.env.EPOCH_DURATION;
 						}
 					}
 				}
+
+				// Add next price update if known
 				let changeResults =  await ctx.call("price.find",{
 					query:{
 						epoch: {
@@ -268,6 +272,7 @@ module.exports = {
 					},
 					sort:"-epoch"
 				});
+
 				if(changeResults.length > 0) {
 					let pricesNew = {};
 					for (const [key, value] of Object.entries(labels)) {
@@ -275,8 +280,8 @@ module.exports = {
 						for(let i=0;(i<changeResults.length) && (typeof pricesNew[key] == 'undefined') ;i++) {
 							if(changeResults[i].label == key) {
 								pricesNew[key] = changeResults[i].price;
-								pricesNew.afterEpoch = changeResults[i].epoch;
-								pricesNew.afterTime = changeResults[i].epoch * process.env.EPOCH_DURATION;
+								pricesNew.fromEpoch = changeResults[i].epoch;
+								pricesNew.fromTime = changeResults[i].epoch * process.env.EPOCH_DURATION;
 							}
 						}
 					}
