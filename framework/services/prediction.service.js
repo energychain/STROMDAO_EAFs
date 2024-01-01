@@ -98,12 +98,14 @@ module.exports = {
 				let max = 0;
 				let sum = 0;
 				for(let i=0;i<ctx.params.settlements.length;i++) {
-					sum += ctx.params.settlements[i].consumption;
-					if(ctx.params.settlements[i].consumption < min) {
-						min = ctx.params.settlements[i].consumption;
-					}
-					if(ctx.params.settlements[i].consumption > max) {
-						max = ctx.params.settlements[i].consumption;
+					if(typeof ctx.params.settlements[i].consumption_normalized == 'undefined') {
+						sum += ctx.params.settlements[i].consumption;
+						if(ctx.params.settlements[i].consumption < min) {
+							min = ctx.params.settlements[i].consumption;
+						}
+						if(ctx.params.settlements[i].consumption > max) {
+							max = ctx.params.settlements[i].consumption;
+						}
 					}
 				}
 				ctx.params.statistics = {
