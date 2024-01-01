@@ -28,6 +28,74 @@
     </header>
     <div class="container">
         <div class="card" style="margin-bottom: 25px;">
+            <div class="card-body">
+                <h3 class="card-title">Messstellen</h3>
+                <div class="row">
+                    <div class="col text-center h-100">
+                        <h5 class="display-1 text-danger" id="metersInactive">-</h5>
+                        <p id="metersInactivePercentage" class="text-muted">%</p>
+                        <h5>&gt; 24 Stunden inaktiv</h5>
+                    </div>
+                    <div class="col text-center h-100">
+                        <h5 class="display-1 text-success" id="metersActive">-</h5>
+                        <p id="metersActivePercentage" class="text-muted">%</p>
+                        <h5>Aktiv</h5>
+                    </div>
+                    <div class="col text-center h-100">
+                        <h5 class="display-1" id="metersTotal">-</h5>
+                        <p id="metersTotalPercentage" class="text-muted">%</p>
+                        <h5>Gesamt</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card" style="margin-bottom: 25px;">
+            <div class="card-body">
+                <div class="text-center" id="predictionDiv" style="margin-bottom: 25px;"><canvas id="predictionChart"></canvas></div>
+                <h4>Letzte 24 Stunden</h4>
+                <div class="row row-cols-4">
+                    <div class="col text-center h-100">
+                        <h5 class="display-1 text-success" id="consumption_virtual_1">-</h5>
+                        <p id="consumption_virtual_1Percentage" class="text-muted">%</p>
+                    </div>
+                    <div class="col text-center h-100">
+                        <h5 class="display-1 text-warning" id="consumption_virtual_2">-</h5>
+                        <p id="consumption_virtual_2Percentage" class="text-muted">%</p>
+                    </div>
+                    <div class="col text-center h-100">
+                        <h5 class="display-1 text-danger" id="consumption_virtual_3">-</h5>
+                        <p id="consumption_virtual_3Percentage" class="text-muted">%</p>
+                    </div>
+                    <div class="col text-center h-100">
+                        <h5 class="display-1" id="consumption">-</h5>
+                        <p class="text-muted">kWh</p>
+                    </div>
+                </div>
+                <div class="row row-cols-4">
+                    <div class="col text-center">
+                        <h5 class="display-1 text-success" id="price_virtual_1">-</h5>
+                        <p class="text-muted"><span style="color: rgb(32, 33, 36);">&nbsp;</span>€ je kWh</p>
+                        <h5>Niedertarif</h5>
+                    </div>
+                    <div class="col text-center">
+                        <h5 class="display-1 text-warning" id="price_virtual_2">-</h5>
+                        <p class="text-muted">€ je kWh</p>
+                        <h5>Mitteltarif</h5>
+                    </div>
+                    <div class="col text-center">
+                        <h5 class="display-1 text-danger" id="price_virtual_3">-</h5>
+                        <p class="text-muted">€ je kWh</p>
+                        <h5>Hochtarif</h5>
+                    </div>
+                    <div class="col text-center">
+                        <h5 class="display-1" id="price">-</h5>
+                        <p class="text-muted"><span style="color: rgb(32, 33, 36);">⌀&nbsp;</span>€ je kWh</p>
+                        <h5>Energiepreis</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card" style="margin-bottom: 25px;">
             <div class="card-header">
                 <h3>Demo Daten</h3>
             </div>
@@ -57,8 +125,9 @@
     </div>
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
+    <script src="assets/js/3party/chart.js?h=eeca2582f0217edc4ac85af347e0d4ad"></script>
     <script src="assets/js/utils.js?h=13e600a17e8be592a9d46183d1921d45"></script>
-    <script src="assets/js/index.js?h=8a86c3e9781a9460ddf36d2151061a0c"></script>
+    <script src="assets/js/index.js?h=fa0a0d33d60156a7a34368fbe2363c33"></script>
 </body>
 
 </html>

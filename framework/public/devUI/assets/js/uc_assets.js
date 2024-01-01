@@ -4,6 +4,7 @@ $(document).ready(function() {
         window.eaf_settings = data;
     });
     const renderResultSet = function(data) {
+        $('#searchResults').show();
         let html = '<table class="table table-condensed table-striped">';
         html += '<thead><tr><th>Kennung</th><th>Aktualisierung</th><th>Zählerstand</th><th>Bezug</th><th>&#8960;Strompreis<th>Kosten</th></tr></thead>';
         html += '<tbody>';
@@ -60,6 +61,9 @@ $(document).ready(function() {
         $('#searchResults').hide();
         $('#searchResults').html('');
     });
-
-    setTimeout(runSearch, 1000);
+    if($.urlParam('delay')) {
+        $.getJSON("/api/debit/delayed?delay="+$.urlParam('delay'),renderResultSet);
+    }  else {  
+        setTimeout(runSearch, 1000);
+    }
 });

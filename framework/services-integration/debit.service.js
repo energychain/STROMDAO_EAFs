@@ -58,7 +58,6 @@ module.exports = {
 			async handler(ctx) {
 				if(typeof ctx.params.delay == 'undefined') ctx.params.delay = 86400000;
 				return await ctx.call("debit.find",{query:{"clearingTime": {"$lt": new Date().getTime()-(1 * ctx.params.delay)}}});
-				
 			}
 		},
 		invoice: {

@@ -24,7 +24,6 @@ $.fn.extend({
 					var code = (e.keyCode ? e.keyCode : e.which);
 					if (code == 13) {
 						submitChanges();
-            console.log("function called!")
 					}
 				}).select();
 				$el.hide();
