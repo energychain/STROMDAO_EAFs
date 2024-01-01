@@ -59,7 +59,11 @@ $(document).ready(function () {
                 $('#nextChangeLabel').html("");
             }
             for (const [key, value] of Object.entries(data)) {
-                $('#'+key).val(value);
+                if(key !== 'fromTime') {
+                    $('#'+key).val(value);
+                } else {
+                    $('#'+key).val(new Date(value).toISOString().substring(0,16));
+                }
             }
         });
         const d = (new Date(new Date().getTime()+(1*86400000)).toISOString()).substring(0,11)+"00:00";
