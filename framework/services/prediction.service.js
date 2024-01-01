@@ -295,9 +295,7 @@ module.exports = {
 			  
 				// Convert the training data to a TensorFlow tensor
 				if((typeof train_X == 'undefined') || typeof train_X[0] == 'undefined') {
-					return {
-						error:"No data to train on"
-					}
+					return []
 				}
 				const xs = tf.tensor2d(train_X, [train_X.length, train_X[0].length]);
 			  
