@@ -98,7 +98,7 @@ module.exports = {
 				let max = 0;
 				let sum = 0;
 				for(let i=0;i<ctx.params.settlements.length;i++) {
-					if(typeof ctx.params.settlements[i].consumption !== 'undefined') {
+					if(typeof ctx.params.settlements[i] !== 'undefined') {
 						sum += ctx.params.settlements[i].consumption;
 						if(ctx.params.settlements[i].consumption < min) {
 							min = ctx.params.settlements[i].consumption;
@@ -118,7 +118,9 @@ module.exports = {
 					delta_normalized:(max-min)/sum
 				}
 				for(let i=0;i<ctx.params.settlements.length;i++) {
-					ctx.params.settlements[i].consumption_normalized = ctx.params.settlements[i].consumption/sum;
+					if(typeof ctx.params.settlements[i] !== 'undefined') {
+						ctx.params.settlements[i].consumption_normalized = ctx.params.settlements[i].consumption/sum;
+					}
 				}
 				return ctx.params;
 			}
