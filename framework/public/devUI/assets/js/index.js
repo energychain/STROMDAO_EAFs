@@ -3,7 +3,9 @@ $(document).ready(function() {
     const updateMeteringStatistics = async function() {
         $.getJSON("/api/tariff/getPrices", function(tariff) {
             for (const [key, value] of Object.entries(tariff)) {
-                $('#price_'+key).html(value.toFixed(4).replace('.',','));
+                if(!isNaN(value)) {
+                    $('#price_'+key).html(value.toFixed(4).replace('.',','));
+                }
             }
             $.getJSON("/api/prediction/statistics?delay=86400000",function(data) {
                 data.total = (1* data.delayed) + (1* data.active);
