@@ -278,7 +278,9 @@ module.exports = {
 				let testset = await ctx.call("prediction.normalize",{settlements:settlements});
 				
 				for(let j=0;j<testset.settlements.length;j++) {
-					testing.push(testset.settlements[j].consumption_normalized);
+					if(typeof testset.settlements[j] !== 'undefined') {
+						testing.push(testset.settlements[j].consumption_normalized);
+					}
 				}
 				 			
 				const train_X = normalized.map(item => item.training);
