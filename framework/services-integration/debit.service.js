@@ -166,7 +166,19 @@ module.exports = {
 						reading: current_invoice.reading,
 						time:current_invoice.invoice.closing
 					});
-					current_invoice.closingReading = rt;
+					if(rt.processed == false ) {
+						// expected if we have a reading in current period.
+						current_invoice.invoice.endReading = rt.reading;
+						rt = await ctx.call("metering.updateReading", {
+							meterId: current_invoice.meterId,
+							reading: current_invoice.invoice.endReading,
+							time:current_invoice.invoice.closing
+						});
+						rt.closedByDebit=true;
+					} else {
+						rt.closedByDebit=false;
+					}
+					current_invoice.finalReading = rt;
 
 					return current_invoice;
 
