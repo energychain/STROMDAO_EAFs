@@ -179,7 +179,9 @@ module.exports = {
 						rt.closedByDebit=false;
 					}
 					current_invoice.finalReading = rt;
-
+					await ctx.call("debit.remove",{id:current_invoice._id});
+					delete current_invoice._id;
+					current_invoice.jwt = await ctx.call("access.createInvoiceJWT",current_invoice);
 					return current_invoice;
 
 				} else {
