@@ -60,10 +60,10 @@ module.exports = {
 				return await ctx.call("debit.find",{query:{"clearingTime": {"$lt": new Date().getTime()-(1 * ctx.params.delay)}}});
 			}
 		},
-		invoice: {
+		add: {
 			rest: {
 				method: "put",
-				path: "/invoice"
+				path: "/add"
 			},
 			params: {
 				"meterId": "string",
@@ -140,7 +140,7 @@ module.exports = {
 				} else {
 					await ctx.call("debit.update",invoice);
 				}
-				await ctx.broker.emit("debit.invoice", invoice);
+				await ctx.broker.emit("debit.add", invoice);
 				return invoice;
 			}
 		}
