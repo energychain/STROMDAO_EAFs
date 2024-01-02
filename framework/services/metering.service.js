@@ -250,7 +250,7 @@ module.exports = {
 					if( 
 						(transientReading.time  < ctx.params.time)	&& // new reading needs to be newer than previous
 						(transientReading.meterId == ctx.params.meterId) &&	// same meter
-						(transientReading.reading < ctx.params.reading)	// new reading needs to be higher than previous
+						(transientReading.reading <= ctx.params.reading)	// new reading needs to be higher than previous
 					  ) {
 						// Valid Reading to update transient virtual metering points
 						const deltaConumption = ctx.params.reading - transientReading.reading;

@@ -24,7 +24,7 @@ module.exports = {
 	 * Settings
 	 */
 	settings: {
-		fields: ["_id", "meterId", "clearingTime","reading","startReading","startTime","cost","consumption","consumption_virtual_1","consumption_virtual_2","consumption_virtual_3","consumption_virtual_4","consumption_virtual_5","consumption_virtual_6","consumption_virtual_7","consumption_virtual_8","consumption_virtual_9","cost_virtual_1","cost_virtual_2","cost_virtual_3","cost_virtual_4","cost_virtual_5","cost_virtual_6","cost_virtual_7","cost_virtual_8","cost_virtual_9"],
+		fields: ["_id", "meterId", "clearingTime","reading","startReading","startTime","cost","consumption","consumption_virtual_1","consumption_virtual_2","consumption_virtual_3","consumption_virtual_4","consumption_virtual_5","consumption_virtual_6","consumption_virtual_7","consumption_virtual_8","consumption_virtual_9","cost_virtual_1","cost_virtual_2","cost_virtual_3","cost_virtual_4","cost_virtual_5","cost_virtual_6","cost_virtual_7","cost_virtual_8","cost_virtual_9","invoice"],
     },
 
 	/**
@@ -146,15 +146,33 @@ module.exports = {
 		},
 		closeBilling: {
 			rest: {
-				method: "post",
+				method: "GET",
 				path: "/closeBilling"
 			},
 			params: {
 				"meterId": "string"
 			},
 			async handler(ctx) {
-				
+				const invoices = await ctx.call("debit.find",{search:ctx.params.meterId,searchFields:['meterId']});
+				if(invoices.length > 0) {
+					let current_invoice = invoices[0];
+					current_invoice.invoice.closing = new Date().getTime();
+					current_invoice.invoice.endEpoch = Math.floor(new Date().getTime() / process.env.EPOCH_DURATION);
+					current_invoice.invoice.endReading = current_invoice.reading;
 
+					// update Reading to ensure "new start"
+					let rt = await ctx.call("metering.updateReading", {
+						meterId: current_invoice.meterId,
+						reading: current_invoice.reading,
+						time:current_invoice.invoice.closing
+					});
+					current_invoice.closingReading = rt;
+
+					return current_invoice;
+
+				} else {
+					throw new Error("No invoice found for meterId " + ctx.params.meterId);
+				}
 			}
 		}
 
