@@ -44,7 +44,7 @@ module.exports = {
 			},
 			async handler(ctx) {
 				if((typeof ctx.params.q == 'undefined') || (ctx.params.q.length == 0)) {
-					return (await ctx.call("debit.list",{ pageSize: 10,sort:"-clearingTime"})).rows;
+					return (await ctx.call("debit.list",{ pageSize: 50,sort:"-clearingTime"})).rows;
 				} else {
 					return await ctx.call("debit.find",{search:ctx.params.q,searchFields:['meterId']});
 				}
@@ -142,6 +142,19 @@ module.exports = {
 				}
 				await ctx.broker.emit("debit.add", invoice);
 				return invoice;
+			}
+		},
+		closeBilling: {
+			rest: {
+				method: "post",
+				path: "/closeBilling"
+			},
+			params: {
+				"meterId": "string"
+			},
+			async handler(ctx) {
+				
+
 			}
 		}
 

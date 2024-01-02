@@ -82,7 +82,7 @@ $(document).ready(function () {
             data: JSON.stringify(dataToSend),
             contentType: 'application/json',
             success: function(response) {
-                 console.log(response);
+                 location.reload();
             },
             error: function(error) {
                 console.error(error);
