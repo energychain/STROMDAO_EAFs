@@ -140,10 +140,20 @@ module.exports = {
 									(previousClearing.epoch <= ctx.params.epoch) &&
 								    (previousClearing.reading <= ctx.params.reading) 		
 							) {
+								
+
+
 								// Apply Price Info to Clearance
 								let prices = await ctx.call("tariff.getPrices",{
 									epoch: ctx.params.epoch
 								});
+
+								// In case of a price change we need to invoice (cloase debit) before processing
+								if(previousClearing.epoch < prices.fromEpoch) {
+									await ctx.call("debit.closeBilling",{meterId:ctx.params.meterId});
+								}
+
+
 								let totalCost = 0;
 
 								for (let [key, value] of Object.entries(prices)) {
