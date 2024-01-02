@@ -54,6 +54,20 @@ const app = async function(token) {
           });
     });
     
+    $.getJSON("/api/debit/open?meterId="+window.meterId+"&token="+token, function(data) {
+        // Handling "Abrechnung Übersicht in Zeile"
+        for (let [key, value] of Object.entries(data)) {
+            if(key.indexOf('cost') == 0) {
+                $('.'+key).html(value.toFixed(2).replace('.',','));
+            }
+            if(key.indexOf('consumption') == 0) {
+                $('.'+key).html((value/1000).toFixed(3).replace('.',','));
+            }
+        }
+        $('.consumption').html((data.consumption/1000).toFixed(3).replace('.',','));
+        $('.cost').html(data.cost.toFixed(2).replace('.',','));
+    });
+
     $.getJSON("/api/clearing/retrieve?meterId="+window.meterId+"&token="+token, function(data) {
         let aggregationCost = {};
         let aggregationConsumption = {};
@@ -207,14 +221,6 @@ const app = async function(token) {
                 window.timelineChartObject.pan({x: -timeSpan});
             },100);
         },500);
-        for (let [key, value] of Object.entries(aggregationCost)) {
-            $('.'+key).html(value.toFixed(2).replace('.',','));
-        }
-        for (let [key, value] of Object.entries(aggregationConsumption)) {
-            $('.'+key).html((value/1000).toFixed(3).replace('.',','));
-        }
-        $('.consumption').html((totalConsumption/1000).toFixed(3).replace('.',','));
-        $('.cost').html(totalCost.toFixed(2).replace('.',','));
 
         // prepare Stats
         let htmlCost = '<table class="table table-condensed">';

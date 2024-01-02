@@ -50,6 +50,37 @@ module.exports = {
 				}
 			}
 		},
+		open: {
+			rest: {
+				method: "GET",
+				path: "/open"
+			},
+			params: {
+				meterId:"string"
+			},
+			openapi: {
+				summary: "Open debits of given meter"
+			},
+			async handler(ctx) {
+				if((typeof ctx.meta.user !== 'undefined') && ((typeof ctx.meta.user.meterId !== 'undefined') || (typeof ctx.meta.user.concentratorId !== 'undefined'))) {
+					// Ensure Authenticated Token is authorized
+					if(typeof ctx.meta.user.concentratorId !== 'undefined') {
+							// a Concentrator is a wildcard MPO allowed to update any meterId.
+					} else {
+						if(ctx.meta.user.meterId !== ctx.params.meterId) {
+							throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
+						}
+					}
+				}
+				let res =  await ctx.call("debit.find",{query:{meterId:ctx.params.meterId}});
+				if(res.length == 0) {
+					return {}
+				} else {
+					delete res[0]._id;
+					return res[0];
+				}
+			}
+		},
 		delayed: {
 			rest: {
 				method: "GET",
@@ -112,8 +143,8 @@ module.exports = {
 				const existingInvoice = await ctx.call("debit.find",{search:ctx.params.meterId,searchFields:['meterId']});
 				const invoice = ctx.params;
 				if (existingInvoice.length > 0) {
-					let current_invoice = existingInvoice[0];
-					for (const [key, value] of Object.entries(current_invoice)) {
+					let current_debit = existingInvoice[0];
+					for (const [key, value] of Object.entries(current_debit)) {
 						if((key.indexOf('cost') == 0) || (key.indexOf('consumption') == 0)) {
 							invoice[key] = (1* value) + (1 * invoice[key]);
 						}
@@ -153,52 +184,80 @@ module.exports = {
 				"meterId": "string"
 			},
 			async handler(ctx) {
-				const invoices = await ctx.call("debit.find",{search:ctx.params.meterId,searchFields:['meterId']});
-				if(invoices.length > 0) {
-					let current_invoice = invoices[0];
-					current_invoice.invoice.closing = new Date().getTime();
-					current_invoice.invoice.endEpoch = Math.floor(new Date().getTime() / process.env.EPOCH_DURATION);
-					current_invoice.invoice.endReading = current_invoice.reading;
+				const debits = await ctx.call("debit.find",{search:ctx.params.meterId,searchFields:['meterId']});
+				if(debits.length > 0) {
+					let current_debit = debits[0];
+					current_debit.invoice.closing = new Date().getTime();
+					current_debit.invoice.endEpoch = Math.floor(new Date().getTime() / process.env.EPOCH_DURATION);
+					current_debit.invoice.endReading = current_debit.reading;
 
 					// update Reading to ensure "new start"
 					let rt = await ctx.call("metering.updateReading", {
-						meterId: current_invoice.meterId,
-						reading: current_invoice.reading,
-						time:current_invoice.invoice.closing
+						meterId: current_debit.meterId,
+						reading: current_debit.reading,
+						time:current_debit.invoice.closing
 					});
+
 					if(rt.processed == false ) {
 						// expected if we have a reading in current period.
-						current_invoice.invoice.endReading = rt.reading;
+						current_debit.invoice.endReading = rt.reading;
 						rt = await ctx.call("metering.updateReading", {
-							meterId: current_invoice.meterId,
-							reading: current_invoice.invoice.endReading,
-							time:current_invoice.invoice.closing
+							meterId: current_debit.meterId,
+							reading: current_debit.invoice.endReading,
+							time:current_debit.invoice.closing
 						});
 						rt.closedByDebit=true;
 					} else {
 						rt.closedByDebit=false;
 					}
-					current_invoice.finalReading = rt;
-					await ctx.call("debit.remove",{id:current_invoice._id});
-					delete current_invoice._id;
-					
-					// We have to create a negative clearing as well
-					let clearing = {
-						meterId:current_invoice.meterId,
-						reading:current_invoice.invoice.endReading
+					current_debit.finalReading = rt;
+					// Collect all clearances in Time Frame
+					current_debit.invoice.opening = 0 // TODO Set with previous credit note
+
+					let offset = 0;
+					let results = 100;
+
+					let transient_clearing = {
+						meterId:current_debit.meterId,
+						reading:current_debit.invoice.endReading,
+						endTime:current_debit.invoice.closing
 					}
-					for (const [key, value] of Object.entries(current_invoice)) {
-						if(key.indexOf('cost') == 0) {
-							clearing[key] = (-1) * value;
-						} 
-						if(key.indexOf('consumption') == 0) {
-							clearing[key] = (-1) * value;
-						} 
+					
+					while(results == 100) {
+						let clearings = await ctx.call("clearing.find",{query:{
+							meterId:current_debit.meterId,
+							startTime:{ "$gte": current_debit.invoice.opening, "$lte":current_debit.invoice.closing }
+						},sort:"-clearingTime",limit:100,offset:offset,populate:["consumption","cost","consumption_virtual_1","consumption_virtual_2","consumption_virtual_3","consumption_virtual_4","consumption_virtual_5","consumption_virtual_6","consumption_virtual_7","consumption_virtual_8","consumption_virtual_9","cost_virtual_1","cost_virtual_2","cost_virtual_3","cost_virtual_4","cost_virtual_5","cost_virtual_6","cost_virtual_7","cost_virtual_8","cost_virtual_9"]});
+						results = clearings.length;
+						offset += clearings.length;
+						for(let i=0;i<clearings.length;i++) {
+							for (const [key, value] of Object.entries(clearings[i])) {
+
+								if(key.indexOf('cost') == 0) {
+									if(typeof transient_clearing[key] == 'undefined') {
+										transient_clearing[key] = 0;
+									}
+									transient_clearing[key] += (-1) * value;
+								} 
+								if(key.indexOf('consumption') == 0) {
+									if(typeof transient_clearing[key] == 'undefined') {
+										transient_clearing[key] = 0;
+									}
+									transient_clearing[key] += (-1) * value;
+								} 
+							}
+						}
 					}
 
-					await ctx.call("clearing.commit",{meterId:current_invoice.meterId});
-					current_invoice.jwt = await ctx.call("access.createInvoiceJWT",current_invoice);
-					return current_invoice;
+					console.log('Transient Clearing',transient_clearing);
+
+					await ctx.call("debit.remove",{id:current_debit._id});
+					delete current_debit._id;
+				
+					current_debit.clearing = await ctx.call("clearing.commit",transient_clearing);
+					current_debit.jwt = await ctx.call("access.createInvoiceJWT",current_debit);
+
+					return current_debit;
 
 				} else {
 					throw new Error("No invoice found for meterId " + ctx.params.meterId);

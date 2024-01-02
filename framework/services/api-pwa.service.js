@@ -44,7 +44,8 @@ module.exports = {
 					"tariff.prices",
 					"access.updateAssetMeta",
 					"access.getAssetMeta",
-					"access.settings"
+					"access.settings",
+					"debit.open"
 				],
 
 				// Route-level Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
