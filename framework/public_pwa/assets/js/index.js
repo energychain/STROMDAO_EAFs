@@ -66,6 +66,98 @@ const app = async function(token) {
         }
         $('.consumption').html((data.consumption/1000).toFixed(3).replace('.',','));
         $('.cost').html(data.cost.toFixed(2).replace('.',','));
+
+        const ctxCostChart = document.getElementById('costChart');
+        if(typeof window.costChartObject !== 'undefined') window.costChartObject.destroy();
+
+        window.costChartObject = new Chart(ctxCostChart, {
+            type: 'doughnut',
+            label: 'Kosten',
+            data: {
+              labels: ["Niedertarif","Mitteltarif","Hochtarif"],
+              datasets: [{
+                label: 'Kosten',
+                data: [data["cost_virtual_1"],data["cost_virtual_2"],data["cost_virtual_3"]],
+                backgroundColor:["#147a50","#c69006","#a0a0a0"],
+                datalabels: {
+                    anchor: 'center',
+                    backgroundColor: null,
+                    borderWidth: 2
+                }
+              }]
+            },
+            options: {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                if(typeof context.parsed !== 'undefined') {
+                                    return context.parsed.toFixed(2).replace('.',',') + ' € / '+Math.round(context.parsed/totalCost*100) + '%';
+                                } else return '';
+                            }
+                        }
+                    },
+                    legend: {
+                        display:false
+                    },
+                    datalabels: {
+                        color: '#606060',
+                        borderColor: 'white',
+                        borderRadius: 25,
+                        borderWidth: 2,
+                        display: function(context) {
+                            return 20;
+                          },
+                        formatter: (value) => {
+                            console.log("Formatter"+value);
+                            return value + '%';
+                        },
+                        font: {
+                            weight: 'bold'
+                          },
+                        padding: 6
+                  
+                    }
+                }
+            }
+        });
+
+        const ctxConsumptionChart = document.getElementById('consumptionChart');
+        if(typeof window.consumptionChartObject !== 'undefined') window.consumptionChartObject.destroy();
+
+        window.consumptionChartObject = new Chart(ctxConsumptionChart, {
+            type: 'doughnut',
+            label: 'Verbrauch',
+            data: {
+              labels: ["Niedertarif","Mitteltarif","Hochtarif"],
+              datasets: [{
+                label: 'Verbrauch',
+                data: [data["consumption_virtual_1"],data["consumption_virtual_2"],data["consumption_virtual_3"]],
+                backgroundColor:["#147a50","#c69006","#a0a0a0"]
+              }]
+            },
+            options: {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                if(typeof context.parsed !== 'undefined') { 
+                                 return (context.parsed/1000).toFixed(3).replace('.',',') + ' kWh / '+Math.round(context.parsed/totalConsumption*100) + '%';
+                                } else return '';
+                            }
+                        }
+                    },
+                    legend: {
+                        display:false
+                    },
+                    datalabels: {
+                        formatter: (value) => {
+                            return value + '%';
+                        },
+                    }
+                }
+            }
+        });
     });
 
     $.getJSON("/api/clearing/retrieve?meterId="+window.meterId+"&token="+token, function(data) {
@@ -236,98 +328,6 @@ const app = async function(token) {
         htmlConsumption += '<tr><td>&#8960; kWh je Monat</td><td>'+((totalConsumption/1000)/(timeSpan/(30*86400000))).toFixed(1).replace('.',',')+'</td></tr>';
         htmlConsumption += '</table>';
         $('#statsConsumption').html(htmlConsumption);
-
-        const ctxCostChart = document.getElementById('costChart');
-        if(typeof window.costChartObject !== 'undefined') window.costChartObject.destroy();
-
-        window.costChartObject = new Chart(ctxCostChart, {
-            type: 'doughnut',
-            label: 'Kosten',
-            data: {
-              labels: ["Niedertarif","Mitteltarif","Hochtarif"],
-              datasets: [{
-                label: 'Kosten',
-                data: [aggregationCost["cost_virtual_1"],aggregationCost["cost_virtual_2"],aggregationCost["cost_virtual_3"]],
-                backgroundColor:["#147a50","#c69006","#a0a0a0"],
-                datalabels: {
-                    anchor: 'center',
-                    backgroundColor: null,
-                    borderWidth: 2
-                }
-              }]
-            },
-            options: {
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                if(typeof context.parsed !== 'undefined') {
-                                    return context.parsed.toFixed(2).replace('.',',') + ' € / '+Math.round(context.parsed/totalCost*100) + '%';
-                                } else return '';
-                            }
-                        }
-                    },
-                    legend: {
-                        display:false
-                    },
-                    datalabels: {
-                        color: '#606060',
-                        borderColor: 'white',
-                        borderRadius: 25,
-                        borderWidth: 2,
-                        display: function(context) {
-                            return 20;
-                          },
-                        formatter: (value) => {
-                            console.log("Formatter"+value);
-                            return value + '%';
-                        },
-                        font: {
-                            weight: 'bold'
-                          },
-                        padding: 6
-                  
-                    }
-                }
-            }
-        });
-
-        const ctxConsumptionChart = document.getElementById('consumptionChart');
-        if(typeof window.consumptionChartObject !== 'undefined') window.consumptionChartObject.destroy();
-
-        window.consumptionChartObject = new Chart(ctxConsumptionChart, {
-            type: 'doughnut',
-            label: 'Verbrauch',
-            data: {
-              labels: ["Niedertarif","Mitteltarif","Hochtarif"],
-              datasets: [{
-                label: 'Verbrauch',
-                data: [aggregationConsumption["consumption_virtual_1"],aggregationConsumption["consumption_virtual_2"],aggregationConsumption["consumption_virtual_3"]],
-                backgroundColor:["#147a50","#c69006","#a0a0a0"]
-              }]
-            },
-            options: {
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                if(typeof context.parsed !== 'undefined') { 
-                                 return (context.parsed/1000).toFixed(3).replace('.',',') + ' kWh / '+Math.round(context.parsed/totalConsumption*100) + '%';
-                                } else return '';
-                            }
-                        }
-                    },
-                    legend: {
-                        display:false
-                    },
-                    datalabels: {
-                        formatter: (value) => {
-                            return value + '%';
-                        },
-                    }
-                }
-            }
-        });
     });
 
     $.getJSON("/api/access/settings?meterId="+window.meterId+"&token="+token, function(data) {
