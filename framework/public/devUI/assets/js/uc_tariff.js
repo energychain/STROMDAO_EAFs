@@ -51,7 +51,6 @@ $(document).ready(function () {
         $('#tariffPrices').html(html);
         $.getJSON("/api/tariff/getPrices", function(data) {
             if(typeof data.nextChange !== 'undefined') {
-               
                 $('#nextChangeLabel').html('<div class="alert alert-warning" role="alert"><span><strong>Geplante Änderung</strong> gültig ab '+new Date(data.nextChange.fromTime).toLocaleString()+'</span></div>');
                 $('#fromTime').val(new Date(data.nextChange.fromTime).toISOString().substring(0,16));
                 data = data.nextChange;
@@ -62,7 +61,7 @@ $(document).ready(function () {
                 if(key !== 'fromTime') {
                     $('#'+key).val(value);
                 } else {
-                    $('#'+key).val(new Date(value).toISOString().substring(0,16));
+                    $('#'+key).val( (new Date(value).toISOString().substring(0,11))+"00:00");
                 }
             }
         });
@@ -76,7 +75,7 @@ $(document).ready(function () {
         for (const [key, value] of Object.entries(customLabels)) {
             dataToSend[key] = 1 * $('#'+key).val()
         }
-        dataToSend.afterTime = new Date($('#afterTime').val()+"Z").getTime();
+        dataToSend.fromTime = new Date($('#fromTime').val()+"Z").getTime();
         $.ajax({
             type: 'POST',
             url: '/api/tariff/setPrices', 

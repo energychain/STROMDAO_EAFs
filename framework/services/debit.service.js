@@ -70,6 +70,44 @@ module.exports = {
 				"clearingTime": "number",
 				"cost": "number"
 			},
+			openapi: {
+				summary: "Add line item to debit account",
+				description: "Add a position to the next invoice of a client identified by meterId.",
+				responses: {
+					200: {
+						"description": "Price Information as given in request",
+						"content": {
+						"application/json": {
+							"schema": {
+								"type": `object`,
+								"properties": {
+									"virtual_1": { 
+										type: `number`, 
+										description: `kWh price of tariff 1` ,
+										example: 0.2
+									},
+									"virtual_2": { 
+										type: `number`, 
+										description: `kWh price of tariff 2` ,
+										example: 0.31
+									},
+									"virtual_3": { 
+										type: `number`, 
+										description: `kWh price of tariff 3` ,
+										example: 0.39
+									}
+								}
+							},
+							"example": {
+								"virtual_1": 0.2,
+								"virtual_2": 0.31,
+								"virtual_3": 0.39
+							}
+						},
+						},
+					},
+				},
+			},
 			async handler(ctx) {
 				const existingInvoice = await ctx.call("debit.find",{search:ctx.params.meterId,searchFields:['meterId']});
 				const invoice = ctx.params;
@@ -91,6 +129,11 @@ module.exports = {
 					} 
 				}
 				if(typeof invoice.id == 'undefined') {
+					invoice.invoice = {
+						opening: new Date().getTime(),
+						startReading:invoice.reading,
+						startEpoch:Math.floor(new Date().getTime() / process.env.EPOCH_DURATION)
+					}
 					await ctx.call("debit.insert",{entity:invoice});
 				} else {
 					await ctx.call("debit.update",invoice);

@@ -121,7 +121,7 @@ module.exports = {
 				virtual_7: { $$t: "Price for `virtual_7` tariff segment", type: "number", optional: true , example:0.5 },
 				virtual_8: { $$t: "Price for `virtual_8` tariff segment", type: "number", optional: true , example:0.5 },
 				virtual_9: { $$t: "Price for `virtual_9` tariff segment", type: "number", optional: true , example:0.5 },
-				afterTime: { $$t: "Valid from time (will be converted to epoch number)", type: "number", optional: true , example:1704120883259 }	
+				fromTime: { $$t: "Valid from time (will be converted to epoch number)", type: "number", optional: true , example:1704120883259 }	
 			},
 			openapi: {
 				summary: "Specify kWh price per tariff segment.",
@@ -162,10 +162,10 @@ module.exports = {
 				},
 			},
 			async handler(ctx) {
-				if(typeof ctx.params.afterTime == 'undefined') {
+				if(typeof ctx.params.fromTime == 'undefined') {
 					ctx.params.fromEpoch = 0;
 				} else {
-					ctx.params.fromEpoch = Math.floor(ctx.params.afterTime / process.env.EPOCH_DURATION);
+					ctx.params.fromEpoch = Math.floor(ctx.params.fromTime / process.env.EPOCH_DURATION);
 				}
 				let labels = await ctx.call("tariff.customLabels");
 				for (const [key, value] of Object.entries(labels)) {
@@ -257,8 +257,8 @@ module.exports = {
 					for(let i=0;(i<results.length) && (typeof prices[key] == 'undefined') ;i++) {
 						if(results[i].label == key) {
 							prices[key] = results[i].price;
-							prices.fromEpoch = results[i].epoch;
-							prices.fromTime = results[i].epoch * process.env.EPOCH_DURATION;
+							prices.fromEpoch = ctx.params.epoch;
+							prices.fromTime = ctx.params.epoch * process.env.EPOCH_DURATION;
 						}
 					}
 				}

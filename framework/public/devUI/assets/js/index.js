@@ -22,10 +22,11 @@ $(document).ready(function() {
                     $('#'+key).html( (value/1000).toFixed(0).replace('.',','));
                     $('#'+key+'Percentage').html( 'kWh ('+ (  ( value/data.consumptions.consumption )*100  ).toFixed(1).replace('.',',')+"%)" );
                     const tariffKey = key.replace('consumption_','');
-                    if(typeof tariff[tariffKey] !== 'undefined') {
+                    if((typeof tariff[tariffKey] !== 'undefined') && (!isNaN(tariff[tariffKey]))) {
                         totalCost += (value/1000) * tariff[tariffKey];
                     }
                 }
+                
                 $('#price').html( ( (totalCost * 1000) / data.consumptions.consumption).toFixed(4).replace('.',',') );
                 $('#consumption').attr('data',data.consumptions.consumption);
                 if(typeof  window.epochData == 'undefined') {
@@ -110,6 +111,9 @@ $(document).ready(function() {
                 },
                 options: {
                     fill:true,
+                    options: {
+                        responsive: true
+                    },
                     tooltip: {
                         callbacks: {
                             label: function(context) {
