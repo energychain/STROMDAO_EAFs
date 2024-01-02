@@ -128,12 +128,14 @@ module.exports = {
 						}
 					} 
 				}
-				if(typeof invoice.id == 'undefined') {
+				if(typeof invoice.invoice == 'undefined') {
 					invoice.invoice = {
 						opening: new Date().getTime(),
 						startReading:invoice.reading,
 						startEpoch:Math.floor(new Date().getTime() / process.env.EPOCH_DURATION)
 					}
+				}
+				if(typeof invoice.id == 'undefined') {
 					await ctx.call("debit.insert",{entity:invoice});
 				} else {
 					await ctx.call("debit.update",invoice);
