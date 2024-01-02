@@ -10,7 +10,7 @@ module.exports = {
         // about project
         description: "Energy Applications Framework designed for the German Electricity Market",
         title: "STROMDAO EAF",
-        version: "0.2.32"
+        version: "0.2.33"
       },
       tags: [
         // you tags
