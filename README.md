@@ -93,7 +93,7 @@ Distributed under the Apache-2.0 License. See [License](./LICENSE) for more info
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Maintainer / Imprint
+## [Maintainer / Imprint](./IMPRINT.md)
 
 <addr>
 STROMDAO GmbH  <br/>
