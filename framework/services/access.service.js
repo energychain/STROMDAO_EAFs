@@ -365,6 +365,27 @@ module.exports = {
 				return token;
 			}
 		},
+		createInvoiceJWT: {
+			rest: {
+				method: "GET",
+				path: "/createInvoiceJWT"
+			},
+			openapi: {
+				summary: "Create Token to verify invoices of this instance."
+			},
+			params: {
+				meterId: {
+					type: "string",
+					required: true
+				}
+			},
+			async handler(ctx) {
+				const signOptions = JSON.parse(process.env.JWT_OPTIONS);
+				signOptions.expiresIn = process.env.JWT_EXPIRE_CLEARING;
+				const token = jwt.sign(ctx.params, process.env.JWT_PRIVATEKEY,signOptions);
+				return token;
+			}
+		},
 		/*
 			Returns payload data of a Json-Web-Token created using this service.
 		*/
