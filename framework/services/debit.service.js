@@ -181,6 +181,22 @@ module.exports = {
 					current_invoice.finalReading = rt;
 					await ctx.call("debit.remove",{id:current_invoice._id});
 					delete current_invoice._id;
+					
+					// We have to create a negative clearing as well
+					let clearing = {
+						meterId:current_invoice.meterId,
+						reading:current_invoice.invoice.endReading
+					}
+					for (const [key, value] of Object.entries(current_invoice)) {
+						if(key.indexOf('cost') == 0) {
+							clearing[key] = (-1) * value;
+						} 
+						if(key.indexOf('consumption') == 0) {
+							clearing[key] = (-1) * value;
+						} 
+					}
+
+					await ctx.call("clearing.commit",{meterId:current_invoice.meterId});
 					current_invoice.jwt = await ctx.call("access.createInvoiceJWT",current_invoice);
 					return current_invoice;
 
