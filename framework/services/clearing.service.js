@@ -149,9 +149,7 @@ module.exports = {
 								});
 
 								// In case of a price change we need to invoice (cloase debit) before processing
-								if(previousClearing.epoch < prices.fromEpoch) {
-									await ctx.call("debit.closeBilling",{meterId:ctx.params.meterId});
-								}
+
 
 
 								let totalCost = 0;
@@ -174,7 +172,9 @@ module.exports = {
 									// If cost < 0 it would be a credit 
 									await ctx.call("debit.add",ctx.params);
 								} 
-								// TODO validate virtual readings
+								if((previousClearing.epoch < prices.fromEpoch) && (ctx.params.cost > 0)) {
+									await ctx.call("debit.closeBilling",{meterId:ctx.params.meterId});
+								}
 							} 
 						}
 				}

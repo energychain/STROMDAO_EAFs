@@ -37,6 +37,11 @@ const app = async function(token) {
               }]
             },
             options: {
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                },
                 responsive: true,
                 plugins: {
                     tooltip: {
