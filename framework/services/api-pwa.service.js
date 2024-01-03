@@ -11,7 +11,7 @@ const ApiGateway = require("moleculer-web");
  */
 
 module.exports = {
-	name: "api-metering",
+	name: "api-pwa",
 	mixins: [ApiGateway],
 
 	/** @type {ApiSettingsSchema} More info about settings: https://moleculer.services/docs/0.14/moleculer-web.html */
