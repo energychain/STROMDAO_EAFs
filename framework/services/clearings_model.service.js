@@ -13,19 +13,19 @@ const DbService = require("moleculer-db");
 
 /** @type {ServiceSchema} */
 module.exports = {
-	name: "readings",
+	name: "clearings_model",
 	
 	adapter: process.db_adapter,
 	
-	collection: "readings",
+	collection: "clearing",
 
 	mixins: [DbService],
 	/**
 	 * Settings
 	 */
 	settings: {
-		fields: ["_id", "meterId", "reading","time","virtual_0","virtual_1","virtual_2","virtual_3","virtual_4","virtual_5","virtual_6","virtual_7","virtual_8","virtual_9","clearingJWT"],
-   },
+		fields: ["_id", "meterId", "reading","time","virtual_0","virtual_1","virtual_2","virtual_3","virtual_4","virtual_5","virtual_6","virtual_7","virtual_8","virtual_9","startReading","startTime"],
+	   },
 
 	/**
 	 * Dependencies
@@ -43,7 +43,7 @@ module.exports = {
 				path: "/assets"
 			},
 			async handler(ctx) {
-				return await ctx.call("readings.find",{search:ctx.params.q,searchFields:['meterId']});
+				return await ctx.call("clearings_model.find",{search:ctx.params.q,searchFields:['meterId']});
 			}
 		}
 	},

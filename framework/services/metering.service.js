@@ -88,7 +88,7 @@ module.exports = {
 						throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
 					}
 				}
-				const _previousReading = await ctx.call("readings.find",{
+				const _previousReading = await ctx.call("readings_model.find",{
 						query: {
 							meterId: ctx.params.meterId
 						}
@@ -193,7 +193,7 @@ module.exports = {
 						}
 					}
 				}
-				let _previousReading = await ctx.call("readings.find",{
+				let _previousReading = await ctx.call("readings_model.find",{
 						query: {
 							meterId: ctx.params.meterId
 						}
@@ -240,7 +240,7 @@ module.exports = {
 				}
 				// Check if we know this meter by testing the length of the result (0 = not known, 1 = known)
 				if(_previousReading.length == 0) {
-					transientReading = await ctx.call("readings.insert",{entity:transientReading});
+					transientReading = await ctx.call("readings_model.insert",{entity:transientReading});
 					transientReading.processed = true;
 					transientReading.consumption = 0; // No consumption on first meter reading
 				} else {
@@ -286,25 +286,25 @@ module.exports = {
 						transientReading.jwt = await ctx.call("access.createReadingJWT",transientReading);
 						if(typeof ctx.params.clearing !== 'undefined') {
 							// in case we received a clearing we might need to insert first
-							const findExisting = await ctx.call("readings.find",{
+							const findExisting = await ctx.call("readings_model.find",{
 								query: {
 									meterId: ctx.params.meterId
 								}
 							});
 							if(findExisting.length == 0) {
-								await ctx.call("readings.insert",{entity:transientReading});
+								await ctx.call("readings_model.insert",{entity:transientReading});
 							} else {
 								for(let i=0;i<findExisting.length;i++) {
 									try {
-										await ctx.call("readings.remove",{id:findExisting[i]._id});
+										await ctx.call("readings_model.remove",{id:findExisting[i]._id});
 									} catch(e) {
 										console.error("Error removing transient reading",e);
 									} 
 								}
-								await ctx.call("readings.insert",{entity:transientReading});
+								await ctx.call("readings_model.insert",{entity:transientReading});
 							}
 						} else {
-							await ctx.call("readings.update",transientReading);
+							await ctx.call("readings_model.update",transientReading);
 						}
 						transientReading.consumption = deltaConumption;
 						delete transientReading.id;
@@ -338,7 +338,7 @@ module.exports = {
 					if(typeof transientReading._id !== 'undefined') {
 						transientReading.clearingJWT = clearing.jwt;
 						delete transientReading._id;
-						await ctx.call("readings.update",{id:transientReading.id,clearingJWT:transientReading.clearingJWT}); // ensures clearing to be part of.
+						await ctx.call("readings_model.update",{id:transientReading.id,clearingJWT:transientReading.clearingJWT}); // ensures clearing to be part of.
 					}
 				}
 				delete transientReading._id; // For operational safety we do not provide our db IDs to the client.

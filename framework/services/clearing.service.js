@@ -12,13 +12,9 @@ const ApiGateway = require("moleculer-web"); // Included for Invalid Authenticat
 /** @type {ServiceSchema} */
 module.exports = {
 	name: "clearing",
-
-	mixins: [DbService],
 	
 	adapter: process.db_adapter,
 	
-	collection: "clearing",
-
 	/**
 	 * Settings
 	 */
@@ -41,7 +37,7 @@ module.exports = {
 				path: "/assets"
 			},
 			async handler(ctx) {
-				return await ctx.call("clearing.find",{search:ctx.params.q,searchFields:['meterId'],sort:"-clearingTime"});
+				return await ctx.call("clearings_model.find",{search:ctx.params.q,searchFields:['meterId'],sort:"-clearingTime"});
 			}
 		},
 		retrieve: {
@@ -62,7 +58,7 @@ module.exports = {
 						throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
 					}
 				}
-				let results =  await ctx.call("clearing.find",{
+				let results =  await ctx.call("clearings_model.find",{
 					query: {
 						meterId: ctx.params.meterId
 					},
@@ -118,7 +114,7 @@ module.exports = {
 				ctx.params.processed= false;
 				ctx.params.epoch = Math.floor(ctx.params.endTime / process.env.EPOCH_DURATION);
 				// Check if previous clearing exists for given meter
-				let previousClearings = await ctx.call("clearing.find",{
+				let previousClearings = await ctx.call("clearings_model.find",{
 					query: {
 						meterId: ctx.params.meterId
 					},
@@ -132,7 +128,7 @@ module.exports = {
 						if(previousClearings.length == 0) {	
 							ctx.params.jwt = await ctx.call("access.createClearingJWT",ctx.params);
 							ctx.params.processed = true;
-							await ctx.call("clearing.insert",{entity:ctx.params});
+							await ctx.call("clearings_model.insert",{entity:ctx.params});
 						} else {
 							// Validate basic characteristics of clearing
 							let previousClearing = previousClearings[0];
@@ -166,7 +162,7 @@ module.exports = {
 								ctx.params.jwt = await ctx.call("access.createClearingJWT",ctx.params);
 								ctx.params.startReading = previousClearing.reading;
 								ctx.params.startTime = previousClearing.endTime + 1; 
-								await ctx.call("clearing.insert",{entity:ctx.params});
+								await ctx.call("clearings_model.insert",{entity:ctx.params});
 								await ctx.broker.emit("clearing.created", ctx.params);
 								if(ctx.params.cost > 0) {
 									// If cost < 0 it would be a credit 
