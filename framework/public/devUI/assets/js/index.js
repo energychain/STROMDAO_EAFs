@@ -7,7 +7,7 @@ $(document).ready(function() {
                     $('#price_'+key).html(value.toFixed(4).replace('.',','));
                 }
             }
-            $.getJSON("/api/prediction/statistics?delay=86400000",function(data) {
+            $.getJSON("/api/statistics/overview?delay=86400000",function(data) {
                 data.total = (1* data.delayed) + (1* data.active);
                 $('#metersInactive').html(data.delayed);
                 $('#metersActive').html(data.active);

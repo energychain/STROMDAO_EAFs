@@ -31,63 +31,7 @@ module.exports = {
 		 * Say a 'Hello' action.
 		 *
 		 * @returns
-		 */
-		hello: {
-			rest: {
-				method: "GET",
-				path: "/hello"
-			},
-			async handler(ctx) {
-				const data = (await ctx.call("loadprofile.list")).rows;
-				return await ctx.call("prediction.normalize",{settlements:data});
-			}
-		},
-		statistics: {
-			rest: {
-				method: "GET",
-				path: "/statistics"
-			},
-			async handler(ctx) {
-				if(typeof ctx.params.delay == 'undefined') ctx.params.delay = 86400000;
-				const ts = new Date().getTime();
-				const startTime = ts - ctx.params.delay;
-				const delayed = await ctx.call("debit.find",{query:{"clearingTime": {"$lt": ts-(1 * ctx.params.delay)}}});
-				const active = await ctx.call("debit.find",{query:{"clearingTime": {"$gt": ts-(1 * ctx.params.delay)}}});
-				let consumptions = {};
-				let epochs = {};
-				for(let i=0;i<active.length;i++) {
-					const clearings = await ctx.call("clearing.retrieve",{"meterId": active[i].meterId});
-					for(let j=0;j<clearings.length;j++) {
-						if(clearings[j].endTime >= startTime) {
-							if(typeof epochs["epoch_"+clearings[j].epoch] == 'undefined'){
-								epochs["epoch_"+clearings[j].epoch] = {}
-							}
-							for (const [key, value] of Object.entries(clearings[j])) {
-								if(key.indexOf('consumption')>-1) {
-									if(typeof consumptions[key] == 'undefined') {
-										consumptions[key] = 0;
-									}
-									if(typeof epochs["epoch_"+clearings[j].epoch][key] == 'undefined') {
-										epochs["epoch_"+clearings[j].epoch][key] = 0;
-									}
-									consumptions[key] += value;
-									epochs["epoch_"+clearings[j].epoch][key] += value;
-								}
-								
-							}
-						}
-					}
-				}
-
-				const res = {
-					delayed: delayed.length,
-					active: active.length,
-					consumptions: consumptions,
-					epochs:epochs
-				}
-				return res;
-			}
-		},
+		 */		
 		normalize: {
 			rest: {
 				method: "GET",
