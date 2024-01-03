@@ -244,8 +244,8 @@ module.exports = {
 					for(let i=0;(i<results.length) && (typeof prices[key] == 'undefined') ;i++) {
 						if(results[i].label == key) {
 							prices[key] = results[i].price;
-							prices.fromEpoch = ctx.params.epoch;
-							prices.fromTime = ctx.params.epoch * process.env.EPOCH_DURATION;
+							prices.fromEpoch = results[i].epoch;
+							prices.fromTime = results[i].epoch * process.env.EPOCH_DURATION;
 						}
 					}
 				}
