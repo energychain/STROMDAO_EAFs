@@ -182,7 +182,7 @@ module.exports = {
 				if(typeof ctx.params.meterId !== 'undefined') {
 					params.meterId = ctx.params.meterId;
 				}
-				const profile = await ctx.call("loadprofile_model.load",params);
+				const profile = await ctx.call("loadprofile.load",params);
 				let normalized = [];
 
 				if(typeof ctx.params.computedEpochs  !== 'undefined') {
