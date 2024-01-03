@@ -94,7 +94,7 @@ module.exports = {
 					if(typeof ctx.params.meterId !== 'undefined') {
 						query.meterId = ctx.params.meterId;
 					}
-					let historical = await ctx.call("loadprofile.find",{
+					let historical = await ctx.call("loadprofile_model.find",{
 						query: query,
 						limit:10000,
 						sort:"-epoch"
@@ -182,7 +182,7 @@ module.exports = {
 				if(typeof ctx.params.meterId !== 'undefined') {
 					params.meterId = ctx.params.meterId;
 				}
-				const profile = await ctx.call("loadprofile.load",params);
+				const profile = await ctx.call("loadprofile_model.load",params);
 				let normalized = [];
 
 				if(typeof ctx.params.computedEpochs  !== 'undefined') {

@@ -15,11 +15,6 @@ const DbService = require("moleculer-db");
 module.exports = {
 	name: "loadprofile",
 	
-	adapter: process.db_adapter,
-	
-	collection: "loadprofile",
-
-	mixins: [DbService],
 	/**
 	 * Settings
 	 */
@@ -42,7 +37,7 @@ module.exports = {
 				path: "/assets"
 			},
 			async handler(ctx) {
-				return await ctx.call("loadprofile.find",{search:ctx.params.q,searchFields:['meterId']});
+				return await ctx.call("loadprofile_model.find",{search:ctx.params.q,searchFields:['meterId']});
 			}
 		},
 		addSettlement: {
@@ -58,7 +53,7 @@ module.exports = {
 			} ,
 			async handler(ctx) {
 				const EPOCH_DURATION = await ctx.call("tariff.epochDuration");
-				const existsings = await ctx.call("loadprofile.find",{
+				const existsings = await ctx.call("loadprofile_model.find",{
 					query: {
 						meterId: ctx.params.meterId,
 						epoch: ctx.params.epoch
@@ -85,9 +80,9 @@ module.exports = {
 				existing.consumption += 1 * ctx.params.consumption;
 				if((typeof existing._id !== 'undefined') || (typeof existing.id !== 'undefined')) {
 					if(typeof existing._id !== 'undefined') existing.id = existing._id;
-					await ctx.call("loadprofile.update",existing);
+					await ctx.call("loadprofile_model.update",existing);
 				} else {
-					await ctx.call("loadprofile.insert",{entity:existing});
+					await ctx.call("loadprofile_model.insert",{entity:existing});
 				}
 				return;
 			}
@@ -128,7 +123,7 @@ module.exports = {
 				if(ctx.params.meterId) {
 					query.meterId = ctx.params.meterId;
 				}
-				let historical = await ctx.call("loadprofile.find",{
+				let historical = await ctx.call("loadprofile_model.find",{
 					query: query,
 					limit:10000,
 					sort:"-epoch"
