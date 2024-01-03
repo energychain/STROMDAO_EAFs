@@ -21,7 +21,7 @@ $(document).ready(function() {
 
                 for (const [key, value] of Object.entries(data.consumptions)) {
                     $('#'+key).html( (value/1000).toFixed(0).replace('.',','));
-                    $('#'+key+'Percentage').html( 'kWh ('+ (  ( (value/1000)/data.consumptions.consumption )  ).toFixed(1).replace('.',',')+"%)" );
+                    $('#'+key+'Percentage').html( 'kWh ('+ (   (value/data.consumptions.consumption )*100  ).toFixed(1).replace('.',',')+"%)" );
                     const tariffKey = key.replace('consumption_','');
                     if((typeof tariff[tariffKey] !== 'undefined') && (!isNaN(tariff[tariffKey]))) {
                         totalCost += (value/1000) * tariff[tariffKey];
@@ -42,6 +42,8 @@ $(document).ready(function() {
     const updateMeteringPrediction = async function() {
     
         const renderPrediction = function(data) {
+            window.localStorage.setItem("cache_prediction_x_epochs", JSON.stringify(data));
+
             if(data.length == 0) {
                 $('#predictionDiv').hide();
             } else {
@@ -76,7 +78,6 @@ $(document).ready(function() {
     
                 chartLabels.push(data[i].epoch_of_day+":00");
             }
-            console.log('cdR',chartDataReference);
 
             const ctxChart = document.getElementById('predictionChart');
             if(typeof window.predictionObject !== 'undefined') window.predictionObject.destroy();
@@ -149,7 +150,8 @@ $(document).ready(function() {
         }
 
         const renderProfile = function(data) {
-        
+        window.localStorage.setItem("cache_epoch_of_day", JSON.stringify(data));
+
         let chartDataMeter = [];
         let chartDataProfile = [];
         let chartLabels = [];
@@ -168,8 +170,13 @@ $(document).ready(function() {
             chartLabels.push(data.settlements[i].epoch_of_day+":00");
 
         }
-        
+            if((typeof window.localStorage.getItem("cache_prediction_x_epochs") !== 'undefined') && (window.localStorage.getItem("cache_prediction_x_epochs") !== null)) {
+                renderPrediction(JSON.parse(window.localStorage.getItem("cache_prediction_x_epochs")));
+            }
             $.getJSON("/api/prediction/x_epochs?x=12&predict=6", renderPrediction);
+        }
+        if((typeof window.localStorage.getItem("cache_epoch_of_day") !== 'undefined') && (window.localStorage.getItem("cache_epoch_of_day") !== null)) {
+            renderProfile(JSON.parse(window.localStorage.getItem("cache_epoch_of_day")));
         }
         $.getJSON("/api/prediction/epoch_of_day", renderProfile);
     }

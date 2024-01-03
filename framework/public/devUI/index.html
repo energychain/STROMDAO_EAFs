@@ -7,6 +7,7 @@
     <title>STROMDAO Energy Application Frameworks</title>
     <meta name="description" content="Energy Application Frameworks">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css?h=cd822b7fd22c8a95a68470c795adea69">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css?h=d98553506d4393860db8a633e4842ead">
 </head>
 
 <body>
@@ -30,7 +31,7 @@
         <div class="card" style="margin-bottom: 25px;">
             <div class="card-body">
                 <h3 class="card-title">Messstellen</h3>
-                <div class="row">
+                <div class="row" style="margin-bottom: 25px;">
                     <div class="col text-center h-100">
                         <h5 class="display-1 text-danger" id="metersInactive">-</h5>
                         <p id="metersInactivePercentage" class="text-muted">%</p>
@@ -46,7 +47,11 @@
                         <p id="metersTotalPercentage" class="text-muted">%</p>
                         <h5>Gesamt</h5>
                     </div>
+                    <div class="col"></div>
                 </div>
+                <form id="searchMeter">
+                    <div class="input-group" style="margin-bottom: 15px;"><input class="form-control" type="search" id="q" placeholder="(nach Kennung suchen)"><button class="btn btn-dark" type="submit"><i class="fa fa-search"></i></button></div>
+                </form>
             </div>
         </div>
         <div class="card" style="margin-bottom: 25px;">
@@ -127,7 +132,7 @@
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
     <script src="assets/js/3party/chart.js?h=eeca2582f0217edc4ac85af347e0d4ad"></script>
     <script src="assets/js/utils.js?h=13e600a17e8be592a9d46183d1921d45"></script>
-    <script src="assets/js/index.js?h=43bd99d5cd0e0ef8d268660cb5c9a52b"></script>
+    <script src="assets/js/index.js?h=0852ebf722b09f7765ab694e59616f55"></script>
 </body>
 
 </html>
