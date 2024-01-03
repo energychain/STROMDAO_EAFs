@@ -15,22 +15,11 @@ const DbService = require("moleculer-db");
 module.exports = {
 	name: "debit",
 	
-	adapter: process.db_adapter,
-	
-	collection: "debit",
-
-	mixins: [DbService],
-	/**
-	 * Settings
-	 */
-	settings: {
-		fields: ["_id", "meterId", "clearingTime","reading","startReading","startTime","cost","consumption","consumption_virtual_1","consumption_virtual_2","consumption_virtual_3","consumption_virtual_4","consumption_virtual_5","consumption_virtual_6","consumption_virtual_7","consumption_virtual_8","consumption_virtual_9","cost_virtual_1","cost_virtual_2","cost_virtual_3","cost_virtual_4","cost_virtual_5","cost_virtual_6","cost_virtual_7","cost_virtual_8","cost_virtual_9","invoice"],
-    },
 
 	/**
 	 * Dependencies
 	 */
-	dependencies: [],
+	dependencies: ["debit_model"],
 
 	/**
 	 * Actions
@@ -44,9 +33,9 @@ module.exports = {
 			},
 			async handler(ctx) {
 				if((typeof ctx.params.q == 'undefined') || (ctx.params.q.length == 0)) {
-					return (await ctx.call("debit.list",{ pageSize: 50,sort:"-clearingTime"})).rows;
+					return (await ctx.call("debit_model.list",{ pageSize: 50,sort:"-clearingTime"})).rows;
 				} else {
-					return await ctx.call("debit.find",{search:ctx.params.q,searchFields:['meterId']});
+					return await ctx.call("debit_model.find",{search:ctx.params.q,searchFields:['meterId']});
 				}
 			}
 		},
@@ -72,7 +61,7 @@ module.exports = {
 						}
 					}
 				}
-				let res =  await ctx.call("debit.find",{query:{meterId:ctx.params.meterId}});
+				let res =  await ctx.call("debit_model.find",{query:{meterId:ctx.params.meterId}});
 				if(res.length == 0) {
 					return {}
 				} else {
@@ -88,7 +77,7 @@ module.exports = {
 			},
 			async handler(ctx) {
 				if(typeof ctx.params.delay == 'undefined') ctx.params.delay = 86400000;
-				return await ctx.call("debit.find",{query:{"clearingTime": {"$lt": new Date().getTime()-(1 * ctx.params.delay)}}});
+				return await ctx.call("debit_model.find",{query:{"clearingTime": {"$lt": new Date().getTime()-(1 * ctx.params.delay)}}});
 			}
 		},
 		add: {
@@ -140,7 +129,7 @@ module.exports = {
 				},
 			},
 			async handler(ctx) {
-				const existingInvoice = await ctx.call("debit.find",{search:ctx.params.meterId,searchFields:['meterId']});
+				const existingInvoice = await ctx.call("debit_model.find",{search:ctx.params.meterId,searchFields:['meterId']});
 				const invoice = ctx.params;
 				if (existingInvoice.length > 0) {
 					let current_debit = existingInvoice[0];
@@ -167,9 +156,9 @@ module.exports = {
 					}
 				}
 				if(typeof invoice.id == 'undefined') {
-					await ctx.call("debit.insert",{entity:invoice});
+					await ctx.call("debit_model.insert",{entity:invoice});
 				} else {
-					await ctx.call("debit.update",invoice);
+					await ctx.call("debit_model.update",invoice);
 				}
 				await ctx.broker.emit("debit.add", invoice);
 				return invoice;
@@ -184,7 +173,7 @@ module.exports = {
 				"meterId": "string"
 			},
 			async handler(ctx) {
-				const debits = await ctx.call("debit.find",{search:ctx.params.meterId,searchFields:['meterId']});
+				const debits = await ctx.call("debit_model.find",{search:ctx.params.meterId,searchFields:['meterId']});
 				if(debits.length > 0) {
 					let current_debit = debits[0];
 					current_debit.invoice.closing = new Date().getTime();
@@ -251,7 +240,7 @@ module.exports = {
 
 					console.log('Transient Clearing',transient_clearing);
 
-					await ctx.call("debit.remove",{id:current_debit._id});
+					await ctx.call("debit_model.remove",{id:current_debit._id});
 					delete current_debit._id;
 				
 					current_debit.clearing = await ctx.call("clearing.commit",transient_clearing);
