@@ -37,8 +37,8 @@ module.exports = {
 				if(typeof ctx.params.delay == 'undefined') ctx.params.delay = 86400000;
 				const ts = new Date().getTime();
 				const startTime = ts - ctx.params.delay;
-				const delayed = await ctx.call("debit.find",{query:{"clearingTime": {"$lt": ts-(1 * ctx.params.delay)}}});
-				const active = await ctx.call("debit.find",{query:{"clearingTime": {"$gt": ts-(1 * ctx.params.delay)}}});
+				const delayed = await ctx.call("debit_model.find",{query:{"clearingTime": {"$lt": ts-(1 * ctx.params.delay)}}});
+				const active = await ctx.call("debit_model.find",{query:{"clearingTime": {"$gt": ts-(1 * ctx.params.delay)}}});
 				let consumptions = {};
 				let epochs = {};
 				for(let i=0;i<active.length;i++) {
