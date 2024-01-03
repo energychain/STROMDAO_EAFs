@@ -41,6 +41,7 @@ module.exports = {
 				const active = await ctx.call("debit_model.find",{query:{"clearingTime": {"$gt": ts-(1 * ctx.params.delay)}}});
 				let consumptions = {};
 				let epochs = {};
+				let totalConsumption = 0;
 				for(let i=0;i<active.length;i++) {
 					const clearings = await ctx.call("clearing.retrieve",{"meterId": active[i].meterId});
 					for(let j=0;j<clearings.length;j++) {
@@ -48,7 +49,7 @@ module.exports = {
 							if(typeof epochs["epoch_"+clearings[j].epoch] == 'undefined'){
 								epochs["epoch_"+clearings[j].epoch] = {}
 							}
-							let totalConsumption = 0;
+						
 
 							for (const [key, value] of Object.entries(clearings[j])) {
 								if(key.indexOf('consumption_')>-1) {
@@ -63,11 +64,11 @@ module.exports = {
 									epochs["epoch_"+clearings[j].epoch][key] += value;
 								}
 							}
-							consumptions.consumption = totalConsumption;
+							
 						}
 					}
 				}
-
+				consumptions.consumption = totalConsumption;
 				const res = {
 					delayed: delayed.length,
 					active: active.length,

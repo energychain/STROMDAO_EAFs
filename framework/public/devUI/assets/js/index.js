@@ -21,7 +21,7 @@ $(document).ready(function() {
 
                 for (const [key, value] of Object.entries(data.consumptions)) {
                     $('#'+key).html( (value/1000).toFixed(0).replace('.',','));
-                    $('#'+key+'Percentage').html( 'kWh ('+ (  ( value/data.consumptions.consumption )*100  ).toFixed(1).replace('.',',')+"%)" );
+                    $('#'+key+'Percentage').html( 'kWh ('+ (  ( (value/1000)/data.consumptions.consumption )  ).toFixed(1).replace('.',',')+"%)" );
                     const tariffKey = key.replace('consumption_','');
                     if((typeof tariff[tariffKey] !== 'undefined') && (!isNaN(tariff[tariffKey]))) {
                         totalCost += (value/1000) * tariff[tariffKey];
@@ -29,9 +29,9 @@ $(document).ready(function() {
                     }
                 }
                 
-                $('#price').html( ( (totalCost * 1000) / data.consumptions.consumption).toFixed(4).replace('.',',') );
-                $('#consumption').attr('data',totalConsumption);
-                $('#consumption').html( (totalConsumption/1000).toFixed(3) )
+                $('#price').html( ( (totalCost * 1) / (totalConsumption/1000)).toFixed(4).replace('.',',') );
+                $('#consumption').attr('data',totalConsumption/1000);
+                $('#consumption').html( (totalConsumption/1000).toFixed(0) );
                 if(typeof  window.epochData == 'undefined') {
                     updateMeteringPrediction();
                 }
@@ -72,7 +72,7 @@ $(document).ready(function() {
                     chartDataPrediction.push(data[i].consumption/1000);
                     inPrediction = true;
                 }
-                chartDataReference.push(window.epochData["e_"+data[i].epoch_of_day] *  ($('#consumption').attr('data') /1000));
+                chartDataReference.push(window.epochData["e_"+data[i].epoch_of_day] *  ($('#consumption').attr('data')));
     
                 chartLabels.push(data[i].epoch_of_day+":00");
             }
