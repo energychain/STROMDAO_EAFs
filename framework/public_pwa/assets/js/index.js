@@ -202,9 +202,11 @@ const app = async function(token) {
             }
         }
         totalConsumption = 0;
+
         for (let [key, value] of Object.entries(aggregationConsumption)) {
             totalConsumption += 1 * value;
         }
+        console.log("tC1",totalConsumption,"tCo1",totalCost);
         function interPolateChartArray(inputArray) {
             inputArray.reverse();
             function interpolateY(point1, point2, xValue) {
@@ -318,7 +320,7 @@ const app = async function(token) {
                 window.timelineChartObject.pan({x: -timeSpan});
             },100);
         },500);
-
+        console.log("tC",totalConsumption,"tCo",totalCost);
         // prepare Stats
         let htmlCost = '<table class="table table-condensed">';
         htmlCost += '<tr><td>&#8960; Preis je kWh</td><td>'+(totalCost/(totalConsumption/1000)).toFixed(3).replace('.',',')+'€</td></tr>';

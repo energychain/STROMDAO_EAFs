@@ -11,7 +11,7 @@ const ApiGateway = require("moleculer-web");
  */
 
 module.exports = {
-	name: "api",
+	name: "api-eaf",
 	mixins: [ApiGateway],
 
 	/** @type {ApiSettingsSchema} More info about settings: https://moleculer.services/docs/0.14/moleculer-web.html */
@@ -33,7 +33,7 @@ module.exports = {
 				  'GET /ui': 'openapi.ui', // ui
 				  'GET /assets/:file': 'openapi.assets', // js/css files
 				},
-			  },
+			},
 			{
 				path: "/api",
 				
@@ -101,7 +101,7 @@ module.exports = {
 				},
 
 				// Mapping policy setting. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Mapping-policy
-				mappingPolicy: "all",
+				mappingPolicy: "restrict",
 
 				// Enable/disable logging
 				logging: true

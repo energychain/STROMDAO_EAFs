@@ -48,7 +48,7 @@ module.exports = {
 				meterId:"string"
 			},
 			openapi: {
-				summary: "Open debits of given meter"
+				summary: "Outstanding (open) debits of given meter"
 			},
 			async handler(ctx) {
 				if((typeof ctx.meta.user !== 'undefined') && ((typeof ctx.meta.user.meterId !== 'undefined') || (typeof ctx.meta.user.concentratorId !== 'undefined'))) {
