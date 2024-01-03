@@ -256,7 +256,7 @@ module.exports = {
 				
 					current_debit.clearing = await ctx.call("clearing.commit",transient_clearing);
 					current_debit.jwt = await ctx.call("access.createInvoiceJWT",current_debit);
-					await ctx.call("invoice.insert",{entity:current_debit});
+					await ctx.call("invoice_model.insert",{entity:current_debit});
 					await ctx.broker.emit("invoice.created", current_debit);
 					return current_debit;
 

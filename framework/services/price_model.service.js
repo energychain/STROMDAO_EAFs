@@ -13,18 +13,18 @@ const DbService = require("moleculer-db");
 
 /** @type {ServiceSchema} */
 module.exports = {
-	name: "invoice",
+	name: "price_model",
 	
 	adapter: process.db_adapter,
 	
-	collection: "invoice",
+	collection: "price",
 
 	mixins: [DbService],
 	/**
 	 * Settings
 	 */
 	settings: {
-		fields: ["_id", "meterId", "reading","time","virtual_0","virtual_1","virtual_2","virtual_3","virtual_4","virtual_5","virtual_6","virtual_7","virtual_8","virtual_9","invoice","finalReading","endTime","jwt"],
+		fields: ["_id", "epoch","label","price"],
    },
 
 	/**
@@ -37,15 +37,8 @@ module.exports = {
 	 */
 	actions: {
 
-		assets: {
-			rest: {
-				method: "GET",
-				path: "/assets"
-			},
-			async handler(ctx) {
-				return await ctx.call("readings_model.find",{search:ctx.params.q,searchFields:['meterId']});
-			}
-		}
+		
+
 	},
 
 	/**

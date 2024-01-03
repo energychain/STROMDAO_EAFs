@@ -2,7 +2,7 @@
 /**
  *  Service to do actual clearing (invoicing of consumption over time)
  */
-const DbService = require("moleculer-db");
+
 /**
  * @typedef {import('moleculer').ServiceSchema} ServiceSchema Moleculer's Service Schema
  * @typedef {import('moleculer').Context} Context Moleculer's Context
@@ -12,20 +12,11 @@ const ApiGateway = require("moleculer-web"); // Included for Invalid Authenticat
 /** @type {ServiceSchema} */
 module.exports = {
 	name: "clearing",
-	
-	adapter: process.db_adapter,
-	
-	/**
-	 * Settings
-	 */
-	settings: {
-
-	},
 
 	/**
 	 * Dependencies
 	 */
-	dependencies: [],
+	dependencies: ["clearings_model"],
 
 	/**
 	 * Actions

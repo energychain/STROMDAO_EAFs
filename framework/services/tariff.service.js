@@ -4,7 +4,7 @@
 /**
  * Tariff service providing labels for dynamic pricing model
  */
-const DbService = require("moleculer-db");
+
 /**
  * @typedef {import('moleculer').ServiceSchema} ServiceSchema Moleculer's Service Schema
  * @typedef {import('moleculer').Context} Context Moleculer's Context
@@ -14,23 +14,10 @@ const DbService = require("moleculer-db");
 module.exports = {
 	name: "tariff",
 
-	mixins: [DbService],
-	
-	adapter: process.db_adapter,
-	
-	collection: "tariff",
-
-	/**
-	 * Settings
-	 */
-	settings: {
-		fields: ["_id","epoch","label"]
-	},
-
 	/**
 	 * Dependencies
 	 */
-	dependencies: [],
+	dependencies: ["tariff_model"],
 
 	/**
 	 * Actions
@@ -170,18 +157,18 @@ module.exports = {
 				let labels = await ctx.call("tariff.customLabels");
 				for (const [key, value] of Object.entries(labels)) {
 					if(typeof ctx.params[key] !== 'undefined') {
-						let previousDeclarations = await ctx.call("price.find",{
+						let previousDeclarations = await ctx.call("price_model.find",{
 							query: {
 								label: key,
 								epoch: { $gte : ctx.params.fromEpoch}
 							}
 						});
 						for(let j=0;j<previousDeclarations.length;j++) {
-							await ctx.call("price.remove",{
+							await ctx.call("price_model.remove",{
 								id: previousDeclarations[j]._id
 							});
 						}
-						await ctx.call("price.insert",{entity:{
+						await ctx.call("price_model.insert",{entity:{
 							epoch: ctx.params.fromEpoch,
 							label: key,
 							price: ctx.params[key] * 1
@@ -240,7 +227,7 @@ module.exports = {
 				if(typeof ctx.params.epoch == 'undefined') {
 					ctx.params.epoch = Math.floor(new Date().getTime() / process.env.EPOCH_DURATION * 1);
 				}
-				let results =  await ctx.call("price.find",{
+				let results =  await ctx.call("price_model.find",{
 					query:{
 						epoch: {
 							$lte: ctx.params.epoch * 1
@@ -264,7 +251,7 @@ module.exports = {
 				}
 
 				// Add next price update if known
-				let changeResults =  await ctx.call("price.find",{
+				let changeResults =  await ctx.call("price_model.find",{
 					query:{
 						epoch: {
 							$gte: ctx.params.epoch * 1
@@ -337,7 +324,7 @@ module.exports = {
 				let startingEpoch = Math.floor(ctx.params.startTime/process.env.EPOCH_DURATION * 1);
 				let endingEpoch = Math.floor(ctx.params.endTime/process.env.EPOCH_DURATION * 1);
 
-				let labels = await ctx.call("tariff.find",{
+				let labels = await ctx.call("tariff_model.find",{
 					query: {
 						epoch: {
 							$gte: startingEpoch,
@@ -364,7 +351,7 @@ module.exports = {
 						
 						existingEpochs["epoch_"+i] = await dynamic.lookup(i);
 
-						await ctx.call("tariff.insert",{
+						await ctx.call("tariff_model.insert",{
 							entity:existingEpochs["epoch_"+i]
 						});
 					}
