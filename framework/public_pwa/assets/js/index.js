@@ -97,7 +97,7 @@ const app = async function(token) {
                         callbacks: {
                             label: function(context) {
                                 if(typeof context.parsed !== 'undefined') {
-                                    return context.parsed.toFixed(2).replace('.',',') + ' € / '+Math.round(context.parsed/totalCost*100) + '%';
+                                    return context.parsed.toFixed(2).replace('.',',') + ' €';
                                 } else return '';
                             }
                         }
@@ -206,7 +206,7 @@ const app = async function(token) {
         for (let [key, value] of Object.entries(aggregationConsumption)) {
             totalConsumption += 1 * value;
         }
-        console.log("tC1",totalConsumption,"tCo1",totalCost);
+       
         function interPolateChartArray(inputArray) {
             inputArray.reverse();
             function interpolateY(point1, point2, xValue) {
@@ -320,7 +320,7 @@ const app = async function(token) {
                 window.timelineChartObject.pan({x: -timeSpan});
             },100);
         },500);
-        console.log("tC",totalConsumption,"tCo",totalCost);
+
         // prepare Stats
         let htmlCost = '<table class="table table-condensed">';
         htmlCost += '<tr><td>&#8960; Preis je kWh</td><td>'+(totalCost/(totalConsumption/1000)).toFixed(3).replace('.',',')+'€</td></tr>';
