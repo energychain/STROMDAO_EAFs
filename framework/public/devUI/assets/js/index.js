@@ -17,6 +17,7 @@ $(document).ready(function() {
                 $('#metersInactivePercentage').html( ((data.delayed/data.total)*100).toFixed(1).replace('.',',')+"%" );
                 $('#metersActivePercentage').html( ((data.active/data.total)*100).toFixed(1).replace('.',',')+"%" );
                 let totalCost = 0;
+                let totalConsumption = 0;
 
                 for (const [key, value] of Object.entries(data.consumptions)) {
                     $('#'+key).html( (value/1000).toFixed(0).replace('.',','));
@@ -24,6 +25,7 @@ $(document).ready(function() {
                     const tariffKey = key.replace('consumption_','');
                     if((typeof tariff[tariffKey] !== 'undefined') && (!isNaN(tariff[tariffKey]))) {
                         totalCost += (value/1000) * tariff[tariffKey];
+                        totalConsumption += value;
                     }
                 }
                 
