@@ -22,7 +22,7 @@ module.exports = {
 	 * Dependencies
 	 */
 	dependencies: [
-		"readings"
+		"readings_model"
 	],
 
 	/**

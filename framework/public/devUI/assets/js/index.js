@@ -241,7 +241,7 @@ $(document).ready(function() {
     });
 
     // Test if system already has data - if so do not enable button
-    $.getJSON("/api/readings/", function(data) {
+    $.getJSON("/api/readings_model/", function(data) {
        if(data.total == 0) {
             $('#addDemo').removeAttr('disabled');
             $('#addDemo').removeClass("disabled");
