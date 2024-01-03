@@ -66,7 +66,7 @@ module.exports = {
 						}
 					}
 				}
-				results.sort((a,b) => b.endTime - a.endTime);
+				results.sort((a,b) => b.startTime - a.startTime);
 				if(results.length > 200) {
 					results = results.slice(0,200); // TODO add pageing
 				}
