@@ -48,8 +48,10 @@ module.exports = {
 							if(typeof epochs["epoch_"+clearings[j].epoch] == 'undefined'){
 								epochs["epoch_"+clearings[j].epoch] = {}
 							}
+							let totalConsumption = 0;
+
 							for (const [key, value] of Object.entries(clearings[j])) {
-								if(key.indexOf('consumption')>-1) {
+								if(key.indexOf('consumption_')>-1) {
 									if(typeof consumptions[key] == 'undefined') {
 										consumptions[key] = 0;
 									}
@@ -57,10 +59,11 @@ module.exports = {
 										epochs["epoch_"+clearings[j].epoch][key] = 0;
 									}
 									consumptions[key] += value;
+									totalConsumption += 1 * value;
 									epochs["epoch_"+clearings[j].epoch][key] += value;
 								}
-								
 							}
+							consumptions.consumption = totalConsumption;
 						}
 					}
 				}

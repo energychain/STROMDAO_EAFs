@@ -30,7 +30,8 @@ $(document).ready(function() {
                 }
                 
                 $('#price').html( ( (totalCost * 1000) / data.consumptions.consumption).toFixed(4).replace('.',',') );
-                $('#consumption').attr('data',data.consumptions.consumption);
+                $('#consumption').attr('data',totalConsumption);
+                $('#consumption').html( (totalConsumption/1000).toFixed(3) )
                 if(typeof  window.epochData == 'undefined') {
                     updateMeteringPrediction();
                 }
@@ -75,7 +76,8 @@ $(document).ready(function() {
     
                 chartLabels.push(data[i].epoch_of_day+":00");
             }
-    
+            console.log('cdR',chartDataReference);
+
             const ctxChart = document.getElementById('predictionChart');
             if(typeof window.predictionObject !== 'undefined') window.predictionObject.destroy();
     
