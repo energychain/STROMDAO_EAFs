@@ -120,6 +120,7 @@ $(document).ready(function () {
                 costData.push(costAggregation[key]);
                 consumptionData.push(consumptionAggregation[key] / 1000);
             }
+            const chartColors = [ '#147a50', '#c69006', '#a0a0a0'];
 
             new Chart(ctxCost, {
               type: 'pie',
@@ -128,7 +129,8 @@ $(document).ready(function () {
                 datasets: [{
                   label: 'Kosten:',
                   data: costData,
-                  borderWidth: 1
+                  borderWidth: 1,
+                  backgroundColor:chartColors
                 }]
               },
               options: {
@@ -142,7 +144,8 @@ $(document).ready(function () {
                   datasets: [{
                     label: 'Verbrauch:',
                     data: consumptionData,
-                    borderWidth: 1
+                    borderWidth: 1,
+                    backgroundColor:chartColors
                   }]
                 },
                 options: {

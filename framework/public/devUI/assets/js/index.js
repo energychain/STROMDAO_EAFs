@@ -178,6 +178,59 @@ $(document).ready(function() {
         if((typeof window.localStorage.getItem("cache_epoch_of_day") !== 'undefined') && (window.localStorage.getItem("cache_epoch_of_day") !== null)) {
             renderProfile(JSON.parse(window.localStorage.getItem("cache_epoch_of_day")));
         }
+
+        $.getJSON("/api/tariff/prices", function(data) {
+            let chartLabels = [];
+            let chartData = [];
+            let chartColors = [];
+            for(let i=0;i<data.length;i++) {
+                let label = new Date(data[i].time).toLocaleString();
+                if((i !== 0) && (i !== data.length-1)) {
+                    label = new Date(data[i].time).toLocaleTimeString();
+                }
+                chartLabels.push(label);
+                chartData.push(data[i].price);
+                let color = '#c0c0c0';
+                if(data[i].label == 'virtual_1') color = '#147a50';
+                if(data[i].label == 'virtual_2') color = '#c69006';
+                if(data[i].label == 'virtual_3') color = '#a0a0a0';
+                chartColors.push(color);
+            }
+            const ctxChart = document.getElementById('forecastChart');
+            if(typeof window.chartObject !== 'undefined') window.chartObject.destroy();
+    
+            window.chartObject = new Chart(ctxChart, {
+                type: 'bar',
+                data: {
+                  labels: chartLabels,
+                  datasets: [{
+                    label: 'Preis je kWh',
+                    data: chartData,
+                    backgroundColor:chartColors
+                  }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    },
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y.toFixed(2).replace('.',',') + ' €/kWh';
+                                }
+                            }
+                        },
+                        legend: {
+                            display:false
+                        }
+                    }
+                }
+              });
+        });
         $.getJSON("/api/prediction/epoch_of_day", renderProfile);
     }
     const step3 = async function() {
@@ -264,4 +317,33 @@ $(document).ready(function() {
     updateMeteringStatistics();
     setInterval(updateMeteringStatistics, 5*60000);
     setInterval(updateMeteringPrediction,30*60000);
+
+    $('#searchMeter').submit(function(e) {
+        e.preventDefault();
+        var dataToSend = {
+            "$text": { "$search": $('#q').val() } 
+          };
+          // AJAX POST-Request
+          $.ajax({
+            type: 'POST',
+            url: '/api/asset/find', 
+            data: JSON.stringify(dataToSend),
+            contentType: 'application/json',
+            success: function(response) {
+                if(response.length == 1) {
+                    location.href="./uc_clearing.html?meterId="+response[0].assetId.substring(6)
+                } else {
+                    let html = '';
+                    for(let i=0;(i<response.length)&&(i<5);i++) {
+                        html += '<a class="btn btn-dark btn-sm" role="button" href="./uc_clearing.html?meterId='+response[0].assetId.substring(6)+'" rel="tag">'+response[i].assetId.substring(6)+'</a>';
+                    }
+                    $('#resultList').html(html);
+                }
+                
+            },
+            error: function(error) {
+            
+            }
+    });     
+    })
 })

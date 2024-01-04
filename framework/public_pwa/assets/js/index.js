@@ -361,7 +361,7 @@ const app = async function(token) {
                 customName = data.clientMeta.meterPointName;
             }
             for (const [key, value] of Object.entries(data.clientMeta)) { 
-                console.log(".meta_value_".key,value);
+                console.debug(".meta_value_"+key,value);
                 $(".meta_value_"+key).html(value);
                 $(".meta_visibility_"+key).show();
             }

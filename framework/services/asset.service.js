@@ -83,6 +83,22 @@ module.exports = {
 			},
 			/** @param {Context} ctx  */
 			async handler(ctx) {
+					/* Should have text index with fields:
+							{
+								"clientMeta.meterPointName" : "text",
+								"clientMeta" : "text",
+								"clientMeta.administrationNumber" : "text",
+								"clientMeta.location.street" : "text",
+								"clientMeta.manufacturerId" : "text",
+								"clientMeta.location.city" : "text",
+								"clientMeta.location.zip" : "text",
+								"clientMeta.serialNumber" : "text",
+								"clientMeta.fullSerialNumber" : "text",
+								"clientMeta.metaName" : "text",
+								"clientMeta.location.country" : "text"
+							}
+					*/
+
 					let res = await db.collection("assets").find(ctx.params).toArray();
 					for(let i=0;i<res.length;i++) {
 						delete res[i]._id;
