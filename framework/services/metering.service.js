@@ -8,7 +8,7 @@
  */
 
 const ApiGateway = require("moleculer-web"); // Included for Invalid Authentication Errors 
-const READING_RATE_LIMIT = require("../runtime.settings.js")().READING_RATE_LIMIT;
+const READING_RATE_LIMIT = 1 * require("../runtime.settings.js")().READING_RATE_LIMIT;
 /** @type {ServiceSchema} */
 module.exports = {
 	name: "metering",
