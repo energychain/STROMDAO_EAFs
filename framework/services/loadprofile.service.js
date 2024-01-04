@@ -52,7 +52,7 @@ module.exports = {
 				label: "string"
 			} ,
 			async handler(ctx) {
-				const EPOCH_DURATION = await ctx.call("tariff.epochDuration");
+				const EPOCH_DURATION = require("../runtime.settings.js")().EPOCH_DURATION;
 				const existsings = await ctx.call("loadprofile_model.find",{
 					query: {
 						meterId: ctx.params.meterId,

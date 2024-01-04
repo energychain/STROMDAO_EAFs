@@ -6,7 +6,8 @@ const runtimeDefaults = {
     db_adapter: null,  // Use for MondoDB: new MongoDBAdapter("mongodb://HOSTNAME/stromdao_eafs")
     EPOCH_DURATION: 3600000, // Milliseconds of a tariff epoch 
     TARIFF_SEGMENTS: 3, // Number of segments this framework's tariff uses
-    DEFAULT_SEGMENT: 2, // In case dynamic source does not provide value this segment is used
+    DEFAULT_SEGMENT: 2, // In case dynamic source does not provide value this segment is used,
+    READING_RATE_LIMIT: EPOCH_DURATION/2, // Limit new readings to maximum every x milliseconds
     AUTO_CLEARING: true, // Performe clearing directly after reading completed,
     PORT_API: 3000,
     PORT_METERING: 3001, // Port to listen for metering API request

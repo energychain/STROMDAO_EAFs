@@ -248,9 +248,10 @@ module.exports = {
 					delete transientReading.processed;
 					// Validate that we could update
 					if( 
-						(transientReading.time  < ctx.params.time)	&& // new reading needs to be newer than previous
+						(transientReading.time < ctx.params.time)	&& // new reading needs to be newer than previous
 						(transientReading.meterId == ctx.params.meterId) &&	// same meter
-						(transientReading.reading <= ctx.params.reading)	// new reading needs to be higher than previous
+						(transientReading.reading <= ctx.params.reading) &&	// new reading needs to be higher than previous
+						(transientReading.time < ctx.params.time + this.READING_RATE_LIMIT)
 					  ) {
 						// Valid Reading to update transient virtual metering points
 						const deltaConumption = ctx.params.reading - transientReading.reading;
@@ -332,7 +333,7 @@ module.exports = {
 						}
 					}
 
-					let clearing = await ctx.call("clearing.commit",transientClearing);
+					const clearing = await ctx.call("clearing.commit",transientClearing);
 					
 					transientReading.id = transientReading._id;
 					if(typeof transientReading._id !== 'undefined') {
@@ -384,5 +385,7 @@ module.exports = {
 	 */
 	async stopped() {
 
-	}
+	},
+
+	RATE_LIMIT: require("../runtime.settings.js")().READING_RATE_LIMIT
 };
