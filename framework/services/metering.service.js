@@ -252,7 +252,7 @@ module.exports = {
 					delete transientReading.processed;
 					// Validate that we could update
 					if( 
-						(transientReading.time < ctx.params.time + this.READING_RATE_LIMIT)	&& // new reading needs to be newer than previous
+						(transientReading.time + this.READING_RATE_LIMIT < ctx.params.time )	&& // new reading needs to be newer than previous
 						(transientReading.meterId == ctx.params.meterId) &&	// same meter
 						(transientReading.reading <= ctx.params.reading) 	// new reading needs to be higher than previous
 					  ) {
@@ -316,7 +316,7 @@ module.exports = {
 					  } else {
 						// Invalid transient reading - do not update
 						transientReading.processed = false;
-						if(transientReading.time  > ctx.params.time  + this.READING_RATE_LIMI) transientReading.debug = "time";
+						if(transientReading.time + this.READING_RATE_LIMIT > ctx.params.time  ) transientReading.debug = "time";
 						if(transientReading.meterId != ctx.params.meterId) transientReading.debug = "meterId";
 						if(transientReading.reading > ctx.params.reading) transientReading.debug = "reading";
 					  }
