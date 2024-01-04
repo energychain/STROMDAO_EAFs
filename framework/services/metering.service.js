@@ -199,6 +199,10 @@ module.exports = {
 						}
 					}
 				);
+				if((typeof ctx.params.time == 'undefined')||(ctx.params.time==null)) {
+					ctx.params.time = new Date().getTime(); // Set current timestamp if not pressent
+				}
+				
 				ctx.params.time *= 1;
 				ctx.params.reading  *= 1;
 				
