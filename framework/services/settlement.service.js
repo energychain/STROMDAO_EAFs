@@ -121,7 +121,7 @@ module.exports = {
 					injectedTariff:	ctx.params.injectedTariff // metering might have received signed labels that will overwrite actual 				
 				});
 				
-				const EPOCH_DURATION = await ctx.call("tariff.epochDuration");
+				const EPOCH_DURATION = 1 * require("../runtime.settings.js")().EPOCH_DURATION;
 
 				let settlement = {};
 				let remain_consumption = ctx.params.consumption * 1;
