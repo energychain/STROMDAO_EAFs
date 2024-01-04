@@ -74,7 +74,7 @@ $(document).ready(function() {
                     chartDataPrediction.push(data[i].consumption/1000);
                     inPrediction = true;
                 }
-                chartDataReference.push(window.epochData["e_"+data[i].epoch_of_day] *  ($('#consumption').attr('data')));
+                chartDataReference.push(window.epochData["e_"+data[i].epoch_of_day] *  (100)); // removed $('#consumption').attr('data')*
     
                 chartLabels.push(data[i].epoch_of_day+":00");
             }
@@ -89,7 +89,7 @@ $(document).ready(function() {
                 label: 'Langzeit Profil',
                 data: chartDataReference,
                 backgroundColor:["#c69006"],
-                yAxisID: 'B',
+                yAxisID: 'A',
                 fill:false
             },
             {
@@ -129,21 +129,23 @@ $(document).ready(function() {
                         }
                     },
                     scales: {
-/*                        A: {
+                        A: {
                           type: 'linear',
                           position: 'left',
                           ticks: { beginAtZero: true, color: '#c69006' },
                           // Hide grid lines, otherwise you have separate grid lines for the 2 y axes
-                          grid: { display: false }
-                        }, */
+                          grid: { display: false },
+                          beginAtZero: true
+                        }, 
                         B: {
                             type: 'linear',
                             position: 'right',
                             ticks: { beginAtZero: true, color: '#147a50' },
                             // Hide grid lines, otherwise you have separate grid lines for the 2 y axes
-                            grid: { display: false }
+                            grid: { display: false },
+                            beginAtZero: true
                           },
-                        x: { ticks: { beginAtZero: true } }
+                        x: { ticks: { beginAtZero: true },beginAtZero: true }
                       },
                 }
             });
