@@ -390,6 +390,6 @@ module.exports = {
 
 	},
 
-	// RATE_LIMIT: require("../runtime.settings.js")().READING_RATE_LIMIT
-	RATE_LIMIT:0
+	READING_RATE_LIMIT: require("../runtime.settings.js")().READING_RATE_LIMIT
+	//RATE_LIMIT:0
 };
