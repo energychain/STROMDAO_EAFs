@@ -1,11 +1,11 @@
 {
   "name": "stromdao-eaf",
-  "version": "0.2.42",
+  "version": "0.2.43",
   "description": "Referenzimplementierung: Zählerstandsgangmessung für dynamische Stromtarife",
   "scripts": {
-    "dev": "node ./run-eaf --hot services/**/*.service.js",
-    "integration": "node ./run-eaf --hot services-integration/**/*.service.js",
-    "start": "node  ./run-eaf services/**/*.service.js",
+    "dev": "node ./run-eaf",
+    "integration": "node ./run-eaf integration",
+    "start": "node  ./run-eaf",
     "cli": "moleculer connect NATS",
     "ci": "jest --watch",
     "test": "jest --coverage",
