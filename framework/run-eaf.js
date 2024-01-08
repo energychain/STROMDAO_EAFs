@@ -41,11 +41,17 @@ console.log("Open-Source Energy Application Framework");
 console.log("License: " + package_json.license);
 console.log("Running: " + package_json.name + " " + package_json.version);
 
+
+process.chdir(__dirname); // Might need to remember original cwd.
+
+/*
 //  Ensure that we find services in the module folder sevices/ and integration services in the cwd.
 for(let i=1;i<process.argv.length;i++) {
   if(process.argv[i].indexOf("services") == 0) {
     process.argv[i] = __dirname + "/" + process.argv[i];
   }
 }
+*/
+
 const runner = new Runner();
 runner.start(process.argv);
