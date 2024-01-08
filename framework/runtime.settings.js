@@ -1,6 +1,7 @@
 const MongoDBAdapter = require("moleculer-db-adapter-mongo");
 const fs = require("fs");
 
+
 const runtimeDefaults = {
     db_adapter: null,  // Use for MondoDB: new MongoDBAdapter("mongodb://HOSTNAME/stromdao_eafs")
     EPOCH_DURATION: 3600000, // Milliseconds of a tariff epoch 
@@ -56,6 +57,31 @@ if((typeof process.env["EAF_WORK"] == 'undefined')||(process.env["EAF_WORK"] == 
     require('dotenv').config();
 }
 
+// Extended Key Management
+
+if((typeof process.env["EAF_KEYS"] !== 'undefined')&&(process.env["EAF_KEYS"] !== 'null')) { 
+    fs.copyFileSync(process.env["EAF_KEYS"]+"/runtime.privateKey.pem", "./runtime.privateKey.pem");
+    fs.copyFileSync(process.env["EAF_KEYS"]+"/runtime.privateKey.pem", "./runtime.publicKey.pem"); 
+}
+
+try {
+    if(fs.existsSync("./runtime.privateKey.pem") == false) {
+        const crypto = require('crypto');
+
+        // Generate a new 2048-bit RSA key pair
+        const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
+        modulusLength: 2048,
+        });
+
+        // Save the public key to a file
+        fs.writeFileSync('./runtime.publicKey.pem', publicKey.export({ format: 'pem', type: 'pkcs1' }));
+
+        // Save the private key to a file
+        fs.writeFileSync('./runtime.privateKey.pem', privateKey.export({ format: 'pem', type: 'pkcs1' }));
+    }
+} catch(e) {
+
+}
 module.exports = function(overwrites) {
     
     if(typeof process.env.DEFAULTS_LOADED == 'undefined') {

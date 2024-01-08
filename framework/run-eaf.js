@@ -49,38 +49,20 @@ if((typeof process.env["EAF_NODE_ID"] == 'undefined')||(process.env["EAF_NODE_ID
 
 let services = process.env["EAF_INSTALL"]+"/services/**/*.service.js";
 
-if(fs.existsSync(process.env["EAF_WORK"]+"/services")) {
-  services = process.env["EAF_INSTALL"]+"/services-integration/**/*.service.js";
+if(process.env["EAF_INSTALL"] !== process.env["EAF_WORK"]) {
+  if(fs.existsSync(process.env["EAF_WORK"]+"/services")) {
+    services = process.env["EAF_INSTALL"]+"/services/**/*.service.js";
 
-  if (fs.existsSync(process.env["EAF_INSTALL"]+"/services-integration")) {
-    const directory = process.env["EAF_INSTALL"]+"/services-integration";
-    const files = fs.readdirSync(directory);
+    const files = fs.readdirSync(process.env["EAF_WORK"]+"/services");
     files.forEach((file) => {
-      const filePath = `${directory}/${file}`;
-  
-      const stats = fs.lstatSync(filePath);
-      if (stats.isFile()) {
-         fs.unlinkSync(filePath);
-      } else if (stats.isDirectory()) {
-        fs.rmdirSync(filePath);
-      }
+      const sourceFile = process.env["EAF_WORK"]+"/services/" + file;
+      const destinationFile = process.env["EAF_INSTALL"]+"/services/"+file;
+      fs.copyFileSync(sourceFile, destinationFile);
     });
-
-    fs.rmdirSync(process.env["EAF_INSTALL"]+"/services-integration");
-  } 
-  fs.mkdirSync(process.env["EAF_INSTALL"]+"/services-integration");
-
-  if(!fs.existsSync(process.env["EAF_INSTALL"]+"/services-integration/api-eaf.service.js")) {
-    fs.copyFileSync(process.env["EAF_INSTALL"]+"/services/api-eaf.service.js", process.env["EAF_INSTALL"]+"/services-integration/api-eaf.service.js");
   }
-  const files = fs.readdirSync(process.env["EAF_WORK"]+"/services");
-   files.forEach((file) => {
-    const sourceFile = process.env["EAF_WORK"]+"/services/" + file;
-    const destinationFile = process.env["EAF_INSTALL"]+"/services-integration/"+file;
-    fs.copyFileSync(sourceFile, destinationFile);
-  });
-  
 }
+
+
 
 console.log("Open-Source Energy Application Framework");
 console.log("________________________________________________________");

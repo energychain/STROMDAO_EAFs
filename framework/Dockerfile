@@ -1,14 +1,17 @@
-FROM node:16-alpine
+FROM node:current-alpine
+EXPOSE 3000 3001 3002
 
 ENV NODE_ENV=production
 
 RUN mkdir /app
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+RUN mkdir /app/services
 
-RUN npm install --production
+RUN yarn add -D nats-server 
 
-COPY . .
+RUN npm install -g stromdao-eaf
 
-CMD ["npm", "start"]
+COPY services /app/services
+
+CMD ["stromdao-eaf"]

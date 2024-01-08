@@ -1,35 +1,61 @@
-[![Moleculer](https://badgen.net/badge/Powered%20by/Moleculer/0e83cd)](https://moleculer.services)
+[![STROMDAO logo](https://static.corrently.cloud/stromdao_988.png)](https://stromdao.de/)
 
-# stromdao-eaf
-This is a [Moleculer](https://moleculer.services/)-based microservices project. Generated with the [Moleculer CLI](https://moleculer.services/docs/0.14/moleculer-cli.html).
+[![codecov](https://codecov.io/gh/energychain/STROMDAO_EAFs/graph/badge.svg?token=O04DB3uPAJ)](https://codecov.io/gh/energychain/STROMDAO_EAFs)
+![GitHub issues](https://img.shields.io/github/issues/energychain/STROMDAO_EAFs)
 
-## Usage
-Start the project with `npm run dev` command. 
-After starting, open the http://localhost:3000/ URL in your browser. 
-On the welcome page you can test the generated services via API Gateway and check the nodes & services.
+# STROMDAO-EAF
+The [STROMDAO Energy Application Framework (EAF)](https://github.com/energychain/STROMDAO_EAFs) provides an innovative platform for electricity providers to implement and offer dynamic, event-variable electricity tariffs.
 
-In the terminal, try the following commands:
-- `nodes` - List all connected nodes.
-- `actions` - List all registered service actions.
-- `call greeter.hello` - Call the `greeter.hello` action.
-- `call greeter.welcome --name John` - Call the `greeter.welcome` action with the `name` parameter.
+### Installation
+```
+npm install -g stromdao-eaf
+```
 
+### Usage
+```
+stromdao-eaf
+```
 
-## Services
-- **api**: API Gateway services
-- **metering**: Metering Service to push readings to
-- **tariff** Provides tariff labels.
-- **settlement** Settles consumption from meter readings to tariff labels. 
-- **clearing** Actual clearing of delta meta readings with settlements.
+### 🌟 Features
+-   Data Acquisition
+-   Analysis and Forecasting
+-   Price Adjustment Algorithm
+-   Open-source algorithms for the allocation of price segments
+-   Tariff Segmentation:
+-   Publication and Notification
+-   Billing and Settlement
+-   Reporting and Optimization
+-   User-Friendliness and Interoperability
 
+### Development
+- Create a folder called `services` in your development directory.
+- Each `*.services.js` file will be copied to the node module folder (requires admin permissions) on startup.
+- If a `.env` file exists in your development directory, it will be used.
 
-## NPM scripts
+## Demo
 
-- `npm run dev`: Start development mode (load all services locally with hot-reload & REPL)
-- `npm run start`: Start production mode (set `SERVICES` env variable to load certain services)
-- `npm run cli`: Start a CLI and connect to production. Don't forget to set production namespace with `--ns` argument in script
-- `npm run lint`: Run ESLint
-- `npm run ci`: Run continuous test mode with watching
-- `npm test`: Run tests & generate coverage report
-- `npm run dc:up`: Start the stack with Docker Compose
-- `npm run dc:down`: Stop the stack with Docker Compose
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/energychain/STROMDAO_EAFs)
+
+<!-- LICENSE -->
+## License
+
+Distributed under the Apache-2.0 License. See [License](./LICENSE) for more information.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## [Maintainer / Imprint](https://github.com/energychain/STROMDAO_EAFs/blob/main/IMPRINT.md)
+
+<addr>
+STROMDAO GmbH  <br/>
+Gerhard Weiser Ring 29  <br/>
+69256 Mauer  <br/>
+Germany  <br/>
+  <br/>
++49 6226 968 009 0  <br/>
+  <br/>
+dev@stromdao.com  <br/>
+  <br/>
+Handelsregister: HRB 728691 (Amtsgericht Mannheim)<br/>
+  <br/>
+https://stromdao.de/<br/>
+</addr>
