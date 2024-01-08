@@ -49,10 +49,10 @@ if((typeof process.env["EAF_NODE_ID"] == 'undefined')||(process.env["EAF_NODE_ID
 
 let services = process.env["EAF_INSTALL"]+"/services/**/*.service.js";
 
-if(fs.fileExistsSync(process.env["EAF_WORK"]+"/services")) {
+if(fs.existsSync(process.env["EAF_WORK"]+"/services")) {
   services = process.env["EAF_WORK"]+"/services/**/*.service.js";
   // At least deploy api-eaf.service.js
-  if(!fs.fileExistsSync(process.env["EAF_WORK"]+"/services/api-eaf.service.js")) {
+  if(!fs.existsSync(process.env["EAF_WORK"]+"/services/api-eaf.service.js")) {
     fs.copyFileSync(process.env["EAF_INSTALL"]+"/services/api-eaf.service.js", process.env["EAF_WORK"]+"/services/api-eaf.service.js");
   }
 }
