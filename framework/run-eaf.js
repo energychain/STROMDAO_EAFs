@@ -1,17 +1,11 @@
-#!/usr/bin/env node
+"use strict";
 
-const { spawn } = require('child_process');
+/**
+ * Fork to moleculer-runner.js 
+ *  
+ */
 
-const moleculerRunnerPath = './node_modules/moleculer/bin/moleculer-runner.js';
+const { Runner } = require("moleculer");
 
-console.log("moleculerRunnerPath", moleculerRunnerPath);
-
-const args = process.argv.slice(2);
-
-const childProcess = spawn('node', [moleculerRunnerPath, ...args], {
-  stdio: 'inherit',
-});
-
-childProcess.on('exit', (code) => {
-  process.exit(code);
-});
+const runner = new Runner();
+runner.start(process.argv);
