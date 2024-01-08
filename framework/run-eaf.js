@@ -21,8 +21,22 @@ console.log('   |______| |  __|   / /\ \ |  __|   |______|             ');
 console.log('           | |____ / ____ \| |                            ');
 console.log('           |______/_/    \_\_|                            ');
                                                          
-                                                         
-const package_json = JSON.parse(fs.readFileSync("./package.json"));
+let package_json = {
+  license: "Property of STROMDAO GmbH",
+  name: "STROMDAO Energy Application Framework (custom build)",
+  version: "0.0.1"
+}                
+try {
+  if(fs.existsSync("./package.json")) {
+    package_json = JSON.parse(fs.readFileSync("./package.json"));
+  }
+  if(fs.existsSync("node-modules/stromdao-eaf/package.json")) {
+    package_json = JSON.parse(fs.readFileSync("node-modules/stromdao-eaf/package.json"));
+  }
+} catch(e) {
+
+}
+ 
 console.log("Open-Source Energy Application Framework");
 console.log("License: " + package_json.license);
 console.log("Running: " + package_json.name + " " + package_json.version);
