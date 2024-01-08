@@ -43,21 +43,28 @@ try {
 
 if((typeof process.env["EAF_WORK"] == 'undefined')||(process.env["EAF_WORK"] == 'null')) process.env["EAF_WORK"] = workfolder;
 if((typeof process.env["EAF_INSTALL"] == 'undefined')||(process.env["EAF_INSTALL"] == 'null')) process.env["EAF_INSTALL"] = installfolder;
+if((typeof process.env["EAF_NODE_ID"] == 'undefined')||(process.env["EAF_NODE_ID"] == 'null')) process.env["EAF_NODE_ID"] = os.hostname();
+
 let services = process.env["EAF_INSTALL"]+"/services/**/*.service.js";
 
-if(process.argv[2] == "integration") { 
-  services = process.env["EAF_WORK"]+"/services-integration/**/*.service.js";
+if(fs.fileExistsSync(process.env["EAF_WORK"]+"/services")) {
+  services = process.env["EAF_WORK"]+"/services/**/*.service.js";
+  // At least deploy api-eaf.service.js
+  if(!fs.fileExistsSync(process.env["EAF_WORK"]+"/services/api-eaf.service.js")) {
+    fs.copyFileSync(process.env["EAF_INSTALL"]+"/services/api-eaf.service.js", process.env["EAF_WORK"]+"/services/api-eaf.service.js");
+  }
 }
 
 console.log("Open-Source Energy Application Framework");
 console.log("--------------------------------------------------");
 console.log("License: " + package_json.license);
 console.log("Running: " + package_json.name + " " + package_json.version);
+console.log("Node ID: " + process.env["EAF_NODE_ID"]);
 console.log("Workfolder: " + process.env["EAF_WORK"]);
 console.log("Installation: "+  process.env["EAF_INSTALL"]);
 console.log("Services: "+  services);
 console.log("Package.json: "+ package_json_file);
-console.log("Data Store", process.env["db_adapter"]);
+console.log("Data Store: ", process.env["db_adapter"]);
 console.log("--------------------------------------------------");
 
 process.chdir(process.env["EAF_INSTALL"]); // Might need to remember original cwd.
