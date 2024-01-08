@@ -1,11 +1,11 @@
 {
   "name": "stromdao-eaf",
-  "version": "0.2.36",
+  "version": "0.2.37",
   "description": "Referenzimplementierung: Zählerstandsgangmessung für dynamische Stromtarife",
   "scripts": {
-    "dev": "moleculer-runner --hot services/**/*.service.js",
-    "integration": "moleculer-runner --hot services-integration/**/*.service.js",
-    "start": "moleculer-runner services/**/*.service.js",
+    "dev": "node ./run-eaf --hot services/**/*.service.js",
+    "integration": "node ./run-eaf --hot services-integration/**/*.service.js",
+    "start": "node  ./run-eaf services/**/*.service.js",
     "cli": "moleculer connect NATS",
     "ci": "jest --watch",
     "test": "jest --coverage",
@@ -14,6 +14,9 @@
     "dc:up": "docker-compose up --build -d",
     "dc:logs": "docker-compose logs -f",
     "dc:down": "docker-compose down"
+  },
+  "bin": {
+    "stromdao-eaf": "./run-eaf.js"
   },
   "keywords": [
     "microservices",
