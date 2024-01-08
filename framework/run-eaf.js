@@ -50,15 +50,40 @@ if((typeof process.env["EAF_NODE_ID"] == 'undefined')||(process.env["EAF_NODE_ID
 let services = process.env["EAF_INSTALL"]+"/services/**/*.service.js";
 
 if(fs.existsSync(process.env["EAF_WORK"]+"/services")) {
-  services = process.env["EAF_WORK"]+"/services/**/*.service.js";
-  // At least deploy api-eaf.service.js
-  if(!fs.existsSync(process.env["EAF_WORK"]+"/services/api-eaf.service.js")) {
-    fs.copyFileSync(process.env["EAF_INSTALL"]+"/services/api-eaf.service.js", process.env["EAF_WORK"]+"/services/api-eaf.service.js");
+  services = process.env["EAF_INSTALL"]+"/services-integration/**/*.service.js";
+
+  if (fs.existsSync(process.env["EAF_INSTALL"]+"/services-integration")) {
+    const directory = process.env["EAF_INSTALL"]+"/services-integration";
+    const files = fs.readdirSync(directory);
+    files.forEach((file) => {
+      const filePath = `${directory}/${file}`;
+  
+      const stats = fs.lstatSync(filePath);
+      if (stats.isFile()) {
+         fs.unlinkSync(filePath);
+      } else if (stats.isDirectory()) {
+        fs.rmdirSync(filePath);
+      }
+    });
+
+    fs.rmdirSync(process.env["EAF_INSTALL"]+"/services-integration");
+  } 
+  fs.mkdirSync(process.env["EAF_INSTALL"]+"/services-integration");
+
+  if(!fs.existsSync(process.env["EAF_INSTALL"]+"/services-integration/api-eaf.service.js")) {
+    fs.copyFileSync(process.env["EAF_INSTALL"]+"/services/api-eaf.service.js", process.env["EAF_INSTALL"]+"/services-integration/api-eaf.service.js");
   }
+  const files = fs.readdirSync(process.env["EAF_WORK"]+"/services");
+   files.forEach((file) => {
+    const sourceFile = process.env["EAF_WORK"]+"/services/" + file;
+    const destinationFile = process.env["EAF_INSTALL"]+"/services-integration/"+file;
+    fs.copyFileSync(sourceFile, destinationFile);
+  });
+  
 }
 
 console.log("Open-Source Energy Application Framework");
-console.log("--------------------------------------------------");
+console.log("________________________________________________________");
 console.log("License: " + package_json.license);
 console.log("Running: " + package_json.name + " " + package_json.version);
 console.log("Node ID: " + process.env["EAF_NODE_ID"]);
@@ -67,7 +92,7 @@ console.log("Installation: "+  process.env["EAF_INSTALL"]);
 console.log("Services: "+  services);
 console.log("Package.json: "+ package_json_file);
 console.log("Data Store: ", process.env["db_adapter"]);
-console.log("--------------------------------------------------");
+console.log("________________________________________________________");
 
 process.chdir(process.env["EAF_INSTALL"]); // Might need to remember original cwd.
 
