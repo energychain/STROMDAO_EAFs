@@ -35,8 +35,8 @@ const runtimeDefaults = {
         {label: 'virtual_8', price:9.99},
         {label: 'virtual_9', price:9.99} 
     ]),
-    JWT_PRIVATEKEY: fs.readFileSync("./runtime.privateKey.pem"), // Private Key - Regenerate Keypair with 'openssl genrsa -out runtime.privateKey.pem 2048' 
-    JWT_PUBLICKEY: fs.readFileSync("./runtime.publicKey.pem"), // Public Key - Regenerate Keypair with 'openssl genrsa -out runtime.privateKey.pem 2048' 
+  //  JWT_PRIVATEKEY: fs.readFileSync("./runtime.privateKey.pem"), // Private Key - Regenerate Keypair with 'openssl genrsa -out runtime.privateKey.pem 2048' 
+  //  JWT_PUBLICKEY: fs.readFileSync("./runtime.publicKey.pem"), // Public Key - Regenerate Keypair with 'openssl genrsa -out runtime.privateKey.pem 2048' 
     JWT_OPTIONS: JSON.stringify({
         issuer:  "Stadtwerk Musterstadt",
         subject:  "EAF",
@@ -80,8 +80,17 @@ try {
         fs.writeFileSync('./runtime.privateKey.pem', privateKey.export({ format: 'pem', type: 'pkcs1' }));
     }
 } catch(e) {
-
+    console.error("E01 - Key Persistance",e);
 }
+
+// Set Keys in default runtime
+try {
+    runtimeDefaults.JWT_PRIVATEKEY = fs.readFileSync("./runtime.privateKey.pem");
+    runtimeDefaults.JWT_PUBLICKEY = fs.readFileSync("./runtime.publicKey.pem");
+} catch(e) {
+    console.error("E02 - Runtime Keys",e);
+}
+
 module.exports = function(overwrites) {
     
     if(typeof process.env.DEFAULTS_LOADED == 'undefined') {
