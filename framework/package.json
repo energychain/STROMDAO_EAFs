@@ -1,6 +1,6 @@
 {
   "name": "stromdao-eaf",
-  "version": "0.2.38",
+  "version": "0.2.39",
   "description": "Referenzimplementierung: Zählerstandsgangmessung für dynamische Stromtarife",
   "scripts": {
     "dev": "node ./run-eaf --hot services/**/*.service.js",
@@ -27,6 +27,7 @@
     "tariff"
   ],
   "author": "STROMDAO GmbH <dev@stromdao.com>",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@spailybot/moleculer-auto-openapi": "^1.2.0",
     "eslint": "^8.25.0",
