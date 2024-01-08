@@ -1,7 +1,7 @@
 {
   "name": "stromdao-eaf",
-  "version": "0.2.43",
-  "description": "Referenzimplementierung: Zählerstandsgangmessung für dynamische Stromtarife",
+  "version": "0.2.44",
+  "description": "STROMDAO Energy Application Framework - Referenzimplementierung für dynamische Stromtarife",
   "scripts": {
     "dev": "node ./run-eaf",
     "integration": "node ./run-eaf integration",

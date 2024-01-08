@@ -57,6 +57,7 @@ console.log("Workfolder: " + process.env["EAF_WORK"]);
 console.log("Installation: "+  process.env["EAF_INSTALL"]);
 console.log("Services: "+  services);
 console.log("Package.json: "+ package_json_file);
+console.log("Data Store", process.env["db_adapter"]);
 console.log("--------------------------------------------------");
 
 process.chdir(process.env["EAF_INSTALL"]); // Might need to remember original cwd.

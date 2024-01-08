@@ -1,6 +1,5 @@
 const MongoDBAdapter = require("moleculer-db-adapter-mongo");
 const fs = require("fs");
-require('dotenv').config();
 
 const runtimeDefaults = {
     db_adapter: null,  // Use for MondoDB: new MongoDBAdapter("mongodb://HOSTNAME/stromdao_eafs")
@@ -52,8 +51,13 @@ const runtimeDefaults = {
     TRANSPORTER: ""
 }
 
-module.exports = function(overwrites) {
+// Fallback for pre 0.2.43 releases
+if((typeof process.env["EAF_WORK"] == 'undefined')||(process.env["EAF_WORK"] == 'null')) { 
+    require('dotenv').config();
+}
 
+module.exports = function(overwrites) {
+    
     if(typeof process.env.DEFAULTS_LOADED == 'undefined') {
         for (const [key, value] of Object.entries(runtimeDefaults)) {
             if(typeof process.env[key] == 'undefined') {
