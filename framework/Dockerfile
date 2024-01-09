@@ -8,10 +8,6 @@ WORKDIR /app
 
 RUN mkdir /app/services
 
-RUN yarn add -D nats-server 
-
-RUN npm install -g stromdao-eaf
-
 COPY services /app/services
 
 CMD ["stromdao-eaf"]

@@ -58,14 +58,20 @@ if((typeof process.env["EAF_WORK"] == 'undefined')||(process.env["EAF_WORK"] == 
 }
 
 // Extended Key Management
+/*
+  Should allow Docker users to just copy from ./keys/ folder of existing other NODE.
+*/
+if(!fs.existsSync("./keys/")) {
+    fs.mkdirSync("./keys/");
+}
 
 if((typeof process.env["EAF_KEYS"] !== 'undefined')&&(process.env["EAF_KEYS"] !== 'null')) { 
-    fs.copyFileSync(process.env["EAF_KEYS"]+"/runtime.privateKey.pem", "./runtime.privateKey.pem");
-    fs.copyFileSync(process.env["EAF_KEYS"]+"/runtime.privateKey.pem", "./runtime.publicKey.pem"); 
+    fs.copyFileSync(process.env["EAF_KEYS"]+"/runtime.privateKey.pem", "./keys/runtime.privateKey.pem");
+    fs.copyFileSync(process.env["EAF_KEYS"]+"/runtime.publicKey.pem", "./keys/runtime.publicKey.pem"); 
 }
 
 try {
-    if(fs.existsSync("./runtime.privateKey.pem") == false) {
+    if(fs.existsSync("./keys/runtime.privateKey.pem") == false) {
         const crypto = require('crypto');
 
         // Generate a new 2048-bit RSA key pair
@@ -74,10 +80,10 @@ try {
         });
 
         // Save the public key to a file
-        fs.writeFileSync('./runtime.publicKey.pem', publicKey.export({ format: 'pem', type: 'pkcs1' }));
+        fs.writeFileSync('./keys/runtime.publicKey.pem', publicKey.export({ format: 'pem', type: 'pkcs1' }));
 
         // Save the private key to a file
-        fs.writeFileSync('./runtime.privateKey.pem', privateKey.export({ format: 'pem', type: 'pkcs1' }));
+        fs.writeFileSync('../keys/runtime.privateKey.pem', privateKey.export({ format: 'pem', type: 'pkcs1' }));
     }
 } catch(e) {
     console.error("E01 - Key Persistance",e);
@@ -85,8 +91,8 @@ try {
 
 // Set Keys in default runtime
 try {
-    runtimeDefaults.JWT_PRIVATEKEY = fs.readFileSync("./runtime.privateKey.pem");
-    runtimeDefaults.JWT_PUBLICKEY = fs.readFileSync("./runtime.publicKey.pem");
+    runtimeDefaults.JWT_PRIVATEKEY = fs.readFileSync("./keys/runtime.privateKey.pem");
+    runtimeDefaults.JWT_PUBLICKEY = fs.readFileSync("../keys/runtime.publicKey.pem");
 } catch(e) {
     console.error("E02 - Runtime Keys",e);
 }
