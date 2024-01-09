@@ -2,7 +2,7 @@ jobs:
   build:
     docker:
       - image: stromdao/eaf:latest
-    working_directory: /app
+    working_directory: /tmp
 
     steps:
       - checkout
@@ -12,7 +12,7 @@ jobs:
   test:
     docker:
       - image: stromdao/eaf:latest
-    working_directory: /app
+    working_directory: /tmp
 
     steps:
       - checkout
