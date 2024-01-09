@@ -14,6 +14,8 @@ $(document).ready(function () {
     }
 
     const fetchLastReading = function() {
+        $('#btnAddDemo').removeAttr('disabled');
+        $('#btnAddDemo').removeClass("disabled");
         $.getJSON("/api/metering/lastReading?meterId="+$('#meterId').val(), function(data) {
             if(typeof data.time !== 'undefined') {
                 $('#amrMeterId').val($('#meterId').val())
@@ -26,6 +28,8 @@ $(document).ready(function () {
     $('#meterId').on('change', function() {
         if($('#meterId').val().length > 2 ) {
             fetchLastReading();
+            $('#btnAddDemo').removeAttr('disabled');
+            $('#btnAddDemo').removeClass("disabled");
         }
     });
 
@@ -58,7 +62,7 @@ $(document).ready(function () {
         }
         $('#time').val(new Date(response.time).toLocaleString());
         $('#reading').val(response.reading);
-        $('#lastReadingTime').html(new Date(response.time).toISOString());
+        $('#lastReadingTime').html('<code>'+new Date(response.time).toLocaleString()+'</code>');
         $('#readings').html(html);
         $('#readings').show();
         $('#readingsBackend').show();
@@ -74,7 +78,7 @@ $(document).ready(function () {
 
     $('#btnAddDemo').on('click',function() {
         $.getJSON("/api/demometer/populate24h?meterId="+$('#meterId').val(), function(data) {
-            location.href="?meterId="+$('#meterId').val();
+            location.href="/devUI/uc_energyprofile.html?meterId="+$('#meterId').val();
         });
     });
 

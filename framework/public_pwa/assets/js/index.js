@@ -6,6 +6,7 @@ if ('serviceWorker' in navigator) {
 
 const app = async function(token) {
     $('.appcontent').show();
+    let minY=99999;
     $.getJSON("/api/tariff/prices?token="+token, function(data) {
         let chartLabels = [];
         let chartData = [];
@@ -17,6 +18,7 @@ const app = async function(token) {
             }
             chartLabels.push(label);
             chartData.push(data[i].price);
+            if(data[i].price < minY) minY = data[i].price;
             let color = '#c0c0c0';
             if(data[i].label == 'virtual_1') color = '#147a50';
             if(data[i].label == 'virtual_2') color = '#c69006';
@@ -39,7 +41,7 @@ const app = async function(token) {
             options: {
                 scales: {
                     y: {
-                        beginAtZero: false
+                        min: minY * 0.8
                     }
                 },
                 responsive: true,

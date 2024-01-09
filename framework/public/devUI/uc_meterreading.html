@@ -7,21 +7,24 @@
     <title>Use Case: Meter Reading</title>
     <meta name="description" content="Energy Application Frameworks">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css?h=cd822b7fd22c8a95a68470c795adea69">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css?h=d98553506d4393860db8a633e4842ead">
+    <link rel="stylesheet" href="assets/css/Navbar-With-Button-icons.css?h=befd8a398792e305b7ffd4a176b5b585">
 </head>
 
-<body>
+<body style="padding-bottom: 25px;">
     <header>
         <nav class="navbar navbar-expand-md bg-light shadow" style="margin-bottom: 30px;">
             <div class="container-fluid"><a class="navbar-brand" href="./"><strong>STROM</strong>DAO&nbsp;<strong>EAF</strong>s</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navcol-1">
                     <ul class="navbar-nav">
-                        <li class="nav-item"><a class="nav-link" href="uc_meterreading.html">Zählerablesung</a></li>
                         <li class="nav-item"><a class="nav-link" href="uc_tariff.html">Tarif</a></li>
                         <li class="nav-item"><a class="nav-link" href="uc_settlement.html">Settlement</a></li>
-                        <li class="nav-item"><a class="nav-link" href="uc_clearing.html">Abrechnung</a></li>
-                        <li class="nav-item"><a class="nav-link" href="uc_assets.html">Messstellen</a></li>
-                        <li class="nav-item"><a class="nav-link" href="uc_energyprofile.html">Energie Profile</a></li>
+                        <li class="nav-item"><a class="nav-link" href="uc_assets.html">Zählpunkte</a></li>
+                        <li class="nav-item"></li>
                     </ul>
+                    <form class="ms-auto" action="./uc_assets.html" method="get">
+                        <div class="input-group"><input class="form-control" type="search" id="searchMeter" name="meterId" required="" minlength="2"><button class="btn btn-dark" type="submit"><i class="fa fa-search"></i></button></div>
+                    </form>
                 </div>
             </div>
         </nav>
@@ -33,11 +36,9 @@
                 <form id="updateReading">
                     <div class="input-group" style="margin-bottom: 15px;"><span class="input-group-text col-2">Zählerkennung</span><input class="form-control" type="text" id="meterId" name="meterId" required=""></div>
                     <div class="input-group" style="margin-bottom: 15px;"><span class="input-group-text col-2">Zählerstand</span><input class="form-control" type="number" id="reading" step="1" min="0" name="reading"></div>
-                    <div class="input-group" style="margin-bottom: 15px;"><span class="input-group-text col-2">Zeitpunkt</span><input class="form-control" id="time" type="datetime-local" name="time" required=""></div>
-                    <div class="row">
-                        <div class="col-2"></div>
-                        <div class="col">
-                            <div class="btn-group" role="group"><button class="btn btn-primary btn-sm btnAddTime" type="button" data="900000">+15m</button><button class="btn btn-primary btn-sm btnAddTime" type="button" data="3600000">+1h</button></div><button class="btn btn-primary btn-sm" id="btnAddDemo" type="button" data="3600000">24 Stunden Muster Daten</button>
+                    <div class="input-group" style="margin-bottom: 15px;"><span class="input-group-text col-2">Zeitpunkt</span><input class="form-control" id="time" type="datetime-local" name="time" required="">
+                        <div class="text-end float-end d-lg-flex justify-content-end justify-content-lg-start input-group-text">
+                            <div class="btn-group col-2" role="group"><button class="btn btn-dark btn-sm btnAddTime" type="button" data="900000">+15m</button><button class="btn btn-dark btn-sm btnAddTime" type="button" data="3600000">+1h</button></div>
                         </div>
                     </div>
                     <div class="row">
@@ -46,9 +47,13 @@
                             <div class="alert alert-warning alert-dismissible" role="alert" id="warningAlert" style="display:none"><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button><span><strong>Nicht Verarbeiter</strong>&nbsp;Zählerstand wurde vom Backend nicht verarbeitet. Bitte Werte prüfen.</span></div>
                             <div class="alert alert-danger alert-dismissible" role="alert" id="dangerAlert" style="display:none"><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button><span><strong>Fehler</strong>&nbsp;Backend nicht erreichbar oder fehlerhaft.</span></div>
                         </div>
-                        <div class="col-2 text-end"><button class="btn btn-primary" id="submitReading" type="submit">übermitteln</button></div>
+                        <div class="col-2 text-end"><button class="btn btn-dark" id="submitReading" type="submit">übermitteln</button></div>
                     </div>
                 </form>
+                <hr>
+                <h5>Demo Modus</h5>
+                <div class="text-center"><button class="btn btn-dark btn-sm disabled" id="btnAddDemo" type="button" data="3600000" disabled="disabled">Zufällige Zählerstände einspielen</button><small class="form-text"><br><span style="color: rgb(33, 37, 41);">&nbsp;Generiert zufällige Zählerstände für die letzten 24 Stunden. Die Zählerstände folgen einem typischen Lastprofil und seinen Abweichungen.&nbsp;</span><br><br></small></div>
+                <div class="text-center"></div>
             </div>
         </div>
         <form id="amr">
@@ -59,24 +64,22 @@
                     <div class="input-group col-2" style="margin-bottom: 15px;"><span class="input-group-text col-2">API URL</span><input class="form-control" type="text" id="amrUrl" disabled=""></div>
                     <div class="input-group col-2" style="margin-bottom: 15px;"><span class="input-group-text col-2">Token</span><input class="form-control" type="text" id="amrToken" disabled=""></div>
                 </div>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col"></div>
-                        <div class="col-2 text-end"><button class="btn btn-primary" type="submit">abrufen</button></div>
-                    </div>
-                </div>
             </div>
         </form>
         <div id="readingsBackend" style="display: none;margin-top: 25px;">
-            <h3>Letzte Übermittlung</h3>
-            <p id="lastReadingTime">-</p>
-            <div class="card-group" id="readings" style="margin-top: 15px;"></div>
+            <div class="card">
+                <div class="card-body">
+                    <h3>Letzte Übermittlung</h3>
+                    <p id="lastReadingTime">-</p>
+                    <div class="card-group" id="readings" style="margin-top: 15px;"></div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
     <script src="assets/js/utils.js?h=13e600a17e8be592a9d46183d1921d45"></script>
-    <script src="assets/js/uc_meterreading.js?h=147c5956a351628c2aa9251ffc748f07"></script>
+    <script src="assets/js/uc_meterreading.js?h=f82d4bcb6bc85825d9cfbd0008ad6aec"></script>
 </body>
 
 </html>

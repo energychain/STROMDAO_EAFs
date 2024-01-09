@@ -3,7 +3,7 @@ $(document).ready(function() {
     const updateMeteringStatistics = async function() {
         $.getJSON("/api/tariff/getPrices", function(tariff) {
             for (const [key, value] of Object.entries(tariff)) {
-                if(!isNaN(value)) {
+                if((!isNaN(value)) && (value !== null)) {
                     $('#price_'+key).html(value.toFixed(4).replace('.',','));
                 }
             }

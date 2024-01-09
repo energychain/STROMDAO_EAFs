@@ -142,17 +142,23 @@ module.exports = {
 								let totalCost = 0;
 
 								for (let [key, value] of Object.entries(prices)) {
-									if(value == null) value = 0;
-									if(typeof ctx.params["consumption_"+key] == 'undefined') ctx.params["consumption_"+key] = 0;
+									if((value == null)||(isNaN(value))) value = 0;
+									if(
+										(typeof ctx.params["consumption_"+key] == 'undefined') ||
+										(ctx.params["consumption_"+key] == null)
+									) { ctx.params["consumption_"+key] = 0; }
+								
 									const epochCost = (ctx.params["consumption_"+key]/1000) * value;
 									totalCost += 1 * epochCost; 
 									ctx.params["cost_"+key] = epochCost;
 								}
 								ctx.params["cost"] = totalCost;
+								
 								ctx.params.processed = true;
 								ctx.params.jwt = await ctx.call("access.createClearingJWT",ctx.params);
 								ctx.params.startReading = previousClearing.reading;
 								ctx.params.startTime = previousClearing.endTime + 1; 
+								
 								await ctx.call("clearings_model.insert",{entity:ctx.params});
 								await ctx.broker.emit("clearing.created", ctx.params);
 								if(ctx.params.cost > 0) {

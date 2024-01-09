@@ -16,7 +16,11 @@ $(document).ready(function() {
             html += '<td>'+(data[i].consumption/1000).toFixed(3).replace('.',',')+' kWh</td>';
             html += '<td>'+(data[i].cost/(data[i].consumption/1000)).toFixed(4).replace('.',',')+'€</td>';
             html += '<td>'+(data[i].cost).toFixed(2).replace('.',',')+' €</td>';
-            html += '<td><button class="btn btn-xs btn-dark btnClear openPWA" data-id="'+data[i].meterId+'"><i class="fa fa-window-restore"></i></button><button class="btn btn-xs btn-dark btnClear openProfile" data-id="'+data[i].meterId+'"><i class="fa fa fa-bar-chart-o"></i></button></td>';
+            html += '<td><button class="btn btn-xs btn-dark btnClear openPWA" title="Letztverbraucher APP öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-window-restore"></i></button>';
+            html += '<button class="btn btn-xs btn-dark btnClear openProfile" title="Lastgangprofil öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-bar-chart-o"></i></button>';
+            html += '<button class="btn btn-xs btn-dark btnClear openReading" title="Zählerstandserfassung öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-pencil"></i></button>';
+            html += '<button class="btn btn-xs btn-dark btnClear openClearing" title="Clearing öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-euro"></i></button>';
+            html += '</td>';
             html += '</tr>';
         }
         html += '</tbody>';
@@ -39,13 +43,24 @@ $(document).ready(function() {
             const meterId = $(this).data('id');
             location.href="./uc_energyprofile.html?meterId="+meterId;
         });
+        $('.openReading').off();
+        $('.openReading').click(function() {
+            const meterId = $(this).data('id');
+            location.href="./uc_meterreading.html?meterId="+meterId;
+        });
+        $('.openClearing').off();
+        $('.openClearing').click(function() {
+            const meterId = $(this).data('id');
+            location.href="./uc_clearing.html?meterId="+meterId;
+        });
 
     }
 
     const runSearch = function() {
         $('#searchResults').show();
         $('#searchResults').html('Searching...');
-        $.getJSON("/api/debit/assets?q=" + $('#q').val(), renderResultSet);
+ 
+        $.getJSON("/api/debit/assets?q=" + $('#searchMeter').val(), renderResultSet);
     }
     $('.delayBtn').click(function() {
         $.getJSON("/api/debit/delayed?delay="+$(this).attr('data'),renderResultSet);
@@ -57,7 +72,7 @@ $(document).ready(function() {
        runSearch();
     });
 
-    $('#q').on('change', function() {
+    $('#searchMeter').on('change', function() {
         $('#searchResults').hide();
         $('#searchResults').html('');
     });
@@ -65,5 +80,11 @@ $(document).ready(function() {
         $.getJSON("/api/debit/delayed?delay="+$.urlParam('delay'),renderResultSet);
     }  else {  
         setTimeout(runSearch, 1000);
+    }
+    if($.urlParam('meterId')) {
+        $('#searchMeter').val($.urlParam('meterId'));
+    }
+    if($.urlParam('q')) {
+        $('#searchMeter').val($.urlParam('q'));
     }
 });

@@ -1,7 +1,7 @@
 $(document).ready(function () {
     const doFetch = function() {
         $.getJSON("/api/tariff/prices?startTime="+new Date($('#time').val()+"Z").getTime(), function(data) {
-            let html = '<table class="table table-condensed table-striped">';
+          /*  let html = '<table class="table table-condensed table-striped">';
             let chartData = [];
             let chartLabels = [];
             for(let i=0;i<data.length;i++) {
@@ -13,23 +13,61 @@ $(document).ready(function () {
                     chartData.push(data[i].price);
                     chartLabels.push(new Date(data[i].time).toLocaleString());
             }
-            html += '</table>';
+            html += '</table>'; 
             $('#tariffsBackend').html(html);
             $('#tariffsBackend').show();
+            */
             // Charting
+            let chartLabels = [];
+            let chartData = [];
+            let chartColors = [];
+            let minY=99999;
+            for(let i=0;i<data.length;i++) {
+                let label = new Date(data[i].time).toLocaleString();
+                if((i !== 0) && (i !== data.length-1)) {
+                    label = new Date(data[i].time).toLocaleTimeString();
+                }
+                chartLabels.push(label);
+                chartData.push(data[i].price);
+                if(data[i].price < minY) minY = data[i].price;
+                let color = '#c0c0c0';
+                if(data[i].label == 'virtual_1') color = '#147a50';
+                if(data[i].label == 'virtual_2') color = '#c69006';
+                if(data[i].label == 'virtual_3') color = '#a0a0a0';
+                chartColors.push(color);
+            }
             const ctxChart = document.getElementById('tariffLabelsChart');
             if(typeof window.chartObject !== 'undefined') window.chartObject.destroy();
-
+    
             window.chartObject = new Chart(ctxChart, {
                 type: 'bar',
                 data: {
                   labels: chartLabels,
                   datasets: [{
                     label: 'Preis je kWh',
-                    data: chartData
+                    data: chartData,
+                    backgroundColor:chartColors
                   }]
                 },
                 options: {
+                    scales: {
+                        y: {
+                            min: minY * 0.8
+                        }
+                    },
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y.toFixed(2).replace('.',',') + ' €/kWh';
+                                }
+                            }
+                        },
+                        legend: {
+                            display:false
+                        }
+                    }
                 }
               });
         })
