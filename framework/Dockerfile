@@ -9,5 +9,6 @@ WORKDIR /app
 RUN mkdir /app/services
 
 COPY services /app/services
+COPY docker_start.sh /app/docker_start.sh
 
 CMD ["/bin/sh","./docker_start.sh"]

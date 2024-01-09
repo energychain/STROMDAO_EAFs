@@ -4,4 +4,5 @@
 
 npm install -g stromdao-eaf
 
+cd /app
 stromdao-eaf

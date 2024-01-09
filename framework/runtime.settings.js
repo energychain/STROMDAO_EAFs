@@ -92,7 +92,7 @@ try {
 // Set Keys in default runtime
 try {
     runtimeDefaults.JWT_PRIVATEKEY = fs.readFileSync("./keys/runtime.privateKey.pem");
-    runtimeDefaults.JWT_PUBLICKEY = fs.readFileSync("../keys/runtime.publicKey.pem");
+    runtimeDefaults.JWT_PUBLICKEY = fs.readFileSync("./keys/runtime.publicKey.pem");
 } catch(e) {
     console.error("E02 - Runtime Keys",e);
 }
