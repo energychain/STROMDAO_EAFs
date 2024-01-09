@@ -17,16 +17,9 @@ jobs:
     steps:
       - checkout
 
-      # Add any steps needed for setting up your application for testing
-
-      - run:
-          name: Start Docker container
-          command: docker run -d -p 8080:3000 stromdao/eaf:latest
-
-      # Add a step to wait for the container to be fully started (you may need to customize this)
       - run:
           name: Wait for container to start
-          command: sleep 30
+          command: sleep 15
 
       # Add a step to check the URL on the running container for a specific status code
       - run:
