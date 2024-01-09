@@ -33,6 +33,14 @@ module.exports = {
 				path: "/settings"
 			},
 			async handler(ctx) {
+				let SINGLE_NODE = true;
+				if((typeof process.env["TRANSPORTER"] !== 'undefined')&&(process.env["TRANSPORTER"] !== 'null')) { 
+					SINGLE_NODE = false;
+				}
+				let STATELESS_MODE = true;
+				if((typeof process.env["db_adapter"] !== 'undefined')&&(process.env["db_adapter"] !== 'null')) { 
+					STATELESS_MODE = false;
+				}
 				return {
 					EPOCH_DURATION: process.env.EPOCH_DURATION,
 					PORT_PWA: process.env.PORT_PWA,
@@ -41,6 +49,8 @@ module.exports = {
 					PORT_METERING: process.env.PORT_METERING,
 					TARIFF_SEGMENTS: process.env.TARIFF_SEGMENTS,
 					JWT_EXPIRE_METERING: process.env.JWT_EXPIRE_METERING,
+					SINGLE_NODE: SINGLE_NODE,
+					STATELESS_MODE: STATELESS_MODE
 				}
 			}
 		},
