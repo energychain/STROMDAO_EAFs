@@ -5,9 +5,9 @@ tasks:
       before: |
           cd ./framework
       init: |
-          npm install; npm install -g eaf-admin-client; npm install -g eaf-amr-client
+        npm install ; npm install -g eaf-admin-client; npm install -g eaf-amr-client; npm install -g stromdao-eaf
       command: |
-         npm run dev
+        npm start
 ports:
     - name: Demo UI
       port: 3000
