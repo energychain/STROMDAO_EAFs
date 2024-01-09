@@ -1,7 +1,6 @@
 const MongoDBAdapter = require("moleculer-db-adapter-mongo");
 const fs = require("fs");
 
-
 const runtimeDefaults = {
     db_adapter: null,  // Use for MondoDB: new MongoDBAdapter("mongodb://HOSTNAME/stromdao_eafs")
     EPOCH_DURATION: 3600000, // Milliseconds of a tariff epoch 
@@ -35,8 +34,6 @@ const runtimeDefaults = {
         {label: 'virtual_8', price:9.99},
         {label: 'virtual_9', price:9.99} 
     ]),
-  //  JWT_PRIVATEKEY: fs.readFileSync("./runtime.privateKey.pem"), // Private Key - Regenerate Keypair with 'openssl genrsa -out runtime.privateKey.pem 2048' 
-  //  JWT_PUBLICKEY: fs.readFileSync("./runtime.publicKey.pem"), // Public Key - Regenerate Keypair with 'openssl genrsa -out runtime.privateKey.pem 2048' 
     JWT_OPTIONS: JSON.stringify({
         issuer:  "Stadtwerk Musterstadt",
         subject:  "EAF",
@@ -53,25 +50,29 @@ const runtimeDefaults = {
 }
 
 // Fallback for pre 0.2.43 releases
+let keysFolderLocation = "./keys/";
+
 if((typeof process.env["EAF_WORK"] == 'undefined')||(process.env["EAF_WORK"] == 'null')) { 
     require('dotenv').config();
+} else {
+    keysFolderLocation = process.env["EAF_WORK"]+"/keys/";
 }
 
 // Extended Key Management
 /*
   Should allow Docker users to just copy from ./keys/ folder of existing other NODE.
 */
-if(!fs.existsSync("./keys/")) {
-    fs.mkdirSync("./keys/");
+if(!fs.existsSync(keysFolderLocation)) {
+    fs.mkdirSync(keysFolderLocation);
 }
 
 if((typeof process.env["EAF_KEYS"] !== 'undefined')&&(process.env["EAF_KEYS"] !== 'null')) { 
-    fs.copyFileSync(process.env["EAF_KEYS"]+"/runtime.privateKey.pem", "./keys/runtime.privateKey.pem");
-    fs.copyFileSync(process.env["EAF_KEYS"]+"/runtime.publicKey.pem", "./keys/runtime.publicKey.pem"); 
+    fs.copyFileSync(process.env["EAF_KEYS"]+"/runtime.privateKey.pem", keysFolderLocation +"runtime.privateKey.pem");
+    fs.copyFileSync(process.env["EAF_KEYS"]+"/runtime.publicKey.pem", keysFolderLocation + "runtime.publicKey.pem"); 
 }
 
 try {
-    if(fs.existsSync("./keys/runtime.privateKey.pem") == false) {
+    if(fs.existsSync(keysFolderLocation+ "runtime.privateKey.pem") == false) {
         const crypto = require('crypto');
 
         // Generate a new 2048-bit RSA key pair
@@ -80,10 +81,10 @@ try {
         });
 
         // Save the public key to a file
-        fs.writeFileSync('./keys/runtime.publicKey.pem', publicKey.export({ format: 'pem', type: 'pkcs1' }));
+        fs.writeFileSync(keysFolderLocation + 'runtime.publicKey.pem', publicKey.export({ format: 'pem', type: 'pkcs1' }));
 
         // Save the private key to a file
-        fs.writeFileSync('../keys/runtime.privateKey.pem', privateKey.export({ format: 'pem', type: 'pkcs1' }));
+        fs.writeFileSync( keysFolderLocation + 'runtime.privateKey.pem', privateKey.export({ format: 'pem', type: 'pkcs1' }));
     }
 } catch(e) {
     console.error("E01 - Key Persistance",e);
@@ -91,8 +92,8 @@ try {
 
 // Set Keys in default runtime
 try {
-    runtimeDefaults.JWT_PRIVATEKEY = fs.readFileSync("./keys/runtime.privateKey.pem");
-    runtimeDefaults.JWT_PUBLICKEY = fs.readFileSync("./keys/runtime.publicKey.pem");
+    runtimeDefaults.JWT_PRIVATEKEY = fs.readFileSync(keysFolderLocation + "runtime.privateKey.pem");
+    runtimeDefaults.JWT_PUBLICKEY = fs.readFileSync(keysFolderLocation + "runtime.publicKey.pem");
 } catch(e) {
     console.error("E02 - Runtime Keys",e);
 }
