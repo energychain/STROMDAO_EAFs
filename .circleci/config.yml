@@ -24,7 +24,15 @@ jobs:
       # Add a step to check the URL on the running container for a specific status code
       - run:
           name: Check URL
-          command: curl -I -s -o /dev/null -w "%{http_code}" http://localhost:8080/api/access/settings
+          command: |
+            wget -O /tmp/content.txt http://localhost:3000/api/access/settings
+            content=$(cat /tmp/content.txt)
+            if [[ $content == *EPOCH_DURATION* ]]; then
+              echo "EPOCH_DURATION found in the response."
+            else
+              echo "EPOCH_DURATION not found in the response."
+              exit 1
+            fi 
 
       # Add any additional test steps
 
