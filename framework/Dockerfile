@@ -10,4 +10,4 @@ RUN mkdir /app/services
 
 COPY services /app/services
 
-CMD ["stromdao-eaf"]
+CMD ["/bin/sh","./docker_start.sh"]
