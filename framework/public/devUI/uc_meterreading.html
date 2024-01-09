@@ -27,40 +27,34 @@
         </nav>
     </header>
     <div class="container">
-        <form id="updateReading">
-            <div class="card">
-                <div class="card-header">
-                    <h3>Manuelle Ablesung Hauptzähler</h3>
-                </div>
-                <div class="card-body">
+        <div class="card">
+            <div class="card-body">
+                <h3>Manuelle Ablesung</h3>
+                <form id="updateReading">
                     <div class="input-group" style="margin-bottom: 15px;"><span class="input-group-text col-2">Zählerkennung</span><input class="form-control" type="text" id="meterId" name="meterId" required=""></div>
                     <div class="input-group" style="margin-bottom: 15px;"><span class="input-group-text col-2">Zählerstand</span><input class="form-control" type="number" id="reading" step="1" min="0" name="reading"></div>
                     <div class="input-group" style="margin-bottom: 15px;"><span class="input-group-text col-2">Zeitpunkt</span><input class="form-control" id="time" type="datetime-local" name="time" required=""></div>
                     <div class="row">
                         <div class="col-2"></div>
                         <div class="col">
-                            <div class="btn-group" role="group"><button class="btn btn-primary btn-sm btnAddTime" type="button" data="900000">+15m</button><button class="btn btn-primary btn-sm btnAddTime" type="button" data="3600000">+1h</button></div>
+                            <div class="btn-group" role="group"><button class="btn btn-primary btn-sm btnAddTime" type="button" data="900000">+15m</button><button class="btn btn-primary btn-sm btnAddTime" type="button" data="3600000">+1h</button></div><button class="btn btn-primary btn-sm" id="btnAddDemo" type="button" data="3600000">24 Stunden Muster Daten</button>
                         </div>
                     </div>
-                </div>
-                <div class="card-footer text-end">
                     <div class="row">
                         <div class="col">
                             <div class="alert alert-success alert-dismissible" role="alert" id="successAlert" style="display:none"><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button><span><strong>Erfolg</strong> Zählerstand wurde verarbeitet.&nbsp;&nbsp;<button class="btn btn-success" id="btnClearing" type="button">Abrechnung</button></span></div>
                             <div class="alert alert-warning alert-dismissible" role="alert" id="warningAlert" style="display:none"><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button><span><strong>Nicht Verarbeiter</strong>&nbsp;Zählerstand wurde vom Backend nicht verarbeitet. Bitte Werte prüfen.</span></div>
                             <div class="alert alert-danger alert-dismissible" role="alert" id="dangerAlert" style="display:none"><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button><span><strong>Fehler</strong>&nbsp;Backend nicht erreichbar oder fehlerhaft.</span></div>
                         </div>
-                        <div class="col-2"><button class="btn btn-primary" id="submitReading" type="submit">übermitteln</button></div>
+                        <div class="col-2 text-end"><button class="btn btn-primary" id="submitReading" type="submit">übermitteln</button></div>
                     </div>
-                </div>
+                </form>
             </div>
-        </form>
+        </div>
         <form id="amr">
             <div class="card" style="margin-top: 25px;">
-                <div class="card-header">
-                    <h3>Automatische Ablesung Hauptzähler&nbsp;</h3>
-                </div>
                 <div class="card-body">
+                    <h3>Automatische Ablesung</h3>
                     <div class="input-group col-2" style="margin-bottom: 15px;"><span class="input-group-text col-2">Zählerkennung</span><input class="form-control" type="text" id="amrMeterId" required=""></div>
                     <div class="input-group col-2" style="margin-bottom: 15px;"><span class="input-group-text col-2">API URL</span><input class="form-control" type="text" id="amrUrl" disabled=""></div>
                     <div class="input-group col-2" style="margin-bottom: 15px;"><span class="input-group-text col-2">Token</span><input class="form-control" type="text" id="amrToken" disabled=""></div>
@@ -82,7 +76,7 @@
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
     <script src="assets/js/utils.js?h=13e600a17e8be592a9d46183d1921d45"></script>
-    <script src="assets/js/uc_meterreading.js?h=ee9979af490508cdd27f5941eaa03fad"></script>
+    <script src="assets/js/uc_meterreading.js?h=147c5956a351628c2aa9251ffc748f07"></script>
 </body>
 
 </html>

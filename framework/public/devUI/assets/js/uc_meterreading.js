@@ -56,7 +56,7 @@ $(document).ready(function () {
               html += '</div>';
             }
         }
-        $('#time').val(new Date(response.time).toISOString().substring(0,16));
+        $('#time').val(new Date(response.time).toLocaleString());
         $('#reading').val(response.reading);
         $('#lastReadingTime').html(new Date(response.time).toISOString());
         $('#readings').html(html);
@@ -71,6 +71,13 @@ $(document).ready(function () {
         location.href="./uc_clearing.html?meterId="+$('#meterId').val();
     }
     )
+
+    $('#btnAddDemo').on('click',function() {
+        $.getJSON("/api/demometer/populate24h?meterId="+$('#meterId').val(), function(data) {
+            location.href="?meterId="+$('#meterId').val();
+        });
+    });
+
     $('#updateReading').submit(function (event) {
         event.preventDefault();
         $('#submitReading').attr('disabled', 'disabled');
@@ -121,4 +128,9 @@ $(document).ready(function () {
        event.preventDefault();
         fetchApiToken();
    })
+
+   if($.urlParam("meterId")) {
+       $('#meterId').val($.urlParam("meterId"));
+       fetchLastReading();
+   }
 });
