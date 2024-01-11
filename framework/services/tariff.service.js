@@ -277,6 +277,22 @@ module.exports = {
 				return prices;
 			}
 		},
+		listPrices: {
+			rest: {
+				method: "GET",
+				path: "/listPrices"
+			},
+			async handler(ctx) {
+				let results =  await ctx.call("price_model.find",{
+					sort:"-epoch"
+				});
+				for(let i=0;i<results.length;i++) {
+					results[i].fromTime = results[i].epoch * process.env.EPOCH_DURATION;
+					delete results[i]._id;
+				}
+				return results;
+			}
+		},
 		epochDuration: {
 			rest: {
 				method: "GET",
@@ -364,7 +380,7 @@ module.exports = {
 							existingEpochs["epoch_"+i].price = price_info[0].price;
 							existingEpochs["epoch_"+i].priceOfEpoch = price_info[0].epoch;
 						}
-						
+
 						await ctx.call("tariff_model.insert",{
 							entity:existingEpochs["epoch_"+i]
 						});

@@ -33,6 +33,7 @@ module.exports = {
 				method: "GET",
 				path: "/overview"
 			},
+			timeout: 60000,
 			async handler(ctx) {
 				if(typeof ctx.params.delay == 'undefined') ctx.params.delay = 86400000;
 				const ts = new Date().getTime();

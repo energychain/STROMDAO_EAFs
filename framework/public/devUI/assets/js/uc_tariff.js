@@ -105,6 +105,27 @@ $(document).ready(function () {
         });
         const d = (new Date(new Date().getTime()+(1*86400000)).toISOString()).substring(0,11)+"00:00";
         $('#fromTime').val(d);
+        $.getJSON("/api/tariff/listPrices",function(data) {
+            let html = '<table class="table table-striped table-condensed">';
+            html += '<thead>';
+            html += '<tr>';
+            html += '<th>Gültig ab</th>';
+            html += '<th>Segment</th>';
+            html += '<th style="text-align:right">Preis je kWh</th>';
+            html += '</tr>';
+            html += '</thead>';
+            html += '<tbody>';
+            for(let i=0;i<data.length;i++) {
+                html += '<tr>';
+                html += '<td title="Epoche '+data[i].epoch+'">' + new Date(data[i].fromTime).toLocaleString() + '</td>';
+                html += '<td title="' + data[i].label + '">' + customLabels[data[i].label] + '</td>';
+                html += '<td style="text-align:right">' + (data[i].price + "").replace('.',',') + '€</td>';
+                html += '</tr>';
+            }
+            html += '</tbody>';
+            html += '</table>';
+            $('#tariffChanges').html(html);
+        });
     });
 
     $('#frmPrices').submit(function(event) {
@@ -132,4 +153,5 @@ $(document).ready(function () {
         event.preventDefault();
         doFetch();
     });
+
 });
