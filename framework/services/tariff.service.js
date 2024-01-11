@@ -350,7 +350,21 @@ module.exports = {
 						// Implementation for actual dynamics source
 						
 						existingEpochs["epoch_"+i] = await dynamic.lookup(i);
-
+						
+						let price_info = await ctx.call("price_model.find",{
+							query:{
+								epoch: {
+									$lte: i * 1
+								},
+								label: existingEpochs["epoch_"+i].label
+							},
+							sort:"-epoch"
+						});
+						if((typeof price_info !== 'undefined') && (price_info !== null)) {
+							existingEpochs["epoch_"+i].price = price_info[0].price;
+							existingEpochs["epoch_"+i].priceOfEpoch = price_info[0].epoch;
+						}
+						
 						await ctx.call("tariff_model.insert",{
 							entity:existingEpochs["epoch_"+i]
 						});

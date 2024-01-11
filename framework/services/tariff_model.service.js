@@ -24,7 +24,7 @@ module.exports = {
 	 * Settings
 	 */
 	settings: {
-		fields: ["_id","epoch","label"]
+		fields: ["_id","epoch","label","price"]
 	},
 
 	/**
