@@ -104,6 +104,28 @@ module.exports = {
       }
       ctx.call("influx.writeMeasurement", measurement);
     },
+    "debit.add"(ctx) {
+        // return in case we  do not have a INFLUX_DB connection configured
+        if((typeof INFLUXDB_URL == 'undefined') || (INFLUXDB_URL == null)) {
+          return;
+        }
+  
+        let measurement = {
+          measurement: "aggregation_debit",
+          tags: {
+            type: "debit",
+            epoch: ctx.params.epoch
+          },
+          fields: {
+            cost: ctx.params.cost,
+            consumption: ctx.params.consumption,
+          },
+        };
+        ctx.call("influx.writeMeasurement", measurement);
+        
+        measurement.measurement = "debit_"+ctx.params.meterId;
+        ctx.call("influx.writeMeasurement", measurement);
+      },
   },
 
   /**

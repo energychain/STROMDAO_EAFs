@@ -160,7 +160,7 @@ module.exports = {
 				} else {
 					await ctx.call("debit_model.update",invoice);
 				}
-				await ctx.broker.emit("debit.add", invoice);
+				await ctx.broker.broadcast("debit.add", invoice);
 				return invoice;
 			}
 		},
