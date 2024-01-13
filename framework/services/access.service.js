@@ -451,6 +451,27 @@ module.exports = {
 				return await ctx.call("asset.upsert",updateObject);
 			}
 		},
+		sharedFolder: {
+			rest: {
+				method: "GET",
+				path: "/sharedFolder"
+			},
+			params: {
+				token: {
+					type:"string"
+				}
+			},
+			async handler(ctx) {
+				const verifyOptions = JSON.parse(process.env.JWT_OPTIONS);
+				verifyOptions.expiresIn = process.env.JWT_EXPIRE_METERING;
+				const token = jwt.verify(ctx.params.token,process.env.JWT_PUBLICKEY, verifyOptions);
+				delete ctx.params.token;
+				
+				await ctx.call("nextcloud.createAssetShare",{assetId:token.meterId,assetType:'meter'});
+				const result = await ctx.call("asset.get",{assetId:token.meterId,type:'meter'});
+				return result.nextcloud;
+			}
+		}
 		getAssetMeta: {
 			rest: {
 				method: "GET",

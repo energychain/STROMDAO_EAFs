@@ -45,6 +45,7 @@ module.exports = {
 					"access.updateAssetMeta",
 					"access.getAssetMeta",
 					"access.settings",
+					"access.sharedFolder",
 					"debit.open"
 				],
 
