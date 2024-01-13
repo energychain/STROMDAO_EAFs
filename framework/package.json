@@ -1,6 +1,6 @@
 {
   "name": "stromdao-eaf",
-  "version": "0.2.57",
+  "version": "0.2.58",
   "description": "STROMDAO Energy Application Framework - Referenzimplementierung für dynamische Stromtarife",
   "scripts": {
     "dev": "node ./run-eaf",
@@ -14,7 +14,8 @@
     "dc:up": "docker-compose up --build -d",
     "dc:logs": "docker-compose logs -f",
     "dc:down": "docker-compose down",
-    "bundle": "pkg . --targets node18-win-x64 --out-path dist/"
+    "bundle-win-x64": "pkg . --targets node18-win-x64 --out-path dist/",
+    "bundle-linux": "pkg . --targets node18-linux --out-path dist/"
   },
   "pkg": {
     "assets": [

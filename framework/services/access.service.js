@@ -442,7 +442,8 @@ module.exports = {
 				const token = jwt.verify(ctx.params.token,process.env.JWT_PUBLICKEY, verifyOptions);
 				delete ctx.params.token;
 				let updateObject = {
-					assetId:'meter_'+ctx.params.meterId
+					assetId:ctx.params.meterId,
+					type:'meter'
 				};
 				for (const [key, value] of Object.entries(ctx.params)) {
 					updateObject["clientMeta."+key] = value;
@@ -468,7 +469,7 @@ module.exports = {
 				verifyOptions.expiresIn = process.env.JWT_EXPIRE_METERING;
 				const token = jwt.verify(ctx.params.token,process.env.JWT_PUBLICKEY, verifyOptions);
 				delete ctx.params.token;
-				const result = await ctx.call("asset.get",{assetId:'meter_'+token.meterId});
+				const result = await ctx.call("asset.get",{assetId:token.meterId,type:'meter'});
 				return result;
 			}
 		}

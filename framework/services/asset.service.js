@@ -35,6 +35,10 @@ module.exports = {
 				assetId: {
 					type: "string",
 					optional:false
+				},
+				type: {
+					type: "string",
+					optional:false
 				}
 			},
 			openapi: {
@@ -43,10 +47,11 @@ module.exports = {
 			},
 			/** @param {Context} ctx  */
 			async handler(ctx) {
+				
 				if(db == null) {
 					return false;
 				} else {
-					return (await db.collection("assets").updateOne({assetId:ctx.params.assetId},{$set:ctx.params},{upsert:true})).result;
+					return (await db.collection("assets").updateOne({assetId:ctx.params.assetId,type:ctx.params.type},{$set:ctx.params},{upsert:true})).result;
 				}
 			}
 		},
