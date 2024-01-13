@@ -160,7 +160,7 @@ module.exports = {
 								ctx.params.startTime = previousClearing.endTime + 1; 
 								
 								await ctx.call("clearings_model.insert",{entity:ctx.params});
-								await ctx.broker.emit("clearing.created", ctx.params);
+								await ctx.broker.broadcast("clearing.created", ctx.params);
 								if(ctx.params.cost > 0) {
 									// If cost < 0 it would be a credit 
 									await ctx.call("debit.add",ctx.params);

@@ -471,7 +471,7 @@ module.exports = {
 				const result = await ctx.call("asset.get",{assetId:token.meterId,type:'meter'});
 				return result.nextcloud;
 			}
-		}
+		},
 		getAssetMeta: {
 			rest: {
 				method: "GET",
