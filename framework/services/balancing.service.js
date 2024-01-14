@@ -51,6 +51,7 @@ module.exports = {
        * @return {Object} The updated balance object after balancing the energy exchange.
        */
       async handler(ctx) {
+        ctx.params.consumption = Math.round(ctx.params.consumption);
         // Check if we have a balancing rule for this asset.
         const asset = await ctx.call("asset.get", { assetId: ctx.params.meterId });
 
@@ -87,7 +88,8 @@ module.exports = {
 
         // Insert the statement into the database
         await ctx.call("statement_model.insert", { entity: statement });
-
+        await ctx.broker.emit("transferfrom."+statement.from, ctx.params.consumption);
+        await ctx.broker.emit("transferto."+statement.to, ctx.params.consumption);
         // Find any existing balance for the given asset and epoch
         const balances = await ctx.call("balancing_model.find", {
           query: {
@@ -96,6 +98,7 @@ module.exports = {
             assetId: ctx.params.meterId,
           },
         });
+        
 
         // Update the balance if it exists, otherwise create a new one
         if (balances && balances.length > 0) {
@@ -108,7 +111,7 @@ module.exports = {
         } else {
           await ctx.call("balancing_model.insert", { entity: balance });
         }
-
+        await ctx.broker.emit("balance."+ctx.params.meterId, balance);
         // Return the updated balance
         return balance;
       },
