@@ -33,6 +33,58 @@ module.exports = {
   // Define the actions of the service
   actions: {
     // Action to add a settlement from a meter to the energy balancing model
+    balance: {
+			rest: {
+				method: "GET",
+				path: "/balance"
+			},
+      params: {
+        assetId: "string",
+      },
+      async handler(ctx) {
+        if((typeof ctx.params.epoch == 'undefined')||(ctx.params.epoch == null)) {
+          ctx.params.epoch = Math.floor(new Date().getTime() / process.env.EPOCH_DURATION);
+        }
+        let res = await ctx.call("balancing_model.find",{
+          query:{
+            assetId: ctx.params.assetId,
+            epoch: { $lt:ctx.params.epoch }
+          }
+        });
+        for(let i=0;i<res.length;i++) {
+         delete res[i]._id;
+         delete res[i].id;
+        }
+        // we might return multiple balances for different labels
+        return res;
+      }
+    },
+    statements: {
+			rest: {
+				method: "GET",
+				path: "/statements"
+			},
+      params: {
+        assetId: "string",
+      },
+      async handler(ctx) {
+        if((typeof ctx.params.epoch == 'undefined')||(ctx.params.epoch == null)) {
+          ctx.params.epoch = Math.floor(new Date().getTime() / process.env.EPOCH_DURATION);
+        }
+        let res = await ctx.call("statement_model.find",{
+          query:{
+            assetId: ctx.params.assetId,
+            epoch: { $lt:ctx.params.epoch }
+          }
+        });
+        for(let i=0;i<res.length;i++) {
+         delete res[i]._id;
+         delete res[i].id;
+        }
+        // we might return multiple balances for different labels
+        return res;
+      }
+    },
     addSettlement: {
       params: {
         meterId: "string",

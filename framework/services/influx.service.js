@@ -122,7 +122,7 @@ module.exports = {
           },
         };
         ctx.call("influx.writeMeasurement", measurement);
-        
+
         measurement.measurement = "debit_"+ctx.params.meterId;
         ctx.call("influx.writeMeasurement", measurement);
       },
