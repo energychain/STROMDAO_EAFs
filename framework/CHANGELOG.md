@@ -1,3 +1,20 @@
+## [0.4.0](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.3.0...v0.4.0) (2024-01-14)
+
+
+### Features
+
+* Added methods to retrieve statement and balance of an epoch in balancing ([360bc7e](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/360bc7e3e05569bda972a196bd492aed253da731))
+* Balancing issues events `transferfrom.$assetId`, `transferto.$assetId` and `balance.$assetId`. ([224ade2](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/224ade23d222bb9403a8e4d9a82d4302430feea2))
+
+
+### Bug Fixes
+
+* Balanc retrieval to allow more balances in one request. ([8ea053b](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/8ea053b98512145eb77a8be00e42543ac062655b))
+* Balance model to include label for epoch. ([a245741](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/a245741241b87da5663b792f5202eb0ec13a10c7))
+* Label Handling for balancing ([f5e0c1d](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/f5e0c1df901e023af16e95fbe863d9f6fc65cf2b))
+* Orphaned call from clearing to balancing removed. ([13735e4](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/13735e4766d7dd9c868a586f36cdd240010a1c52))
+* Parameter missmatch of balancing calls ([06157b9](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/06157b99dd3bd0b7eeb4ee2ecca114150e1de00c))
+
 ## [0.3.0](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.2.58...v0.3.0) (2024-01-14)
 
 
