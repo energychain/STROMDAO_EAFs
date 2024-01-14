@@ -1,3 +1,10 @@
+## [0.3.0](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.2.58...v0.3.0) (2024-01-14)
+
+
+### Features
+
+* Service for energy balancing. Managing a model for statements (energy ledger) and balancing (aggregation per epoch for each assetId and label) ([a3889da](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/a3889dac2c39715597cab9f73cfcf0fa19ad3199))
+
 ## [0.2.58](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.2.57...v0.2.58) (2024-01-13)
 
 
