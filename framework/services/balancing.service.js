@@ -24,12 +24,10 @@
 // * `balancing_model`: The balancing model
 // * `statement_model`: The statement model
 
-
-// Import the Moleculer framework
-import { Service, Context } from "moleculer";
+"use strict";
 
 // Create a new Moleculer service
-const balancingService = new Service({
+module.exports = {
   name: "balancing",
 
   // Define the actions of the service
@@ -116,7 +114,4 @@ const balancingService = new Service({
       },
     },
   },
-});
-
-// Export the service
-export default balancingService;
+}
