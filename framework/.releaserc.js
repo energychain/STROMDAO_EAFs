@@ -5,7 +5,7 @@ module.exports = {
       preset: 'angular',
       releaseRules: [
         {type: 'increment', release: 'patch'},
-        {type: 'feat', release: 'minor'},
+        {type: 'feat', release: 'patch'},
         {type: 'fix', release: 'patch'},
         {type: 'docs', release: 'patch'},
         {type: 'style', release: 'patch'},

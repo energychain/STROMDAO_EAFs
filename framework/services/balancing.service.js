@@ -119,15 +119,6 @@ module.exports = {
           energy: ctx.params.consumption,
         };
 
-        let balance = {
-          assetId: ctx.params.meterId,
-          epoch: ctx.params.epoch,
-          in: 0,
-          out: 0,
-          label: ctx.params.label,
-          created: new Date().getTime(),
-        };
-
         // Apply the balancing rule if one exists
 
         /*
@@ -140,47 +131,93 @@ module.exports = {
         if (asset && asset.balancerule) {
           if (asset.balancerule.from) {
             statement.from = asset.balancerule.from;
-            balance.in += ctx.params.consumption;
           }
           if (asset.balancerule.to) {
             statement.to = asset.balancerule.to;
-            balance.out += ctx.params.consumption;
           }
         } else {
           // If there is no balancing rule, the energy is considered to be consumed locally
-          balance.in += ctx.params.consumption;
+      
         }
 
         // Insert the statement into the database
         await ctx.call("statement_model.insert", { entity: statement });
         await ctx.broker.emit("transferfrom."+statement.from, ctx.params.consumption);
         await ctx.broker.emit("transferto."+statement.to, ctx.params.consumption);
-        // Find any existing balance for the given asset and epoch
-        const balances = await ctx.call("balancing_model.find", {
+
+        // Find any existing balance for the given asset and counter asset at epoch
+        let balance_from = {
+          assetId: statement.from,
+          epoch: ctx.params.epoch,
+          in: 0,
+          out: 1 * ctx.params.consumption,
+          label: ctx.params.label,
+          created: new Date().getTime(),
+        };
+
+        const balances_from = await ctx.call("balancing_model.find", {
           query: {
             label: ctx.params.label,
             epoch: ctx.params.epoch,
-            assetId: ctx.params.meterId,
+            assetId: statement.from,
           },
         });
         
 
         // Update the balance if it exists, otherwise create a new one
-        if (balances && balances.length > 0) {
-          balance.in += balances[0].in;
-          balance.out += balances[0].out;
-          balance.id = balances[0].id;
-          balance._id = balances[0]._id;
-          if (typeof balance._id == 'undefined') balance._id = balance.id;
-          if(typeof balance.id == 'undefined') balance.id = balance._id;
-          
-          await ctx.call("balancing_model.update", balance);
+        if (balances_from && balances_from.length > 0) {
+          balance_from.in += balances_from[0].in;
+          balance_from.out += balances_from[0].out;
+          balance_from.id = balances_from[0].id;
+          balance_from._id = balances_from[0]._id;
+          if (typeof balance_from._id == 'undefined') balance_from._id = balance_from.id;
+          if(typeof balance_from.id == 'undefined') balance_from.id = balance_from._id;
+
+          await ctx.call("balancing_model.update", balance_from);
         } else {
-          await ctx.call("balancing_model.insert", { entity: balance });
+          await ctx.call("balancing_model.insert", { entity: balance_from });
         }
-        await ctx.broker.emit("balance."+ctx.params.meterId, balance);
+        await ctx.broker.emit("balance."+statement.from, balance_from);
+
+        let balance_to = {
+          assetId: statement.to,
+          epoch: ctx.params.epoch,
+          in: 1 * ctx.params.consumption,
+          out: 0,
+          label: ctx.params.label,
+          created: new Date().getTime(),
+        };
+
+        const balances_to = await ctx.call("balancing_model.find", {
+          query: {
+            label: ctx.params.label,
+            epoch: ctx.params.epoch,
+            assetId: statement.to,
+          },
+        });
+        
+
+        // Update the balance if it exists, otherwise create a new one
+        if (balances_to && balances_to.length > 0) {
+          balance_to.in += balances_to[0].in;
+          balance_to.out += balances_to[0].out;
+          balance_to.id = balances_to[0].id;
+          balance_to._id = balances_to[0]._id;
+          if(typeof balance_to._id == 'undefined') balance_to._id = balance_to.id;
+          if(typeof balance_to.id == 'undefined') balance_to.id = balance_to._id;
+
+          await ctx.call("balancing_model.update", balance_to);
+        } else {
+          await ctx.call("balancing_model.insert", { entity: balance_to });
+        }
+        await ctx.broker.emit("balance."+statement.to, balance_to);
+
+
         // Return the updated balance
-        return balance;
+        return {
+          to:balance_to,
+          from:balance_from
+        };
       },
     },
   },
