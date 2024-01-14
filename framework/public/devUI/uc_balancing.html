@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Use Case: Assets</title>
+    <title>Use Case: Balancing</title>
     <meta name="description" content="Energy Application Frameworks">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css?h=cd822b7fd22c8a95a68470c795adea69">
     <link rel="stylesheet" href="assets/fonts/font-awesome.min.css?h=fbfa80fe81882dd47f8abd5cbb011b19">
@@ -30,12 +30,11 @@
         </nav>
     </header>
     <div class="container">
-        <form id="frmConcentrator" style="margin-bottom: 25px;">
+        <form id="fetchSettlement">
             <div class="card">
                 <div class="card-body">
-                    <h3>Messstellenbetreiber</h3>
-                    <div class="input-group" style="margin-bottom: 15px;"><input class="form-control" type="search" id="concentratorId" required="" minlength="1"></div>
-                    <div class="text-end"><button class="btn btn-dark" type="submit"><i class="fa fa-key" style="margin-right: 5px;"></i>Token abrufen</button></div><label class="form-label" style="margin-top: 25px;">Token</label><input class="form-control" type="text" id="token" disabled=""><small class="form-text">Erlaubt die Übermittlung von Zählerständen einer belieben meterId</small>
+                    <h3>Energie Bilanz</h3>
+                    <div id="epochbalance"></div>
                 </div>
             </div>
         </form>
@@ -43,7 +42,7 @@
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
     <script src="assets/js/utils.js?h=13e600a17e8be592a9d46183d1921d45"></script>
-    <script src="assets/js/uc_concentrator.js?h=f2e9cb3ec370ff2b5a9f8667a324851a"></script>
+    <script src="assets/js/uc_balancing.js?h=1d42ed9f60ffa41e5255fde5293d493c"></script>
 </body>
 
 </html>

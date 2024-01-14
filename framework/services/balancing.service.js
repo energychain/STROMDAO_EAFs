@@ -42,16 +42,22 @@ module.exports = {
         assetId: "string",
       },
       async handler(ctx) {
+        const EPOCH_DURATION = process.env.EPOCH_DURATION;
         if((typeof ctx.params.epoch == 'undefined')||(ctx.params.epoch == null)) {
-          ctx.params.epoch = Math.floor(new Date().getTime() / process.env.EPOCH_DURATION);
+          ctx.params.epoch = Math.floor(new Date().getTime() / EPOCH_DURATION);
         }
         let res = await ctx.call("balancing_model.find",{
           query:{
             assetId: ctx.params.assetId,
-            epoch: { $lt:ctx.params.epoch }
+            epoch:  {$lt: ctx.params.epoch }
+          },
+          limit: 10,
+          sort: {
+            epoch: -1
           }
         });
         for(let i=0;i<res.length;i++) {
+         res[i].time = res[i].epoch * EPOCH_DURATION;
          delete res[i]._id;
          delete res[i].id;
         }
@@ -74,7 +80,7 @@ module.exports = {
         let res = await ctx.call("statement_model.find",{
           query:{
             assetId: ctx.params.assetId,
-            epoch: { $lt:ctx.params.epoch }
+            epoch: ctx.params.epoch
           }
         });
         for(let i=0;i<res.length;i++) {
@@ -109,7 +115,7 @@ module.exports = {
 
         // Initialize the statement and balance objects
         let statement = {
-          from: 'general',
+          from: 'eaf_general',
           to: ctx.params.meterId,
           epoch: ctx.params.epoch,
           energy: ctx.params.consumption,
@@ -124,6 +130,14 @@ module.exports = {
         };
 
         // Apply the balancing rule if one exists
+
+        /*
+        // TODO Handle Balancing Rules with changes in future / past 
+
+        Perspective is from asset not from this:
+          in = Electricity got consumed by the asset
+          out = Electricity got produced by the asset
+        */
         if (asset && asset.balancerule) {
           if (asset.balancerule.from) {
             statement.from = asset.balancerule.from;
