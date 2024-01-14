@@ -85,7 +85,7 @@ module.exports = {
 					await ctx.call("loadprofile_model.insert",{entity:existing});
 				}
 				// Forward to balancing (asynchronously)
-				ctx.call("balancing.addSettlement",{settlement:ctx.params});
+				ctx.call("balancing.addSettlement",ctx.params);
 				return;
 			}
 		},
