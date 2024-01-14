@@ -52,9 +52,7 @@ module.exports = {
             epoch:  {$lt: ctx.params.epoch }
           },
           limit: 10,
-          sort: {
-            epoch: -1
-          }
+          sort: "-epoch"
         });
         for(let i=0;i<res.length;i++) {
          res[i].time = res[i].epoch * EPOCH_DURATION;
@@ -126,6 +124,7 @@ module.exports = {
           epoch: ctx.params.epoch,
           in: 0,
           out: 0,
+          label: ctx.params.label,
           created: new Date().getTime(),
         };
 
