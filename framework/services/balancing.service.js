@@ -172,6 +172,8 @@ module.exports = {
           balance.id = balances[0].id;
           balance._id = balances[0]._id;
           if (typeof balance._id == 'undefined') balance._id = balance.id;
+          if(typeof balance.id == 'undefined') balance.id = balance._id;
+          
           await ctx.call("balancing_model.update", balance);
         } else {
           await ctx.call("balancing_model.insert", { entity: balance });

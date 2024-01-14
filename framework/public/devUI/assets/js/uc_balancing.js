@@ -21,7 +21,7 @@ $(document).ready(function() {
             html += '<tbody>';
             for(let i=0;i<data.length;i++) {
                 html += '<tr>';
-                html += '<td>' + new Date(data[i].time).toLocaleString() + '</td>';
+                html += '<td><button class="btn btn-sm btn-dark btnTx" data-epoch="'+data[i].epoch+'" data-label="'+data[i].label+'">' + new Date(data[i].time).toLocaleString() + '</button></td>';
                 html += '<td>' + customLabels[data[i].label] + '</td>';
                 html += '<td>' + (data[i].in/1000).toFixed(3).replace('.',',') + 'kWh</td>';
                 html += '<td>' + (data[i].out/1000).toFixed(3).replace('.',',') + 'kWh</td>';
