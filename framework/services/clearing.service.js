@@ -158,7 +158,6 @@ module.exports = {
 								ctx.params.jwt = await ctx.call("access.createClearingJWT",ctx.params);
 								ctx.params.startReading = previousClearing.reading;
 								ctx.params.startTime = previousClearing.endTime + 1; 
-								await ctx.call("balancing.addClearing",{clearing:ctx.params});
 								await ctx.call("clearings_model.insert",{entity:ctx.params});
 								await ctx.broker.broadcast("clearing.created", ctx.params);
 								if(ctx.params.cost > 0) {
