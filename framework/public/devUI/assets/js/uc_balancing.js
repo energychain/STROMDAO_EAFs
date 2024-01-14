@@ -33,8 +33,39 @@ $(document).ready(function() {
             $('#backBtn').attr('data-epoch',data[data.length-1].epoch);
             $('#fwdBtn').attr('data-epoch',data[0].epoch + 24);
             $('#epochbalance').html(html);
+            $('.btnTx').off();
+            $('.btnTx').click(function() {
+                console.log("Loading");
+                //$('#modalStatement').modal('show');
+                $('#txTable').html('...');
+                $.getJSON("/api/balancing/statements?assetId="+window.assetId+"&epoch="+$(this).attr('data-epoch')+"&label="+$(this).attr('data-label'),function(data) {
+                    let html = '<table class="table table-condensed table-striped">';
+                    html += '<thead>';
+                    html += '<tr>';
+                    html += '<th>Zeitscheibe</th>';
+                    html += '<th>Segment</th>';
+                    html += '<th>Lieferung</th>';
+                    html += '<th>Einspeisung</th>';
+                    html += '<th>Saldo</th>';
+                    html += '</tr>';
+                    html += '</thead>';
+                    html += '<tbody>';
+                    for(let i=0;i<data.length;i++) {
+                        html += '<tr>';
+                        html += '<td>' + new Date(data[i].time).toLocaleString() + '</td>';
+                        html += '<td>' + customLabels[data[i].label] + '</td>';
+                        html += '<td>' + (data[i].in/1000).toFixed(3).replace('.',',') + 'kWh</td>';
+                        html += '</tr>';
+                    }
+                    html += '</tbody>';
+                    html += '</table>';
+                    $('#txTable').html(html);
+                });
+
+            });
         }
         const balanceRetrieve = (assetId,epoch) => {
+            window.assetId = assetId;
             let epochQuery = "";
             if(epoch) {
                 epochQuery = "&epoch="+epoch;

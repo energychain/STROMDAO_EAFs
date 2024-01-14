@@ -77,8 +77,11 @@ module.exports = {
         }
         let res = await ctx.call("statement_model.find",{
           query:{
-            assetId: ctx.params.assetId,
-            epoch: ctx.params.epoch
+            $or: [
+              {from: ctx.params.assetId},
+              {to: ctx.params.assetId}
+            ],
+            epoch: ctx.params.epoch // Might add Label filter here for later use
           }
         });
         for(let i=0;i<res.length;i++) {
