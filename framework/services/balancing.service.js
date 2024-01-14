@@ -49,9 +49,9 @@ module.exports = {
         let res = await ctx.call("balancing_model.find",{
           query:{
             assetId: ctx.params.assetId,
-            epoch:  {$lt: ctx.params.epoch }
+            epoch:  {$lt: ctx.params.epoch * 1 }
           },
-          limit: 10,
+          limit: 24,
           sort: "-epoch"
         });
         for(let i=0;i<res.length;i++) {
