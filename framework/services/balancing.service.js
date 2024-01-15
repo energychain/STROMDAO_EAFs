@@ -45,11 +45,14 @@ module.exports = {
         const EPOCH_DURATION = process.env.EPOCH_DURATION;
         if((typeof ctx.params.epoch == 'undefined')||(ctx.params.epoch == null)) {
           ctx.params.epoch = Math.floor(new Date().getTime() / EPOCH_DURATION);
+        } else {
+          ctx.params.epoch = 1 * ctx.params.epoch;
         }
+        
         let res = await ctx.call("balancing_model.find",{
           query:{
             assetId: ctx.params.assetId,
-            epoch:  {$lt: ctx.params.epoch * 1 }
+            epoch:  {$lte: ctx.params.epoch * 1 }
           },
           limit: 24,
           sort: "-epoch"
@@ -72,21 +75,24 @@ module.exports = {
         assetId: "string",
       },
       async handler(ctx) {
+        const EPOCH_DURATION = process.env.EPOCH_DURATION;
         if((typeof ctx.params.epoch == 'undefined')||(ctx.params.epoch == null)) {
-          ctx.params.epoch = Math.floor(new Date().getTime() / process.env.EPOCH_DURATION);
+          ctx.params.epoch = Math.floor(new Date().getTime() / EPOCH_DURATION);
         }
+        const query = {
+          $or: [
+            {from: ctx.params.assetId},
+            {to: ctx.params.assetId}
+          ],
+          epoch: 1 * ctx.params.epoch // Might add Label filter here for later use
+        };
         let res = await ctx.call("statement_model.find",{
-          query:{
-            $or: [
-              {from: ctx.params.assetId},
-              {to: ctx.params.assetId}
-            ],
-            epoch: ctx.params.epoch // Might add Label filter here for later use
-          }
+          query:query
         });
         for(let i=0;i<res.length;i++) {
          delete res[i]._id;
          delete res[i].id;
+         res[i].time = res[i].epoch * EPOCH_DURATION;
         }
         // we might return multiple balances for different labels
         return res;

@@ -20,6 +20,7 @@ $(document).ready(function() {
             html += '<button class="btn btn-xs btn-dark btnClear openProfile" title="Lastgangprofil öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-bar-chart-o"></i></button>';
             html += '<button class="btn btn-xs btn-dark btnClear openReading" title="Zählerstandserfassung öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-pencil"></i></button>';
             html += '<button class="btn btn-xs btn-dark btnClear openClearing" title="Clearing öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-euro"></i></button>';
+            html += '<button class="btn btn-xs btn-dark btnClear openBalancing" title="Bilanzierung öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-balance-scale"></i></button>';
             html += '</td>';
             html += '</tr>';
         }
@@ -52,6 +53,11 @@ $(document).ready(function() {
         $('.openClearing').click(function() {
             const meterId = $(this).data('id');
             location.href="./uc_clearing.html?meterId="+meterId;
+        });
+        $('.openBalancing').off();
+        $('.openBalancing').click(function() {
+            const meterId = $(this).data('id');
+            location.href="./uc_balancing.html?assetId="+meterId;
         });
 
     }

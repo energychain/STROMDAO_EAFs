@@ -20,7 +20,7 @@
                         <li class="nav-item"><a class="nav-link" href="uc_tariff.html">Tarif</a></li>
                         <li class="nav-item"><a class="nav-link" href="uc_settlement.html">Settlement</a></li>
                         <li class="nav-item"><a class="nav-link" href="uc_assets.html">Zählpunkte</a></li>
-                        <li class="nav-item"></li>
+                        <li class="nav-item"><a class="nav-link" href="uc_balancing.html">Bilanzierung</a></li>
                     </ul>
                     <form class="ms-auto" action="./uc_assets.html" method="get">
                         <div class="input-group"><input class="form-control" type="search" id="searchMeter" name="meterId" required="" minlength="2"><button class="btn btn-dark" type="submit"><i class="fa fa-search"></i></button></div>
@@ -30,25 +30,24 @@
         </nav>
     </header>
     <div class="container">
-        <form id="fetchSettlement">
-            <div class="card">
-                <div class="card-body">
-                    <h3>
-                        <div class="btn-group float-end" role="group"><button class="btn btn-dark" id="backBtn" type="button"><i class="fa fa-backward"></i></button><button class="btn btn-dark" id="fwdBtn" type="button"><i class="fa fa-forward"></i></button></div>Energie Bilanz
-                    </h3>
-                    <div id="epochbalance"></div>
-                </div>
+        <div class="card">
+            <div class="card-body">
+                <h3>
+                    <div class="btn-group float-end" role="group"><button class="btn btn-dark" id="backBtn" type="button"><i class="fa fa-backward"></i></button><button class="btn btn-dark" id="fwdBtn" type="button"><i class="fa fa-forward"></i></button></div>Energie Bilanz:&nbsp;<span id="assetLabel">-</span>
+                </h3>
+                <div id="epochbalance"></div>
             </div>
-        </form>
+        </div>
     </div>
     <div class="modal fade" role="dialog" tabindex="-1" id="modalStatement">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Transaktionen</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+                    <div id="balanceModal"></div><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body" id="txTable">
-                    <p>Wird geladen...</p>
+                <div class="modal-body">
+                    <h4 class="modal-title">Transaktionen</h4>
+                    <div id="txTable"></div>
                 </div>
             </div>
         </div>
@@ -56,7 +55,7 @@
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
     <script src="assets/js/utils.js?h=13e600a17e8be592a9d46183d1921d45"></script>
-    <script src="assets/js/uc_balancing.js?h=d69896214acb828f8814c3fad5b3d53c"></script>
+    <script src="assets/js/uc_balancing.js?h=19d0695f453dc896e301a4b2aaf5d564"></script>
 </body>
 
 </html>
