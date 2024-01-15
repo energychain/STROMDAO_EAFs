@@ -82,7 +82,7 @@ $(document).ready(function() {
                   },
             }
         });
-        $.getJSON("/api/prediction/x_epochs?meterId="+$('#meterId').val()+"&x=12&predict=6", renderPrediction);
+        $.getJSON("/api/prediction/x_epochs?meterId="+window.meterId+"&x=12&predict=6", renderPrediction);
     }
 
     const renderPrediction = function(data) {
@@ -183,14 +183,11 @@ $(document).ready(function() {
         });
     }
 
-    $('#frmProfile').submit(function(event) {
-        event.preventDefault();
-        $.getJSON("/api/prediction/epoch_of_day?meterId="+$('#meterId').val()+"", renderProfile); 
-    });
-
     if($.urlParam('meterId')) {
+        window.meterId = $.urlParam('meterId');
         $('#meterId').val($.urlParam('meterId'));
-        $('#frmProfile').submit();
+        $('#searchMeter').val($.urlParam('meterId'));
+        $.getJSON("/api/prediction/epoch_of_day?meterId="+window.meterId+"", renderProfile); 
     } else {
         $.getJSON("/api/prediction/epoch_of_day", renderProfile);
     }

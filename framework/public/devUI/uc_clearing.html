@@ -19,11 +19,11 @@
                     <ul class="navbar-nav">
                         <li class="nav-item"><a class="nav-link" href="uc_tariff.html">Tarif</a></li>
                         <li class="nav-item"><a class="nav-link" href="uc_settlement.html">Settlement</a></li>
-                        <li class="nav-item"><a class="nav-link" href="uc_assets.html">Zählpunkte</a></li>
+                        <li class="nav-item"><a class="nav-link" href="uc_assets.html">Kennungen</a></li>
                         <li class="nav-item"><a class="nav-link" href="uc_balancing.html">Bilanzierung</a></li>
                     </ul>
                     <form class="ms-auto" action="./uc_assets.html" method="get">
-                        <div class="input-group"><input class="form-control" type="search" id="searchMeter" name="meterId" required="" minlength="2"><button class="btn btn-dark" type="submit"><i class="fa fa-search"></i></button></div>
+                        <div class="input-group"><input class="form-control" type="search" id="searchMeter" name="meterId" required="" minlength="2" autocomplete="on" autofocus=""><button class="btn btn-dark" type="submit"><i class="fa fa-search"></i></button></div>
                     </form>
                 </div>
             </div>
@@ -32,27 +32,17 @@
     <div class="container">
         <form id="retrieveClearing">
             <div class="card">
-                <div class="card-header">
-                    <h3>Abrechnung (Clearing)</h3>
-                </div>
                 <div class="card-body">
-                    <div class="input-group" style="margin-bottom: 15px;"><span class="input-group-text col-2">Zählerkennung</span><input class="form-control" type="text" id="meterId" name="meterId" required=""></div>
-                </div>
-                <div class="card-footer text-end">
-                    <div class="row">
-                        <div class="col float-end"></div>
-                        <div class="col-2"><button class="btn btn-primary" id="submitReading" type="submit">abrufen</button></div>
-                    </div>
+                    <div id="clearingBackend" style="display: screen;margin-top: 25px;"></div>
                 </div>
             </div>
         </form>
-        <div id="clearingBackend" style="display: screen;margin-top: 25px;"></div>
     </div>
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
     <script src="assets/js/3party/chart.js?h=eeca2582f0217edc4ac85af347e0d4ad"></script>
     <script src="assets/js/utils.js?h=13e600a17e8be592a9d46183d1921d45"></script>
-    <script src="assets/js/uc_clearing.js?h=007d92417d867ea1f8d07fc91ccc2772"></script>
+    <script src="assets/js/uc_clearing.js?h=f393d90ccbbfdd92269a64d0c175d178"></script>
 </body>
 
 </html>

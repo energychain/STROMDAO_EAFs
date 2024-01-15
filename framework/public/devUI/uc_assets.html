@@ -19,11 +19,11 @@
                     <ul class="navbar-nav">
                         <li class="nav-item"><a class="nav-link" href="uc_tariff.html">Tarif</a></li>
                         <li class="nav-item"><a class="nav-link" href="uc_settlement.html">Settlement</a></li>
-                        <li class="nav-item"><a class="nav-link" href="uc_assets.html">Zählpunkte</a></li>
+                        <li class="nav-item"><a class="nav-link" href="uc_assets.html">Kennungen</a></li>
                         <li class="nav-item"><a class="nav-link" href="uc_balancing.html">Bilanzierung</a></li>
                     </ul>
                     <form class="ms-auto" action="./uc_assets.html" method="get">
-                        <div class="input-group"><input class="form-control" type="search" id="searchMeter" name="meterId" required="" minlength="2"><button class="btn btn-dark" type="submit"><i class="fa fa-search"></i></button></div>
+                        <div class="input-group"><input class="form-control" type="search" id="searchMeter" name="meterId" required="" minlength="2" autocomplete="on" autofocus=""><button class="btn btn-dark" type="submit"><i class="fa fa-search"></i></button></div>
                     </form>
                 </div>
             </div>
@@ -36,22 +36,28 @@
                     <h3>Zählpunkte / Messstellen&nbsp;</h3>
                     <div class="row">
                         <div class="col text-center">
-                            <div class="btn-group" role="group"><button class="btn btn-success elayBtn" type="button" data="3600000"><i class="fa fa-clock-o"></i>&nbsp;&gt; 1h</button><button class="btn btn-warning delayBtn" type="button" data="86400000"><i class="fa fa-clock-o"></i>&nbsp;&gt; 24h</button><button class="btn btn-danger delayBtn" type="button" data="604800000"><i class="fa fa-clock-o"></i>&nbsp;&gt; 7d</button></div>
+                            <div class="btn-group" role="group"><button class="btn btn-success btn-sm elayBtn" type="button" data="3600000"><i class="fa fa-clock-o"></i>&nbsp;&gt; 1h</button><button class="btn btn-warning btn-sm delayBtn" type="button" data="86400000"><i class="fa fa-clock-o"></i>&nbsp;&gt; 24h</button><button class="btn btn-danger btn-sm delayBtn" type="button" data="604800000"><i class="fa fa-clock-o"></i>&nbsp;&gt; 7d</button></div>
                             <div class="text-center"></div><small class="form-text text-center">Filtern nach letzter Zählerstand</small>
                         </div>
                         <div class="col text-center">
-                            <div class="text-center"><a class="btn btn-dark" role="button" href="uc_meterreading.html"><i class="fa fa-plus-square"></i>&nbsp;Neu anlegen / Ablesung</a></div><small class="form-text text-center">Manuelle Erfassung</small>
+                            <div class="text-center"><a class="btn btn-dark btn-sm" role="button" href="uc_meterreading.html"><i class="fa fa-plus-square"></i>&nbsp;Neu anlegen / Ablesung</a></div><small class="form-text text-center">Manuelle Erfassung</small>
                         </div>
                     </div>
                     <div id="searchResults" style="margin-top: 25px;"></div>
                 </div>
             </div>
         </form>
+        <div class="card">
+            <div class="card-body">
+                <h3>Bilanzierung</h3>
+                <div id="balancingResult" style="margin-top: 25px;"></div>
+            </div>
+        </div>
     </div>
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
     <script src="assets/js/utils.js?h=13e600a17e8be592a9d46183d1921d45"></script>
-    <script src="assets/js/uc_assets.js?h=19e8b22e81756388207d8eb63a419419"></script>
+    <script src="assets/js/uc_assets.js?h=a148735e1baab0075c41930ed5f1ad21"></script>
 </body>
 
 </html>

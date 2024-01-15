@@ -4,7 +4,9 @@ $(document).ready(function () {
     $.getJSON("/api/tariff/customLabels", function(data) {
         customLabels = data;
         if($.urlParam('meterId')) {
+            window.meterId = $.urlParam('meterId'); 
             $('#meterId').val($.urlParam('meterId'));
+            $('#searchMeter').val($.urlParam("meterId"));
             $('#retrieveClearing').submit();
         }
     });
@@ -12,7 +14,7 @@ $(document).ready(function () {
     $('#retrieveClearing').submit(function(e) {
         e.preventDefault();
 
-        $.getJSON("/api/clearing/retrieve?meterId="+$('#meterId').val(), function(data) {
+        $.getJSON("/api/clearing/retrieve?meterId="+window.meterId, function(data) {
             let costAggregation = {};
             let consumptionAggregation = {};
             let costTotal = 0;

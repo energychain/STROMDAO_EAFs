@@ -135,6 +135,7 @@ $(document).ready(function () {
 
    if($.urlParam("meterId")) {
        $('#meterId').val($.urlParam("meterId"));
+       $('#searchMeter').val($.urlParam("meterId"))
        fetchLastReading();
    }
 });

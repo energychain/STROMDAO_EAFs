@@ -158,6 +158,7 @@ $(document).ready(function() {
        
 
         if($.urlParam('assetId')) {
+            $('#searchMeter').val($.urlParam('assetId'));
             balanceRetrieve($.urlParam('assetId'));
         } else {
             balanceRetrieve('eaf_general');
@@ -184,7 +185,7 @@ $(document).ready(function() {
         let apiData = {};
         if(balancerule.direction == 'in') {
             apiData.from = balancerule.allocation
-            
+
         } else {
             apiData.to = balancerule.allocation
         }
@@ -201,8 +202,9 @@ $(document).ready(function() {
             }),
             contentType: 'application/json',
             success: function(response) {
-              console.log(response);
-              $('#btnRule').removeAttr('disabled');
+                // Set Counter Rule
+                console.log(response);
+                $('#btnRule').removeAttr('disabled');
             }
         });     
 

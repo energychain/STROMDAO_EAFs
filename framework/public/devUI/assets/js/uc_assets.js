@@ -16,11 +16,11 @@ $(document).ready(function() {
             html += '<td>'+(data[i].consumption/1000).toFixed(3).replace('.',',')+' kWh</td>';
             html += '<td>'+(data[i].cost/(data[i].consumption/1000)).toFixed(4).replace('.',',')+'€</td>';
             html += '<td>'+(data[i].cost).toFixed(2).replace('.',',')+' €</td>';
-            html += '<td><button class="btn btn-xs btn-dark btnClear openPWA" title="Letztverbraucher APP öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-window-restore"></i></button>';
-            html += '<button class="btn btn-xs btn-dark btnClear openProfile" title="Lastgangprofil öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-bar-chart-o"></i></button>';
-            html += '<button class="btn btn-xs btn-dark btnClear openReading" title="Zählerstandserfassung öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-pencil"></i></button>';
-            html += '<button class="btn btn-xs btn-dark btnClear openClearing" title="Clearing öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-euro"></i></button>';
-            html += '<button class="btn btn-xs btn-dark btnClear openBalancing" title="Bilanzierung öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-balance-scale"></i></button>';
+            html += '<td><button class="btn btn-xs btn-light btnClear openPWA" title="Letztverbraucher APP öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-window-restore"></i></button>';
+            html += '<button class="btn btn-xs btn-light btnClear openProfile" title="Lastgangprofil öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-bar-chart-o"></i></button>';
+            html += '<button class="btn btn-xs btn-light btnClear openReading" title="Zählerstandserfassung öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-pencil"></i></button>';
+            html += '<button class="btn btn-xs btn-light btnClear openClearing" title="Clearing öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-euro"></i></button>';
+            html += '<button class="btn btn-xs btn-light btnClear openBalancing" title="Bilanzierung öffnen" data-id="'+data[i].meterId+'"><i class="fa fa-balance-scale"></i></button>';
             html += '</td>';
             html += '</tr>';
         }
