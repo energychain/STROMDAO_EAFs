@@ -145,6 +145,7 @@ module.exports = {
             statement.from = asset.balancerule.from;
           }
           if (asset.balancerule.to) {
+            statement.from = ctx.params.meterId; // fix for "Einspeiser"
             statement.to = asset.balancerule.to;
           }
         } else {
