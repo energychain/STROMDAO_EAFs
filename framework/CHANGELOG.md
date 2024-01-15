@@ -1,3 +1,11 @@
+## [0.5.0](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.4.0...v0.5.0) (2024-01-15)
+
+
+### Bug Fixes
+
+* _id and id requirement for balancing_model. Fails with stateful backend (if MongoDB). ([39dfd49](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/39dfd496c8104ddad4446138dd0080b874be02d2))
+* Added counter balancing update ([d477ba2](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/d477ba2bedf5e45a997eb5ad845ae2deb1c86e7e))
+
 ## [0.4.0](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.3.0...v0.4.0) (2024-01-14)
 
 

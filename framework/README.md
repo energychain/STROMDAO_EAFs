@@ -6,12 +6,17 @@
 # STROMDAO-EAF
 The [STROMDAO Energy Application Framework (EAF)](https://github.com/energychain/STROMDAO_EAFs) provides an innovative platform for electricity providers to implement and offer dynamic, event-variable electricity tariffs.
 
-### Installation
+## Demo
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/energychain/STROMDAO_EAFs)
+
+
+## Installation
 ```
 npm install -g stromdao-eaf
 ```
 
-### Usage
+## Usage
 ```
 stromdao-eaf
 ```
@@ -21,20 +26,16 @@ stromdao-eaf
 -   Analysis and Forecasting
 -   Price Adjustment Algorithm
 -   Open-source algorithms for the allocation of price segments
--   Tariff Segmentation:
+-   Tariff Segmentation
 -   Publication and Notification
 -   Billing and Settlement
 -   Reporting and Optimization
 -   User-Friendliness and Interoperability
 
-### Development
+## Development
 - Create a folder called `services` in your development directory.
 - Each `*.services.js` file will be copied to the node module folder (requires admin permissions) on startup.
 - If a `.env` file exists in your development directory, it will be used.
-
-## Demo
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/energychain/STROMDAO_EAFs)
 
 <!-- LICENSE -->
 ## License

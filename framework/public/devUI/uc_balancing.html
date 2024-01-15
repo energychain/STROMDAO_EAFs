@@ -30,6 +30,22 @@
         </nav>
     </header>
     <div class="container">
+        <form id="balancerule">
+            <div class="card" style="margin-bottom: 25px;">
+                <div class="card-body">
+                    <h3>Bilanzierungsregel</h3>
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="col">
+                            <div class="form-check"><input class="form-check-input" type="radio" id="direction-from" name="direction" checked="" value="in"><label class="form-check-label" for="direction-from">Belieferung von</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" id="direction-to" name="direction" value="out"><label class="form-check-label" for="direction-to">Lieferung an</label></div>
+                        </div>
+                        <div class="col-8">
+                            <div class="input-group"><span class="input-group-text">Allokation</span><input class="form-control" type="text" id="allocation" required="" minlength="2" name="allocation" value="eaf_general"></div>
+                        </div>
+                    </div><button class="btn btn-dark float-end" id="btnRule" type="submit"><i class="fa fa-floppy-o" style="margin-right: 5px;"></i>speichern</button>
+                </div>
+            </div>
+        </form>
         <div class="card">
             <div class="card-body">
                 <h3>
@@ -40,13 +56,13 @@
         </div>
     </div>
     <div class="modal fade" role="dialog" tabindex="-1" id="modalStatement">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <div id="balanceModal"></div><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <h4 class="modal-title">Transaktionen</h4>
+                    <h4 class="modal-title">Transaktionen<button class="btn btn-danger btn-sm float-end" id="deactivatedFilter" type="button" style="margin-left: 15px;"><i class="fa fa-filter"></i>&nbsp; </button><button class="btn btn-success btn-sm float-end" id="activeFilter" type="button" style="margin-left: 15px;"><i class="fa fa-filter"></i>&nbsp; <span class="filterAsset">-</span></button></h4>
                     <div id="txTable"></div>
                 </div>
             </div>
@@ -55,7 +71,7 @@
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
     <script src="assets/js/utils.js?h=13e600a17e8be592a9d46183d1921d45"></script>
-    <script src="assets/js/uc_balancing.js?h=19d0695f453dc896e301a4b2aaf5d564"></script>
+    <script src="assets/js/uc_balancing.js?h=1ce0623bd602e51e9f4068967c9cd396"></script>
 </body>
 
 </html>

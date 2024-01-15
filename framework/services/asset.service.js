@@ -71,7 +71,11 @@ module.exports = {
 				if(db == null) {
 					return false;
 				} else {
-					let result = await db.collection("assets").findOne({assetId:ctx.params.assetId});
+					let query = {assetId:ctx.params.assetId};
+					if(typeof ctx.params.type !== 'undefined') {
+						query.type = ctx.params.type;
+					}
+					let result = await db.collection("assets").findOne(query);
 					if((typeof result == 'undefined') || (result == null)) {
 						result = {
 						};

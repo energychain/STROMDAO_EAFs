@@ -76,16 +76,19 @@ module.exports = {
       },
       async handler(ctx) {
         const EPOCH_DURATION = process.env.EPOCH_DURATION;
+        const query = {
+          epoch: 1 * ctx.params.epoch // Might add Label filter here for later use
+        };
+        if((typeof ctx.params.assetId !== 'undefined') && (ctx.params.assetId != null) && (ctx.params.assetId !== 'null')) {
+          query.$or= [
+            {from: ctx.params.assetId},
+            {to: ctx.params.assetId}
+          ];
+        }
         if((typeof ctx.params.epoch == 'undefined')||(ctx.params.epoch == null)) {
           ctx.params.epoch = Math.floor(new Date().getTime() / EPOCH_DURATION);
         }
-        const query = {
-          $or: [
-            {from: ctx.params.assetId},
-            {to: ctx.params.assetId}
-          ],
-          epoch: 1 * ctx.params.epoch // Might add Label filter here for later use
-        };
+
         let res = await ctx.call("statement_model.find",{
           query:query
         });
@@ -118,7 +121,7 @@ module.exports = {
       async handler(ctx) {
         ctx.params.consumption = Math.round(ctx.params.consumption);
         // Check if we have a balancing rule for this asset.
-        const asset = await ctx.call("asset.get", { assetId: ctx.params.meterId });
+        const asset = await ctx.call("asset.get", { assetId: ctx.params.meterId,type:"balance" });
 
         // Initialize the statement and balance objects
         let statement = {

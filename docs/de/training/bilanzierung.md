@@ -1,10 +1,14 @@
 ---
 marp: true
-backgroundImage: url('./bg_stromdao.png')
+theme: base
+backgroundImage: url('./stromdao.png')
+backgroundPosition: top right
+backgroundSize: auto
+backgroundRepeat: no-repeat
 ---
 
 # Bilanzierung und Fakturierung bei Dynamischen Stromtarifen
-## Umsetzung im Energy Application Framework
+## im Energy Application Framework
 
 ---
 
@@ -64,19 +68,6 @@ backgroundImage: url('./bg_stromdao.png')
 - Technische Lösungen: Smart Meter Gateways und Leseköpfe auf modernen Messeinrichtungen
 - Zukünftige Entwicklungen im Bereich der Messdatenübertragung
 
-<!--
-Messwertverarbeitung und ihre Bedeutung für die genaue Stromtarifierung.
-
-Beginnen wir mit der Rolle der regelmäßigen Zählerablesungen, die eine hohe Wichtigkeit für die Zuverlässigkeit und Präzision der Stromtarife haben. Stellen Sie sich vor, ohne diese genauen Daten wäre es für Stromversorger und -verbraucher nahezu unmöglich, den tatsächlichen Stromverbrauch korrekt abzurechnen.
-
-Um diese kritischen Daten zu erfassen, setzen sowohl Haushalte als auch Unternehmen auf verschiedene technische Lösungen. Eine prominente Technologie sind die Smart Meter Gateways, die für eine sichere und effiziente Datenübertragung sorgen. Alternativ werden auch Leseköpfe eingesetzt, die an modernen Messeinrichtungen angebracht werden, um die Zählerstände zu erfassen und weiterzuleiten.
-
-Schließlich ist es wichtig, einen Blick auf zukünftige Entwicklungen im Bereich der Messdatenübertragung zu werfen. Mit der fortschreitenden Digitalisierung des Energiesektors können wir spannende Innovationen erwarten, die eine noch präzisere und zeitnahe Datenerfassung ermöglichen werden.
-
-Fassen wir zusammen, dass die regelmäßige Übermittlung dieser Daten grundlegend für unser Stromversorgungssystem ist und dass die Weiterentwicklung dieser Technologien einen enormen Einfluss auf die Energiebranche haben wird.
-
-Denken Sie während des Vortrags daran, die Bedeutung jeder dieser Komponenten zu verdeutlichen und die Zuhörer zu ermutigen, Fragen zu stellen, insbesondere zu technischen Lösungen und zukünftigen Entwicklungen.
--->
 
 ---
 
