@@ -174,10 +174,6 @@ module.exports = {
       
         }
 
-        // Insert the statement into the database
-        await ctx.call("statement_model.insert", { entity: statement });
-        await ctx.broker.emit("transferfrom."+statement.from, ctx.params.consumption);
-        await ctx.broker.emit("transferto."+statement.to, ctx.params.consumption);
 
         // Find any existing balance for the given asset and counter asset at epoch
         let balance_from = {
@@ -213,18 +209,24 @@ module.exports = {
             assetId: statement.to,
           },
         });
-
+        console.log(balances_to);
+        console.log(balances_from);
         // ensure that we do not have sealed balances
         let sealed = false;
-        if(balances_to && balances_to.length > 0) {
-          if(typeof balances_to[0].sealed !== 'undefined') sealed = true; 
+        if (balances_to && balances_to.length > 0) {
+          if(balances_to[0].sealed) sealed = true; 
         }
 
-        if(balances_from && balances_from.length > 0) {
-          if(typeof balances_from[0].sealed !== 'undefined') sealed = true; 
+        if (balances_from && balances_from.length > 0)  {
+          if(balances_from[0].sealed) sealed = true; 
         }
 
         if(!sealed) {
+                // Insert the statement into the database
+                await ctx.call("statement_model.insert", { entity: statement });
+                await ctx.broker.emit("transferfrom."+statement.from, ctx.params.consumption);
+                await ctx.broker.emit("transferto."+statement.to, ctx.params.consumption);
+
             // Update the balance if it exists, otherwise create a new one
             if (balances_from && balances_from.length > 0) {
               balance_from.in += balances_from[0].in;

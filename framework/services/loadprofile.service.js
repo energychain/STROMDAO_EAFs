@@ -121,7 +121,7 @@ module.exports = {
 						$lte: 1 * ctx.params.end
 					}
 				}
-				console.log(query);
+				
 				if(ctx.params.meterId) {
 					query.meterId = ctx.params.meterId;
 				}
