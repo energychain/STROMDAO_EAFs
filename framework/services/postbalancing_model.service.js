@@ -13,11 +13,11 @@ const DbService = require("moleculer-db");
 
 /** @type {ServiceSchema} */
 module.exports = {
-	name: "postbalancing",
+	name: "postbalancing_model",
 	
 	adapter: process.db_adapter,
 	
-	collection: "balancing",
+	collection: "postbalancing",
 
 	mixins: [DbService],
 	/**
