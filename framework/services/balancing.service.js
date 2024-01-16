@@ -231,6 +231,8 @@ module.exports = {
               balance_from.out += balances_from[0].out;
               balance_from.id = balances_from[0].id;
               balance_from._id = balances_from[0]._id;
+              balance_from.updated = new Date().getTime();
+
               if (typeof balance_from._id == 'undefined') balance_from._id = balance_from.id;
               if(typeof balance_from.id == 'undefined') balance_from.id = balance_from._id;
               await ctx.call("balancing_model.update", balance_from);
@@ -245,6 +247,8 @@ module.exports = {
               balance_to.out += balances_to[0].out;
               balance_to.id = balances_to[0].id;
               balance_to._id = balances_to[0]._id;
+              balance_to.updated = new Date().getTime();
+              
               if(typeof balance_to._id == 'undefined') balance_to._id = balance_to.id;
               if(typeof balance_to.id == 'undefined') balance_to.id = balance_to._id;
 
