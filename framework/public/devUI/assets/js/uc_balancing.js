@@ -4,7 +4,7 @@ $(document).ready(function() {
         window.assetId = assetId;
         window.highlightEpoch = 1 * epoch;
 
-        $('#assetLabel').html(window.assetId);
+        $('.assetLabel').html(window.assetId);
 
         let epochQuery = "";
         if(epoch) {
@@ -97,7 +97,7 @@ $(document).ready(function() {
         html += '<tr>';
         html += '<th>Allokation</th>';
         html += '<th>Stromprodukt</th>';
-        html += '<th>Lieferung</th>';
+        html += '<th>Entnahme</th>';
         html += '<th>Einspeisung</th>';
         html += '<th>Saldo</th>';
         html += '</tr>';
@@ -126,7 +126,7 @@ $(document).ready(function() {
         html += '<tr>';
         html += '<th>Stromprodukt</th>';
         html += '<th>Segment</th>';
-        html += '<th>Lieferung</th>';
+        html += '<th>Bezug</th>';
         html += '<th>Einspeisung</th>';
         html += '<th>Saldo</th>';
         html += '</tr>';
@@ -159,7 +159,7 @@ $(document).ready(function() {
 
         if($.urlParam('assetId')) {
             $('#searchMeter').val($.urlParam('assetId'));
-            balanceRetrieve($.urlParam('assetId'));
+            balanceRetrieve($.urlParam('assetId'),$.urlParam('epoch'));
         } else {
             balanceRetrieve('eaf_general');
         }

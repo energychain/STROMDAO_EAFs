@@ -3,10 +3,43 @@ $(document).ready(function() {
     $.getJSON("/api/access/settings",function(data) {
         window.eaf_settings = data;
     });
-    const renderResultSet = function(data) {
+    const renderBalancingSet = function(data) {
+        if(data.length >0) {
+           $('#cardBalancing').show();
+        }
         $('#searchResults').show();
         let html = '<table class="table table-condensed table-striped">';
-        html += '<thead><tr><th>Kennung</th><th>Aktualisierung</th><th>Zählerstand</th><th>Bezug</th><th>&#8960;Strompreis<th>Kosten</th></tr></thead>';
+        html += '<thead><tr><th>Kennung</th><th>Produkt</th><th>Bezug</th><th>Einspeisung</th></tr></thead>';
+        html += '<tbody>';
+        for(let i=0;i<data.length;i++) {
+            html += '<tr data-id="'+data[i].assetId+'">';
+            html += '<td>'+data[i].assetId+'</td>';
+            html += '<td>'+new Date(data[i].time).toLocaleString()+'</td>';
+            html += '<td>'+(data[i].in/1000).toFixed(3).replace('.',',')+' kWh</td>';
+            html += '<td>'+(data[i].out/1000).toFixed(3).replace('.',',')+' kWh</td>';
+            html += '<td>';
+            html += '<button class="btn btn-xs btn-light btnClear openAssetBalancing" title="Bilanzierung öffnen" data-epoch="'+data[i].epoch+'" data-id="'+data[i].assetId+'"><i class="fa fa-balance-scale"></i></button>';
+            html += '</td>';
+            html += '</tr>';
+        }
+        html += '</tbody>';
+        html += '</table>';
+        $('#balancingResult').html(html);
+        $('.openAssetBalancing').off();
+        $('.openAssetBalancing').click(function() {
+            const meterId = $(this).data('id');
+            const epoch = $(this).data('epoch');
+            location.href="./uc_balancing.html?assetId="+meterId+"&epoch="+epoch;
+        });
+
+    }
+    const renderResultSet = function(data) {
+        if(data.length >0 ) {
+            $('#cardMeters').show();
+        }
+        $('#searchResults').show();
+        let html = '<table class="table table-condensed table-striped">';
+        html += '<thead><tr><th>Kennung</th><th>Aktualisierung</th><th>Zählerstand</th><th>Strommenge</th><th>&#8960;Strompreis<th>Kosten</th></tr></thead>';
         html += '<tbody>';
         for(let i=0;i<data.length;i++) {
             html += '<tr data-id="'+data[i].meterId+'">';
@@ -63,10 +96,16 @@ $(document).ready(function() {
     }
 
     const runSearch = function() {
+        $('#cardMeters').hide();
+        $('#cardBalancing').hide();
+
         $('#searchResults').show();
         $('#searchResults').html('Searching...');
+        $('#balancingResult').html('...');
  
         $.getJSON("/api/debit/assets?q=" + $('#searchMeter').val(), renderResultSet);
+        $.getJSON("/api/balancing/assets?q=" + $('#searchMeter').val(), renderBalancingSet);
+
     }
     $('.delayBtn').click(function() {
         $.getJSON("/api/debit/delayed?delay="+$(this).attr('data'),renderResultSet);

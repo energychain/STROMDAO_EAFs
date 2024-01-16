@@ -42,13 +42,14 @@ module.exports = {
 				if((typeof ctx.params.q == 'undefined') || (ctx.params.q.length == 0)) {
 					results = (await ctx.call("balancing_model.list",{ pageSize: 50,sort:"-epoch"})).rows;
 				} else {
-					results = await ctx.call("balancing_model.find",{search:ctx.params.q,searchFields:['assetId']});
+					results = await ctx.call("balancing_model.find",{search:ctx.params.q,searchFields:['assetId'],sort:"-epoch",pageSize:50});
 				}
         for(let i=0;i<results.length;i++) {
           results[i].time = results[i].epoch * process.env.EPOCH_DURATION;
           delete results[i]._id;
           delete results[i].id;
         }
+        results.sort((a,b) => b.time - a.time);
         return results;
 			}
 		},
@@ -195,22 +196,6 @@ module.exports = {
             assetId: statement.from,
           },
         });
-        
-
-        // Update the balance if it exists, otherwise create a new one
-        if (balances_from && balances_from.length > 0) {
-          balance_from.in += balances_from[0].in;
-          balance_from.out += balances_from[0].out;
-          balance_from.id = balances_from[0].id;
-          balance_from._id = balances_from[0]._id;
-          if (typeof balance_from._id == 'undefined') balance_from._id = balance_from.id;
-          if(typeof balance_from.id == 'undefined') balance_from.id = balance_from._id;
-
-          await ctx.call("balancing_model.update", balance_from);
-        } else {
-          await ctx.call("balancing_model.insert", { entity: balance_from });
-        }
-        await ctx.broker.emit("balance."+statement.from, balance_from);
 
         let balance_to = {
           assetId: statement.to,
@@ -228,24 +213,53 @@ module.exports = {
             assetId: statement.to,
           },
         });
-        
 
-        // Update the balance if it exists, otherwise create a new one
-        if (balances_to && balances_to.length > 0) {
-          balance_to.in += balances_to[0].in;
-          balance_to.out += balances_to[0].out;
-          balance_to.id = balances_to[0].id;
-          balance_to._id = balances_to[0]._id;
-          if(typeof balance_to._id == 'undefined') balance_to._id = balance_to.id;
-          if(typeof balance_to.id == 'undefined') balance_to.id = balance_to._id;
-
-          await ctx.call("balancing_model.update", balance_to);
-        } else {
-          await ctx.call("balancing_model.insert", { entity: balance_to });
+        // ensure that we do not have sealed balances
+        let sealed = false;
+        if(balance_to && balance_to.length > 0) {
+          if(typeof balance_to[0].sealed !== 'undefined') sealed = true; 
         }
-        await ctx.broker.emit("balance."+statement.to, balance_to);
 
+        if(balance_from && balance_from.length > 0) {
+          if(typeof balance_from[0].sealed !== 'undefined') sealed = true; 
+        }
 
+        if(!sealed) {
+            // Update the balance if it exists, otherwise create a new one
+            if (balances_from && balances_from.length > 0) {
+              balance_from.in += balances_from[0].in;
+              balance_from.out += balances_from[0].out;
+              balance_from.id = balances_from[0].id;
+              balance_from._id = balances_from[0]._id;
+              if (typeof balance_from._id == 'undefined') balance_from._id = balance_from.id;
+              if(typeof balance_from.id == 'undefined') balance_from.id = balance_from._id;
+              await ctx.call("balancing_model.update", balance_from);
+            } else {
+              await ctx.call("balancing_model.insert", { entity: balance_from });
+            }
+            await ctx.broker.emit("balance."+statement.from, balance_from);
+
+            // Update the balance if it exists, otherwise create a new one
+            if (balances_to && balances_to.length > 0) {
+              balance_to.in += balances_to[0].in;
+              balance_to.out += balances_to[0].out;
+              balance_to.id = balances_to[0].id;
+              balance_to._id = balances_to[0]._id;
+              if(typeof balance_to._id == 'undefined') balance_to._id = balance_to.id;
+              if(typeof balance_to.id == 'undefined') balance_to.id = balance_to._id;
+
+              await ctx.call("balancing_model.update", balance_to);
+            } else {
+              await ctx.call("balancing_model.insert", { entity: balance_to });
+            }
+            await ctx.broker.emit("balance."+statement.to, balance_to);
+          } else { // if !sealed
+            // handling settlments received after sealing of product (eq. booking on a closed balance)
+            await ctx.call("postbalancing_model.insert", { entity: balance_from });
+            await ctx.broker.emit("postbalance."+statement.from, balance_from);
+            await ctx.call("postbalancing_model.insert", { entity: balance_to });
+            await ctx.broker.emit("postbalance."+statement.to, balance_to);
+          }
         // Return the updated balance
         return {
           to:balance_to,
@@ -253,5 +267,22 @@ module.exports = {
         };
       },
     },
+    clearing: {
+      params: {
+        assetId: { type: "string" },
+        epoch: { type: "number" }
+      },
+      async handler(ctx) {
+        /**
+         * 
+         */
+        await ctx.call("balancing_model.remove", {
+          query: {
+            assetId: ctx.params.assetId,
+          },
+        });
+
+      },
+    }
   },
 }

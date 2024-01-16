@@ -30,14 +30,22 @@
         </nav>
     </header>
     <div class="container">
+        <div class="card" style="margin-bottom: 25px;">
+            <div class="card-body">
+                <h3>
+                    <div class="btn-group float-end" role="group"><button class="btn btn-dark" id="backBtn" type="button"><i class="fa fa-backward"></i></button><button class="btn btn-dark" id="fwdBtn" type="button"><i class="fa fa-forward"></i></button></div>Energie Bilanz:&nbsp;<span class="assetLabel">-</span>
+                </h3>
+                <div id="epochbalance"></div>
+            </div>
+        </div>
         <form id="balancerule">
             <div class="card" style="margin-bottom: 25px;">
                 <div class="card-body">
-                    <h3>Bilanzierungsregel</h3>
+                    <h3>Bilanzierungsregel:&nbsp;<span class="assetLabel">-</span>&nbsp;</h3>
                     <div class="row" style="margin-bottom: 15px;">
                         <div class="col">
-                            <div class="form-check"><input class="form-check-input" type="radio" id="direction-from" name="direction" checked="" value="in"><label class="form-check-label" for="direction-from">Belieferung von</label></div>
-                            <div class="form-check"><input class="form-check-input" type="radio" id="direction-to" name="direction" value="out"><label class="form-check-label" for="direction-to">Lieferung an</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" id="direction-from" name="direction" checked="" value="in"><label class="form-check-label" for="direction-from">Bezug von</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" id="direction-to" name="direction" value="out"><label class="form-check-label" for="direction-to">Einspeisung für</label></div>
                         </div>
                         <div class="col-8">
                             <div class="input-group"><span class="input-group-text">Allokation</span><input class="form-control" type="text" id="allocation" required="" minlength="2" name="allocation" value="eaf_general"></div>
@@ -46,14 +54,9 @@
                 </div>
             </div>
         </form>
-        <div class="card">
-            <div class="card-body">
-                <h3>
-                    <div class="btn-group float-end" role="group"><button class="btn btn-dark" id="backBtn" type="button"><i class="fa fa-backward"></i></button><button class="btn btn-dark" id="fwdBtn" type="button"><i class="fa fa-forward"></i></button></div>Energie Bilanz:&nbsp;<span id="assetLabel">-</span>
-                </h3>
-                <div id="epochbalance"></div>
-            </div>
-        </div>
+        <footer class="footer mt-auto py-3 bg-white" style="margin-bottom: 25px;">
+            <p class="text-center">powered by <a href="https://github.com/energychain/STROMDAO_EAFs" target="_blank"><strong>STROM</strong></a><a href="https://github.com/energychain/STROMDAO_EAFs" target="_blank">DAO Energy Application Frameworks</a></p>
+        </footer>
     </div>
     <div class="modal fade" role="dialog" tabindex="-1" id="modalStatement">
         <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
@@ -71,7 +74,7 @@
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
     <script src="assets/js/utils.js?h=13e600a17e8be592a9d46183d1921d45"></script>
-    <script src="assets/js/uc_balancing.js?h=56dc65b05dee0a239d544cfe9c7643cd"></script>
+    <script src="assets/js/uc_balancing.js?h=436bd8b87bbc970c0d9cffd3a80b2777"></script>
 </body>
 
 </html>
