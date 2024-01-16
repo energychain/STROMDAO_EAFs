@@ -216,12 +216,12 @@ module.exports = {
 
         // ensure that we do not have sealed balances
         let sealed = false;
-        if(balance_to && balance_to.length > 0) {
-          if(typeof balance_to[0].sealed !== 'undefined') sealed = true; 
+        if(balances_to && balancea_to.length > 0) {
+          if(typeof balances_to[0].sealed !== 'undefined') sealed = true; 
         }
 
-        if(balance_from && balance_from.length > 0) {
-          if(typeof balance_from[0].sealed !== 'undefined') sealed = true; 
+        if(balances_from && balances_from.length > 0) {
+          if(typeof balances_from[0].sealed !== 'undefined') sealed = true; 
         }
 
         if(!sealed) {
