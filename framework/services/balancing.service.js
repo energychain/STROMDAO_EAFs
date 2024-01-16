@@ -216,7 +216,7 @@ module.exports = {
 
         // ensure that we do not have sealed balances
         let sealed = false;
-        if(balances_to && balancea_to.length > 0) {
+        if(balances_to && balances_to.length > 0) {
           if(typeof balances_to[0].sealed !== 'undefined') sealed = true; 
         }
 
