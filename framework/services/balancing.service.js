@@ -177,7 +177,7 @@ module.exports = {
             // If there is no balancing rule, the energy is considered to be consumed locally
         
           }
-          let cleared_='';
+          let cleared='';
           if(ctx.params.isClose) {
             cleared='_cleared';
           }
@@ -243,9 +243,9 @@ module.exports = {
 
                 if (typeof balance_from._id == 'undefined') balance_from._id = balance_from.id;
                 if(typeof balance_from.id == 'undefined') balance_from.id = balance_from._id;
-                await ctx.call("balancing_model"+cleared_+".update", balance_from);
+                await ctx.call("balancing"+cleared+"_model.update", balance_from);
               } else {
-                await ctx.call("balancing_model"+cleared_+".insert", { entity: balance_from });
+                await ctx.call("balancing"+cleared+"_model.insert", { entity: balance_from });
               }
               await ctx.broker.emit("balance."+statement.from, balance_from);
 
@@ -260,9 +260,9 @@ module.exports = {
                 if(typeof balance_to._id == 'undefined') balance_to._id = balance_to.id;
                 if(typeof balance_to.id == 'undefined') balance_to.id = balance_to._id;
 
-                await ctx.call("balancing_model"+cleared_+".update", balance_to);
+                await ctx.call("balancing"+cleared+"_model.update", balance_to);
               } else {
-                await ctx.call("balancing_model"+cleared_+".insert", { entity: balance_to });
+                await ctx.call("balancing"+cleared+"_model.insert", { entity: balance_to });
               }
               await ctx.broker.emit("balance."+statement.to, balance_to);
             } else { // if !sealed
@@ -344,7 +344,7 @@ module.exports = {
               label: ".clearing",
               isClose: true
             });
-            intermediateBalance =  await ctx.call("balancing_model.find",{
+            intermediateBalance =  await ctx.call("balancing_cleared_model.find",{
                         query:{
                           assetId: intermediateBalance.assetId,
                           epoch:  intermediateBalance.epoch * 1,
