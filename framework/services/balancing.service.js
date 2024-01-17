@@ -144,13 +144,16 @@ module.exports = {
         try {
           // Check if we have a balancing rule for this asset.
           const asset = await ctx.call("asset.get", { assetId: ctx.params.meterId,type:"balance" });
-
+          if(typeof ctx.params.isClose == 'undefined') {
+            ctx.params.isClose = false;
+          }
           // Initialize the statement and balance objects
           let statement = {
             from: 'eaf_general',
             to: ctx.params.meterId,
             epoch: ctx.params.epoch,
             energy: ctx.params.consumption,
+            label: ctx.params.label
           };
 
           // Apply the balancing rule if one exists
@@ -173,6 +176,10 @@ module.exports = {
           } else {
             // If there is no balancing rule, the energy is considered to be consumed locally
         
+          }
+          let cleared_='';
+          if(ctx.params.isClose) {
+            cleared='_cleared';
           }
 
           // Find any existing balance for the given asset and counter asset at epoch
@@ -221,10 +228,11 @@ module.exports = {
 
           if(!sealed) {
                   // Insert the statement into the database
+              if(!ctx.params.isClose) {
                   await ctx.call("statement_model.insert", { entity: statement });
-                  await ctx.broker.emit("transferfrom."+statement.from, ctx.params.consumption);
-                  await ctx.broker.emit("transferto."+statement.to, ctx.params.consumption);
-
+                await ctx.broker.emit("transferfrom."+statement.from, ctx.params.consumption);
+                await ctx.broker.emit("transferto."+statement.to, ctx.params.consumption);
+              }  
               // Update the balance if it exists, otherwise create a new one
               if (balances_from && balances_from.length > 0) {
                 balance_from.in += balances_from[0].in;
@@ -235,9 +243,9 @@ module.exports = {
 
                 if (typeof balance_from._id == 'undefined') balance_from._id = balance_from.id;
                 if(typeof balance_from.id == 'undefined') balance_from.id = balance_from._id;
-                await ctx.call("balancing_model.update", balance_from);
+                await ctx.call("balancing_model"+cleared_+".update", balance_from);
               } else {
-                await ctx.call("balancing_model.insert", { entity: balance_from });
+                await ctx.call("balancing_model"+cleared_+".insert", { entity: balance_from });
               }
               await ctx.broker.emit("balance."+statement.from, balance_from);
 
@@ -252,9 +260,9 @@ module.exports = {
                 if(typeof balance_to._id == 'undefined') balance_to._id = balance_to.id;
                 if(typeof balance_to.id == 'undefined') balance_to.id = balance_to._id;
 
-                await ctx.call("balancing_model.update", balance_to);
+                await ctx.call("balancing_model"+cleared_+".update", balance_to);
               } else {
-                await ctx.call("balancing_model.insert", { entity: balance_to });
+                await ctx.call("balancing_model"+cleared_+".insert", { entity: balance_to });
               }
               await ctx.broker.emit("balance."+statement.to, balance_to);
             } else { // if !sealed
@@ -317,14 +325,46 @@ module.exports = {
         let res = [];
         for(let i=0;i<balances.length;i++) {
           const _id = balances[i]._id;
-          delete balances[i]._id;
-          delete balances[i].id;
-          const signOptions = JSON.parse(process.env.JWT_OPTIONS);
 
-          res.push(await ctx.call("balancing_model.update", {
-           id:_id,
-          sealed:  jwt.sign(balances[i], process.env.JWT_PRIVATEKEY,signOptions)
-          }));
+
+          // Close Balance booking
+          let intermediateBalance =  await ctx.call("balancing_model.find",{
+            query:{
+              assetId: balances[i].assetId,
+              epoch:  balances[i].epoch * 1
+            },
+          });
+          if(intermediateBalance.length > 0) {
+            intermediateBalance = intermediateBalance[0];
+            
+            await ctx.call("balancing.addSettlement",{
+              meterId:balances[i].assetId,
+              epoch: intermediateBalance.epoch,
+              consumption: intermediateBalance.out - intermediateBalance.in,
+              label: ".clearing",
+              isClose: true
+            });
+            intermediateBalance =  await ctx.call("balancing_model.find",{
+                        query:{
+                          assetId: intermediateBalance.assetId,
+                          epoch:  intermediateBalance.epoch * 1,
+                          label: ".clearing"
+                        },
+            });
+            console.log("Intermediate Balance",intermediateBalance);
+
+            intermediateBalance = intermediateBalance[0];
+            delete intermediateBalance._id;
+            delete intermediateBalance.id;
+            const signOptions = JSON.parse(process.env.JWT_OPTIONS);
+
+            res.push(await ctx.call("balancing_model.update", {
+             id:_id,
+              sealed: jwt.sign(intermediateBalance, process.env.JWT_PRIVATEKEY,signOptions)
+            }));
+          }
+
+
         }
         return res;
       },

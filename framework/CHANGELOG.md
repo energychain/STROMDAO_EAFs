@@ -1,3 +1,20 @@
+## [0.5.2](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.5.1...v0.5.2) (2024-01-17)
+
+
+### Features
+
+* Implementation of sealing of energy balances per product, assetId, epoch. ([d095080](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/d0950809ad3cced7fe43e1efc818c7d20cf16a71))
+* Settlements can be added to an electricity product until the balancing for an electricity product is completed (=sealing). If a settlement is to be made after the balancing of the electricity product has already been completed, the process is saved as "postbalancing". ([01c7a54](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/01c7a5481b73288f06d41b1255a576094f335dcd))
+* UI integration of balance sealing ([a5fdf50](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/a5fdf50e03d6db0d7c5a9fa80601ab1a963cc8c1))
+
+
+### Bug Fixes
+
+* Invalid handling for "Einspeiser" in balancing ([970d844](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/970d844f0e6a47f2451bf6b6c7a8b26a23812175))
+* Missing field in balancing_model caused sealing not to function as designed. ([056b50c](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/056b50c394554f29940a98e02f3ce29022eafe4f))
+* several misspellings in postbalancing model. ([2214b9a](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/2214b9a802de63340323783cf44f6a019302d9c9))
+* Typo in variable. ([ea293bb](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/ea293bb581869a71d5406ce7f08a1d11e7798533))
+
 ## [0.5.1](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.5.0...v0.5.1) (2024-01-15)
 
 

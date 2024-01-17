@@ -31,6 +31,7 @@ $(document).ready(function() {
                                     let html = '<table class="table table-condensed table-striped">';
                                     html += '<thead>';
                                     html += '<tr>';
+                                    html += '<th>&nbsp;</th>';
                                     html += '<th>Von</th>';
                                     html += '<th>An</th>';
                                     html += '<th>Energie</th>';
@@ -39,6 +40,11 @@ $(document).ready(function() {
                                     html += '<tbody>';
                                     for(let i=0;i<data.length;i++) {
                                         html += '<tr>';
+                                        if(data[i].label == '.clearing') {
+                                            html += '<td><i class="fa fa-lock"></i></td>';
+                                        } else {
+                                            html += '<td>&nbsp;</td>';
+                                        }
                                         let btnclass = 'btn-light';
                                         if(data[i].from == window.assetId) {
                                             btnclass = 'btn-success';
@@ -142,23 +148,25 @@ $(document).ready(function() {
         html += '</thead>';
         html += '<tbody>';
         for(let i=0;i<data.length;i++) {
-            let marker = '';
-            if(data[i].epoch == window.highlightEpoch) {
-                marker = ' class="text-bg-success" ';
+            if(data[i].label !== '.clearing') {
+                let marker = '';
+                if(data[i].epoch == window.highlightEpoch) {
+                    marker = ' class="text-bg-success" ';
+                }
+                html += '<tr>';
+                if(typeof data[i].sealed !== 'undefined') {
+                    html += '<td>&nbsp;</td>';
+                } else {
+                    data[i].sealed = "";
+                    html += '<td'+marker+'><button class="btn btn-sm btn-light btnLedger" data-epoch="'+data[i].epoch+'" data-label="'+data[i].label+'" data-in="'+data[i].in+'" data-out="'+data[i].out+'" data-time="'+data[i].time+'" data-sealed="'+data[i].sealed+'"><i class="fa fa-unlock-alt text-warning"></i></button></td>';
+                }
+                html += '<td'+marker+'><button class="btn btn-sm btn-light btnLedger" data-epoch="'+data[i].epoch+'" data-label="'+data[i].label+'" data-in="'+data[i].in+'" data-out="'+data[i].out+'" data-time="'+data[i].time+'" data-sealed="'+data[i].sealed+'">' + new Date(data[i].time).toLocaleString() + '</button></td>';
+                html += '<td'+marker+'>' + customLabels[data[i].label] + '</td>';
+                html += '<td'+marker+'>' + (data[i].in/1000).toFixed(3).replace('.',',') + 'kWh</td>';
+                html += '<td'+marker+'>' + (data[i].out/1000).toFixed(3).replace('.',',') + 'kWh</td>';
+                html += '<td'+marker+'>' + ((data[i].out - data[i].in)/1000).toFixed(3).replace('.',',') + 'kWh</td>';
+                html += '</tr>';
             }
-            html += '<tr>';
-            if(typeof data[i].sealed !== 'undefined') {
-                html += '<td>&nbsp;</td>';
-            } else {
-                data[i].sealed = "";
-                html += '<td'+marker+'><button class="btn btn-sm btn-light btnLedger" data-epoch="'+data[i].epoch+'" data-label="'+data[i].label+'" data-in="'+data[i].in+'" data-out="'+data[i].out+'" data-time="'+data[i].time+'" data-sealed="'+data[i].sealed+'"><i class="fa fa-unlock-alt text-warning"></i></button></td>';
-            }
-            html += '<td'+marker+'><button class="btn btn-sm btn-light btnLedger" data-epoch="'+data[i].epoch+'" data-label="'+data[i].label+'" data-in="'+data[i].in+'" data-out="'+data[i].out+'" data-time="'+data[i].time+'" data-sealed="'+data[i].sealed+'">' + new Date(data[i].time).toLocaleString() + '</button></td>';
-            html += '<td'+marker+'>' + customLabels[data[i].label] + '</td>';
-            html += '<td'+marker+'>' + (data[i].in/1000).toFixed(3).replace('.',',') + 'kWh</td>';
-            html += '<td'+marker+'>' + (data[i].out/1000).toFixed(3).replace('.',',') + 'kWh</td>';
-            html += '<td'+marker+'>' + ((data[i].out - data[i].in)/1000).toFixed(3).replace('.',',') + 'kWh</td>';
-            html += '</tr>';
         }
         html += '</tbody>';
         html += '</table>';
