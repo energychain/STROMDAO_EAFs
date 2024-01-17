@@ -153,7 +153,8 @@ module.exports = {
             to: ctx.params.meterId,
             epoch: ctx.params.epoch,
             energy: ctx.params.consumption,
-            label: ctx.params.label
+            label: ctx.params.label,
+            counter: 'eaf_general'
           };
 
           // Apply the balancing rule if one exists
@@ -168,10 +169,12 @@ module.exports = {
           if (asset && asset.balancerule) {
             if (asset.balancerule.from) {
               statement.from = asset.balancerule.from;
+              statement.counter =  asset.balancerule.from;
             }
             if (asset.balancerule.to) {
               statement.from = ctx.params.meterId; // fix for "Einspeiser"
               statement.to = asset.balancerule.to;
+              statement.counter =  asset.balancerule.to;
             }
           } else {
             // If there is no balancing rule, the energy is considered to be consumed locally
@@ -190,13 +193,14 @@ module.exports = {
             out: 1 * ctx.params.consumption,
             label: ctx.params.label,
             created: new Date().getTime(),
+            counter: statement
           };
 
           const balances_from = await ctx.call("balancing_model.find", {
             query: {
               label: ctx.params.label,
               epoch: ctx.params.epoch,
-              assetId: statement.from,
+              assetId: statement.from
             },
           });
 
@@ -207,6 +211,7 @@ module.exports = {
             out: 0,
             label: ctx.params.label,
             created: new Date().getTime(),
+            counter: statement
           };
 
           const balances_to = await ctx.call("balancing_model.find", {
@@ -229,7 +234,7 @@ module.exports = {
           if(!sealed) {
                   // Insert the statement into the database
               if(!ctx.params.isClose) {
-                  await ctx.call("statement_model.insert", { entity: statement });
+                await ctx.call("statement_model.insert", { entity: statement });
                 await ctx.broker.emit("transferfrom."+statement.from, ctx.params.consumption);
                 await ctx.broker.emit("transferto."+statement.to, ctx.params.consumption);
               }  
