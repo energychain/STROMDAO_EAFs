@@ -298,20 +298,22 @@ module.exports = {
     sealBalance: {
       params: {
         assetId: { type: "string" },
-        epoch: { type: "number" }
+        epoch: { type: "any" }
       },
       rest: {
 				method: "GET",
 				path: "/sealBalance"
 			},
       async handler(ctx) {
+        const jwt = require("jsonwebtoken");
+
         let balances = await ctx.call("balancing_model.find", {
           query: {
             assetId: ctx.params.assetId,
             epoch: ctx.params.epoch * 1,
             sealed: { $exists: false}
           },
-        }).rows;
+        });
         let res = [];
         for(let i=0;i<balances.length;i++) {
           const _id = balances[i]._id;
@@ -320,13 +322,8 @@ module.exports = {
           const signOptions = JSON.parse(process.env.JWT_OPTIONS);
 
           res.push(await ctx.call("balancing_model.update", {
-            query: {
-              _id: _id,
-              sealed: { $exists: false}
-            },
-            update: {
-              sealed:  jwt.sign(balances[i], process.env.JWT_PRIVATEKEY,signOptions)
-            }
+           id:_id,
+          sealed:  jwt.sign(balances[i], process.env.JWT_PRIVATEKEY,signOptions)
           }));
         }
         return res;

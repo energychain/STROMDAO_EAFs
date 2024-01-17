@@ -22,7 +22,6 @@ $(document).ready(function() {
                     $('#direction-to').attr('checked','checked');
                 }
             }
-            console.log("Balancing rule",data);
         });
     }
 
@@ -148,10 +147,11 @@ $(document).ready(function() {
                 marker = ' class="text-bg-success" ';
             }
             html += '<tr>';
-            if(data[i].sealed) {
-                html += '<td'+marker+'><i class="fa fa-lock-alt"></i></td>';
-            } else {
+            if(typeof data[i].sealed !== 'undefined') {
                 html += '<td>&nbsp;</td>';
+            } else {
+                data[i].sealed = "";
+                html += '<td'+marker+'><button class="btn btn-sm btn-light btnLedger" data-epoch="'+data[i].epoch+'" data-label="'+data[i].label+'" data-in="'+data[i].in+'" data-out="'+data[i].out+'" data-time="'+data[i].time+'" data-sealed="'+data[i].sealed+'"><i class="fa fa-unlock-alt text-warning"></i></button></td>';
             }
             html += '<td'+marker+'><button class="btn btn-sm btn-light btnLedger" data-epoch="'+data[i].epoch+'" data-label="'+data[i].label+'" data-in="'+data[i].in+'" data-out="'+data[i].out+'" data-time="'+data[i].time+'" data-sealed="'+data[i].sealed+'">' + new Date(data[i].time).toLocaleString() + '</button></td>';
             html += '<td'+marker+'>' + customLabels[data[i].label] + '</td>';
@@ -190,8 +190,8 @@ $(document).ready(function() {
 
     $('#sealBtn').click(function(e) {
         $.getJSON("/api/balancing/sealBalance?assetId="+window.assetId+"&epoch="+$(this).attr('data-epoch'), function(data) {
-                console.log("Seal Result",data);
-                showLedger();
+             $('#modalStatement').modal('hide');
+             balanceRetrieve(window.assetId,$(this).attr('data-epoch'));
         });
     });
     $('#balancerule').submit(function(e) {
