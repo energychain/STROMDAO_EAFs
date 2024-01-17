@@ -86,12 +86,19 @@ $(document).ready(function() {
         }
 
         $('.filterAsset').html(window.assetId);
-
-
-        
-
         $('#txTable').html('...');
         $('#balanceModal').html('...');
+        if( ($(this).data('sealed')) && ($(this).data('sealed').length > 0)) {
+            $('#sealBtn').html('<i class="fa fa-lock"></i>');
+            $('#sealBtn').addClass('btn-light');
+            $('#sealBtn').removeClass('btn-warning')
+            $('#sealBtn').attr('disabled','disabled');
+        } else {
+            $('#sealBtn').html('<i class="fa fa-unlock-alt"></i>');
+            $('#sealBtn').addClass('btn-warning');
+            $('#sealBtn').removeClass('btn-light');
+            $('#sealBtn').removeAttr('disabled');
+        }
         let html = '<table class="table table-condensed">';
         html += '<thead>';
         html += '<tr>';
@@ -100,6 +107,7 @@ $(document).ready(function() {
         html += '<th>Entnahme</th>';
         html += '<th>Einspeisung</th>';
         html += '<th>Saldo</th>';
+        html += '<th>&nbsp;</th>';
         html += '</tr>';
         html += '</thead>';
         html += '<tbody>';
@@ -111,6 +119,7 @@ $(document).ready(function() {
         html += '<td>'+(($(this).attr('data-out') - $(this).attr('data-in'))/1000).toFixed(3).replace('.',',')+'kWh</td>';
         html += '</tbody>';
         html += '</table>';
+        $('#sealBtn').attr('data-epoch',$(this).attr('data-epoch'));
         $('#balanceModal').html(html);
         $('#modalStatement').modal('show');
         updateTXs(window.assetId,$(this).attr('data-epoch'), $(this).attr('data-label'));
@@ -124,6 +133,7 @@ $(document).ready(function() {
         let html = '<table class="table table-condensed table-striped">';
         html += '<thead>';
         html += '<tr>';
+        html += '<th>&nbsp;</th>';
         html += '<th>Stromprodukt</th>';
         html += '<th>Segment</th>';
         html += '<th>Bezug</th>';
@@ -138,7 +148,12 @@ $(document).ready(function() {
                 marker = ' class="text-bg-success" ';
             }
             html += '<tr>';
-            html += '<td'+marker+'><button class="btn btn-sm btn-light btnLedger" data-epoch="'+data[i].epoch+'" data-label="'+data[i].label+'" data-in="'+data[i].in+'" data-out="'+data[i].out+'" data-time="'+data[i].time+'">' + new Date(data[i].time).toLocaleString() + '</button></td>';
+            if(data[i].sealed) {
+                html += '<td'+marker+'><i class="fa fa-lock-alt"></i></td>';
+            } else {
+                html += '<td>&nbsp;</td>';
+            }
+            html += '<td'+marker+'><button class="btn btn-sm btn-light btnLedger" data-epoch="'+data[i].epoch+'" data-label="'+data[i].label+'" data-in="'+data[i].in+'" data-out="'+data[i].out+'" data-time="'+data[i].time+'" data-sealed="'+data[i].sealed+'">' + new Date(data[i].time).toLocaleString() + '</button></td>';
             html += '<td'+marker+'>' + customLabels[data[i].label] + '</td>';
             html += '<td'+marker+'>' + (data[i].in/1000).toFixed(3).replace('.',',') + 'kWh</td>';
             html += '<td'+marker+'>' + (data[i].out/1000).toFixed(3).replace('.',',') + 'kWh</td>';
@@ -173,7 +188,12 @@ $(document).ready(function() {
 
     });
 
-
+    $('#sealBtn').click(function(e) {
+        $.getJSON("/api/balancing/sealBalance?assetId="+window.assetId+"&epoch="+$(this).attr('data-epoch'), function(data) {
+                console.log("Seal Result",data);
+                showLedger();
+        });
+    });
     $('#balancerule').submit(function(e) {
         e.preventDefault();
         $('#btnRule').attr('disabled','disabled');

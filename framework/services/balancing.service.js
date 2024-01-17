@@ -286,13 +286,50 @@ module.exports = {
       async handler(ctx) {
         /**
          * 
-         */
+
         await ctx.call("balancing_model.remove", {
           query: {
             assetId: ctx.params.assetId,
           },
         });
+         */
+      },
+    },
+    sealBalance: {
+      params: {
+        assetId: { type: "string" },
+        epoch: { type: "number" }
+      },
+      rest: {
+				method: "GET",
+				path: "/sealBalance"
+			},
+      async handler(ctx) {
+        let balances = await ctx.call("balancing_model.find", {
+          query: {
+            assetId: ctx.params.assetId,
+            epoch: ctx.params.epoch * 1,
+            sealed: { $exists: false}
+          },
+        }).rows;
+        let res = [];
+        for(let i=0;i<balances.length;i++) {
+          const _id = balances[i]._id;
+          delete balances[i]._id;
+          delete balances[i].id;
+          const signOptions = JSON.parse(process.env.JWT_OPTIONS);
 
+          res.push(await ctx.call("balancing_model.update", {
+            query: {
+              _id: _id,
+              sealed: { $exists: false}
+            },
+            update: {
+              sealed:  jwt.sign(balances[i], process.env.JWT_PRIVATEKEY,signOptions)
+            }
+          }));
+        }
+        return res;
       },
     }
   },
