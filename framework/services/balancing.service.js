@@ -193,7 +193,7 @@ module.exports = {
             out: 1 * ctx.params.consumption,
             label: ctx.params.label,
             created: new Date().getTime(),
-            counter: statement
+            counter: statement.to
           };
 
           const balances_from = await ctx.call("balancing_model.find", {
@@ -211,7 +211,7 @@ module.exports = {
             out: 0,
             label: ctx.params.label,
             created: new Date().getTime(),
-            counter: statement
+            counter: statement.from
           };
 
           const balances_to = await ctx.call("balancing_model.find", {
