@@ -13,11 +13,11 @@ const DbService = require("moleculer-db");
 
 /** @type {ServiceSchema} */
 module.exports = {
-	name: "balance_settlements_open_model",
+	name: "balance_settlements_active_model",
 	
 	adapter: process.db_adapter,
 	
-	collection: "balance_settlements_open",
+	collection: "balance_settlements_active",
 
 	mixins: [DbService],
 	/**
