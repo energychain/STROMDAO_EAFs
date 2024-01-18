@@ -28,7 +28,8 @@ $(document).ready(function() {
     const showLedger = function() {
         const updateTXs =  function(assetId,epoch,label)   {    
                 $.getJSON("/api/balancing/statements?assetId="+assetId+"&epoch="+epoch+"&label="+label,function(data) {
-                                    let saldo = 0;
+                                    let openSaldo = 0;
+                                    let closeSaldo = 0;
                                     let html = '<table class="table table-condensed table-striped">';
                                     html += '<thead>';
                                     html += '<tr>';
@@ -36,36 +37,72 @@ $(document).ready(function() {
                                     html += '<th>Von</th>';
                                     html += '<th>An</th>';
                                     html += '<th>Energie</th>';
-                                    html += '<th>Saldo</th>';
                                     html += '</tr>';
                                     html += '</thead>';
-                                    html += '<tbody>';
+
+                                    let hasUpstream = false;
+                                    let opening_rows = '';
+                                    let closing_rows = '';
+
                                     for(let i=0;i<data.length;i++) {
+                                       
+                                        if(data[i].isUpstream) {
+                                            hasUpstream = true;
+                                        }
                                         let mult = -1;
-                                        html += '<tr>';
-                                        if(data[i].sealed) {
-                                            html += '<td><i class="fa fa-lock"></i></td>';
+                                        let saldo = 0;
+
+                                        if(data[i].label == '.clearing') {
+                                            closeSaldo += data[i].energy * mult; 
+                                            const tmp = data[i].from;
+                                            data[i].from = data[i].to;
+                                            data[i].to = tmp;
+                                            saldo = closeSaldo;
                                         } else {
-                                            html += '<td>&nbsp;</td>';
+                                            openSaldo += data[i].energy * mult; 
+                                            saldo = openSaldo;
+                                        }
+                                        let html_row = '<tr>';
+                                        if(data[i].sealed) {
+                                            html_row += '<td><i class="fa fa-lock"></i></td>';
+                                        } else {
+                                            html_row += '<td>&nbsp;</td>';
                                         }
                                         let btnclass = 'btn-light';
                                         if(data[i].from == window.assetId) {
-                                            btnclass = 'btn-success';
+                           
                                             mult = 1;
                                         }
-                                        saldo += data[i].energy * mult; 
-                                        html += '<td><button class="btn btn-sm '+btnclass+' btnAsset" data-assetId="'+data[i].from+'" data-epoch="'+data[i].epoch+'">' + data[i].from + '</button></td>';
+                                        html_row += '<td><button class="btn btn-sm '+btnclass+' btnAsset" data-assetId="'+data[i].from+'" data-epoch="'+data[i].epoch+'">' + data[i].from + '</button></td>';
+                                        
                                         btnclass = 'btn-light';
-                                        if(data[i].to == window.assetId) {
-                                            btnclass = 'btn-success';
+
+                                        html_row += '<td><button class="btn btn-sm '+btnclass+' btnAsset" data-assetId="'+data[i].to+'" data-epoch="'+data[i].epoch+'">' + data[i].to + '</button></td>';
+                                        html_row += '<td>' + (data[i].energy/1000).toFixed(3).replace('.',',') + 'kWh</td>';
+                                        html_row += '</tr>';
+                                       
+                                        if(data[i].label == '.clearing') {
+                                            closing_rows += html_row;
+                                        } else {
+                                            opening_rows += html_row;
                                         }
-                                        html += '<td><button class="btn btn-sm '+btnclass+' btnAsset" data-assetId="'+data[i].to+'" data-epoch="'+data[i].epoch+'">' + data[i].to + '</button></td>';
-                                        html += '<td>' + (data[i].energy/1000).toFixed(3).replace('.',',') + 'kWh</td>';
-                                        html += '<td>' + (saldo/1000).toFixed(3).replace('.',',') + 'kWh</td>';
-                                        html += '</tr>';
                                     }
+                                    html += '<thead>';
+                                    html += '<th><th colspan=5>Abschlussbuchungen</th></tr>';
+                                    html += '</thead>';
+                                    html += '<tbody>';
+                                    html +=  closing_rows;
                                     html += '</tbody>';
+                                    html += '<thead><tr><th colspan="5">&nbsp;</th></tr></thead>';
+                                    html += '<thead>';
+                                    html += '<th><th colspan="5">Verlauf</th></tr>';
+                                    html += '</thead>';
+                                    html += '<tbody>';
+                                    html +=  opening_rows;
+                                    html += '</tbody>';
+                                 
                                     html += '</table>';
+
                                     $('#txTable').html(html);
                                     $('#activeFilter').off();
                                     $('#activeFilter').click(function() {
@@ -106,10 +143,10 @@ $(document).ready(function() {
             $('#sealBtn').attr('disabled','disabled');
             $.getJSON("/api/balancing/decodeSeal?seal="+$(this).data('sealed'),function(data) {
                 if(data.from == window.assetId) {
-                    $('#fromorto').html('Geliefert an');
+                    $('#fromorto').html('Marktpartner');
                     $('#marketpartner').html('<button class="btn btn-sm btn-light btnAsset" data-assetid="'+data.to+'" data-epoch="'+data.epoch+'">'+data.to+'</button>');
                 } else {
-                    $('#fromorto').html('Geliefert von');
+                    $('#fromorto').html('Marktpartner');
                     $('#marketpartner').html('<button class="btn btn-sm btn-light btnAsset" data-assetid="'+data.from+'" data-epoch="'+data.epoch+'">'+data.from+'</button>');
                 }
                 $('.btnAsset').off();
@@ -131,14 +168,14 @@ $(document).ready(function() {
         html += '<th>Stromprodukt</th>';
         html += '<th>Entnahme</th>';
         html += '<th>Einspeisung</th>';
-        html += '<th>Saldo</th>';
+        html += '<th>Verlauf</th>';
         html += '<th id="fromorto"></th>';
         html += '</tr>';
         html += '</thead>';
         html += '<tbody>';
         html += '<tr>';
         html += '<td class="notFiltered">'+window.assetId+'</td>';
-        html += '<td>'+new Date($(this).attr('data-time')* 1).toLocaleString()+'</td>'; 
+        html += '<td title="'+$(this).attr('data-epoch')+'">'+new Date($(this).attr('data-time')* 1).toLocaleString()+'</td>'; 
         html += '<td>'+($(this).attr('data-in')/1000).toFixed(3).replace('.',',')+'kWh</td>';
         html += '<td>'+($(this).attr('data-out')/1000).toFixed(3).replace('.',',')+'kWh</td>';
         html += '<td>'+(($(this).attr('data-out') - $(this).attr('data-in'))/1000).toFixed(3).replace('.',',')+'kWh</td>';
@@ -169,7 +206,7 @@ $(document).ready(function() {
         html += '</thead>';
         html += '<tbody>';
         for(let i=0;i<data.length;i++) {
-            if(data[i].label !== '.clearing') {
+            if(data[i].label !== '.clearingX') {
                 let marker = '';
                 if(data[i].epoch == window.highlightEpoch) {
                     marker = ' class="text-bg-success" ';

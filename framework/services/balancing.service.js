@@ -78,12 +78,24 @@ module.exports = {
           limit: 24,
           sort: "-epoch"
         });
+        let cleaned = {};
         for(let i=0;i<res.length;i++) {
-         res[i].time = res[i].epoch * EPOCH_DURATION;
-         delete res[i]._id;
-         delete res[i].id;
+          res[i].time = res[i].epoch * EPOCH_DURATION;
+          delete res[i]._id;
+          delete res[i].id;
+          if(typeof cleaned["epoch_"+res[i].epoch] == 'undefined') {
+              cleaned["epoch_"+res[i].epoch] = res[i];
+            } else {
+              if(res[i].label == '.clearing') {
+                cleaned["epoch_"+res[i].epoch] = res[i]; // Clearings always replace other balances
+            }
+          }
         }
-        // we might return multiple balances for different labels
+        res = [];
+        for (const [key, value] of Object.entries(cleaned)) {
+          res.push(value);
+        }
+        
         return res;
       }
     },
@@ -97,6 +109,9 @@ module.exports = {
       },
       async handler(ctx) {
         const EPOCH_DURATION = process.env.EPOCH_DURATION;
+
+        const upstream = await ctx.call("balancing.getUpstream",{ assetId: ctx.params.assetId });
+
         const query = {
           epoch: 1 * ctx.params.epoch // Might add Label filter here for later use
         };
@@ -116,35 +131,39 @@ module.exports = {
 
         // filter cleared elements in res if they are not the targeted assetId.
         let candidates = {};
+        let candidates2 = {};
         for(let i=0;i<res.length;i++) {
           delete res[i]._id;
           delete res[i].id;
           res[i].sealed = false;
           res[i].time = res[i].epoch * EPOCH_DURATION;
-          //if(res[i].label == '.clearing') {
-            let candidate = res[i].to;
-            if(candidate == ctx.params.assetId) candidate = res[i].from;
+          let candidate = res[i].to;
+          if((res[i].to == upstream) || (res[i].from == upstream)) {
+            res[i].isUpstream = true;
+          } else {
+            res[i].isUpstream = false;
+          }
+          if(candidate == ctx.params.assetId) candidate = res[i].from;
+          if(res[i].label !== '.clearing') {
             if(typeof candidates[candidate] == 'undefined') {
               candidates[candidate] = 0
             }
             candidates[candidate] += res[i].energy;
-         // }
+          }
+          if(typeof candidates2[candidate] == 'undefined') {
+            candidates2[candidate] = 0
+          }
         }
       
       
         // check candidates for closed balances
-        for (const [key, value] of Object.entries(candidates)) {
+        for (const [key, value] of Object.entries(candidates2)) {
             let sealedcheck = await ctx.call("balancing_model.find",{
               query:{
                 assetId:key,
                 sealed:{$exists:true},
                 epoch:ctx.params.epoch *1
               }
-            });
-            console.log("query",{
-              assetId:key,
-              sealed:{$exists:true},
-              epoch:ctx.params.epoch *1
             });
             if(sealedcheck.length > 0) {
                 for(let i=0;i<res.length;i++) {
@@ -154,14 +173,45 @@ module.exports = {
                 }
             }
         }
+        
+        // Wird clearing gefiltert, dann verschwinden auch txs, die keine unabhängigen Buchungen haben.
 
         let cleaned = [];
         for(let i=0;i<res.length;i++) {
           if(res[i].label !== '.clearing') {
             cleaned.push(res[i]);
+          } else {
+      
+            if((typeof candidates[res[i].to] == 'undefined')&&(typeof candidates[res[i].from] == 'undefined')) {
+              // In this case we need to invert the statement as it is the only booking 
+              const tmp = res[i].from;
+              res[i].from = res[i].to;
+              res[i].to = tmp;
+              res[i].energy *= -1;
+              cleaned.push(res[i]);
+            }
           }
         }
-        return cleaned;
+      
+        return res;
+      }
+    },
+    getUpstream: {
+      params: {
+        assetId: "string"
+      },
+      async handler(ctx) {
+        let upstream = 'eaf_general';
+        const asset = await ctx.call("asset.get", { assetId: ctx.params.assetId,type:"balance" });
+        if (asset && asset.balancerule) {
+          if(typeof asset.balancerule.from !== 'undefined') {
+            upstream = asset.balancerule.from;
+          }
+          if(typeof asset.balancerule.to !== 'undefined') {
+            upstream = asset.balancerule.to;
+          }
+        }
+        return upstream;
       }
     },
     addSettlement: {
@@ -224,7 +274,7 @@ module.exports = {
           }
           let cleared='';
           if(ctx.params.isClose) {
-            cleared='_cleared';
+           //  cleared='_cleared'; We change active balance!
           }
 
           // Find any existing balance for the given asset and counter asset at epoch
@@ -297,6 +347,8 @@ module.exports = {
                 await ctx.broker.emit("clearedto."+statement.to, statement.energy);
                 statement.energy *= -1;
               }
+
+
               // Update the balance if it exists, otherwise create a new one
               if (balances_from && balances_from.length > 0) {
                 balance_from.in += balances_from[0].in;
@@ -329,6 +381,8 @@ module.exports = {
                 await ctx.call("balancing"+cleared+"_model.insert", { entity: balance_to });
               }
               await ctx.broker.emit("balance."+statement.to, balance_to);
+
+
             } else { // if !sealed
               // handling settlments received after sealing of product (eq. booking on a closed balance)
               await ctx.call("postbalancing_model.insert", { entity: balance_from });
@@ -337,7 +391,11 @@ module.exports = {
               await ctx.broker.emit("postbalance."+statement.to, balance_to);
               return null;
             }
-          // Return the updated balance
+          if(!ctx.params.isClose) {
+            // close balance before this. (= auto seal for simple meter based settlement updates)
+            ctx.call("balancing.sealBalance", { assetId: ctx.params.meterId, epoch: ctx.params.epoch-1 });
+          }
+          // Return the closing statement
           return statement;
         } catch(e) {
           // in case of an exception the settlement needs to be handled manually.
@@ -390,30 +448,86 @@ module.exports = {
           let intermediateBalance =  await ctx.call("balancing_model.find",{
             query:{
               assetId: balances[i].assetId,
-              epoch:  balances[i].epoch * 1
+              epoch:  balances[i].epoch * 1,
+              sealed: { $exists: false}
             },
           });
           if(intermediateBalance.length > 0) {
             intermediateBalance = intermediateBalance[0];
-            
+            // Create a new Balance 
+            const txs = await ctx.call("balancing.statements", { 
+              assetId: ctx.params.assetId,
+              epoch: ctx.params.epoch * 1
+            });
+            intermediateBalance.in = 0;
+            intermediateBalance.out = 0;
+
+            for(let j=0;j<txs.length;j++) {
+
+              let candidate = false;
+              if(txs[j].label == ".clearing") {
+                candidate = true;
+              } else {
+                if(txs[j].isUpstream) {
+                  candidate = true;
+                }
+              }
+              console.log("Is Candidate",candidate);
+              if(candidate) {
+                if(txs[j].to == ctx.params.assetId) {
+                  intermediateBalance.out += 1 * txs[j].energy; 
+                } else {
+                  intermediateBalance.in += 1 * txs[j].energy;
+                }
+              }
+            }
+            console.log('INTERMEDIATE BALANCE',intermediateBalance);
+
             const closeBooking = await ctx.call("balancing.addSettlement",{
               meterId:balances[i].assetId,
-              epoch: intermediateBalance.epoch,
+              epoch: ctx.params.epoch * 1,
               consumption: intermediateBalance.out - intermediateBalance.in,
               label: ".clearing",
               isClose: true
             });
+
+
             if(closeBooking == null) {
                // This is the case if close booking could not be made - we need to keep it open for later processing.             
             } else {
               delete intermediateBalance._id;
               delete intermediateBalance.id;
               const signOptions = JSON.parse(process.env.JWT_OPTIONS);
+              const seal = jwt.sign(closeBooking, process.env.JWT_PRIVATEKEY,signOptions);
 
-              res.push(await ctx.call("balancing_model.update", {
-                  id:_id,
-                    sealed: jwt.sign(closeBooking, process.env.JWT_PRIVATEKEY,signOptions)
-              }));
+             // Only keep the ".clearing" balances  for this assetId(epoch)
+             const orphans = await ctx.call("balancing_model.find", {
+                query: {
+                  sealed: { $exists: false },
+                  assetId: ctx.params.assetId,
+                  epoch: ctx.params.epoch * 1,
+                  label: { "$ne": ".clearing" }
+                }
+              });
+              
+              for(let j=0;j<orphans.length;j++) {
+                  await ctx.call("balancing_model.remove",{id:orphans[i]._id})
+              }
+
+              const unsealed = await ctx.call("balancing_model.find", {
+                query: {
+                  sealed: { $exists: false },
+                  assetId: ctx.params.assetId,
+                  epoch: ctx.params.epoch * 1,
+                  label:".clearing" 
+                }
+              });
+              for(let j=0;j<unsealed.length;j++) {
+                res.push(await ctx.call("balancing_model.update", {
+                  id:unsealed[j]._id,
+                  sealed: seal
+                }));
+              }
             }
           }
 
