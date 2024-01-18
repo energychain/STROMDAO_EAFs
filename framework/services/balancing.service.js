@@ -439,6 +439,14 @@ module.exports = {
             sealed: { $exists: false}
           },
         });
+        
+        for(let i=0;i<balances.length;i++) {
+            await ctx.call("balancing_model.update", {
+              id:balances[i]._id,
+              sealed: 'inprogress'
+            });
+        }
+        
         let res = [];
         for(let i=0;i<balances.length;i++) {
           const _id = balances[i]._id;
