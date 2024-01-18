@@ -105,7 +105,18 @@ $(document).ready(function() {
             $('#sealBtn').removeClass('btn-warning')
             $('#sealBtn').attr('disabled','disabled');
             $.getJSON("/api/balancing/decodeSeal?seal="+$(this).data('sealed'),function(data) {
-                console.log("Seal is ",data);
+                if(data.from == window.assetId) {
+                    $('#fromorto').html('Geliefert an');
+                    $('#marketpartner').html('<button class="btn btn-sm btn-light btnAsset" data-assetid="'+data.to+'" data-epoch="'+data.epoch+'">'+data.to+'</button>');
+                } else {
+                    $('#fromorto').html('Geliefert von');
+                    $('#marketpartner').html('<button class="btn btn-sm btn-light btnAsset" data-assetid="'+data.from+'" data-epoch="'+data.epoch+'">'+data.from+'</button>');
+                }
+                $('.btnAsset').off();
+                $('.btnAsset').click(function() {
+                    balanceRetrieve($(this).attr('data-assetId'),epoch);
+                    $('#modalStatement').modal('hide');
+                });
             })
         } else {
             $('#sealBtn').html('<i class="fa fa-unlock-alt"></i>');
@@ -113,7 +124,7 @@ $(document).ready(function() {
             $('#sealBtn').removeClass('btn-light');
             $('#sealBtn').removeAttr('disabled');
         }
-        let html = '<table class="table table-condensed">';
+        let html = '<table class="table">';
         html += '<thead>';
         html += '<tr>';
         html += '<th>Allokation</th>';
@@ -121,7 +132,7 @@ $(document).ready(function() {
         html += '<th>Entnahme</th>';
         html += '<th>Einspeisung</th>';
         html += '<th>Saldo</th>';
-        html += '<th>&nbsp;</th>';
+        html += '<th id="fromorto"></th>';
         html += '</tr>';
         html += '</thead>';
         html += '<tbody>';
@@ -131,6 +142,7 @@ $(document).ready(function() {
         html += '<td>'+($(this).attr('data-in')/1000).toFixed(3).replace('.',',')+'kWh</td>';
         html += '<td>'+($(this).attr('data-out')/1000).toFixed(3).replace('.',',')+'kWh</td>';
         html += '<td>'+(($(this).attr('data-out') - $(this).attr('data-in'))/1000).toFixed(3).replace('.',',')+'kWh</td>';
+        html += '<td id="marketpartner"></td>';
         html += '</tbody>';
         html += '</table>';
         $('#sealBtn').attr('data-epoch',$(this).attr('data-epoch'));

@@ -121,14 +121,14 @@ module.exports = {
           delete res[i].id;
           res[i].sealed = false;
           res[i].time = res[i].epoch * EPOCH_DURATION;
-          if(res[i].label == '.clearing') {
-            let candidate = res[i].from;
-            if(candidate !== ctx.params.meterId) candidate = res[i].to;
+          //if(res[i].label == '.clearing') {
+            let candidate = res[i].to;
+            if(candidate == ctx.params.assetId) candidate = res[i].from;
             if(typeof candidates[candidate] == 'undefined') {
               candidates[candidate] = 0
             }
             candidates[candidate] += res[i].energy;
-          }
+         // }
         }
       
       
@@ -141,7 +141,11 @@ module.exports = {
                 epoch:ctx.params.epoch *1
               }
             });
-
+            console.log("query",{
+              assetId:key,
+              sealed:{$exists:true},
+              epoch:ctx.params.epoch *1
+            });
             if(sealedcheck.length > 0) {
                 for(let i=0;i<res.length;i++) {
                   if(res[i].from == key || res[i].to == key) {
@@ -236,11 +240,12 @@ module.exports = {
 
           const balances_from = await ctx.call("balancing_model.find", {
             query: {
-              label: ctx.params.label,
+              sealed: { "$exists": true },
               epoch: ctx.params.epoch,
               assetId: statement.from
             },
           });
+
 
           let balance_to = {
             assetId: statement.to,
@@ -254,19 +259,20 @@ module.exports = {
 
           const balances_to = await ctx.call("balancing_model.find", {
             query: {
-              label: ctx.params.label,
               epoch: ctx.params.epoch,
               assetId: statement.to,
+              sealed: { "$exists": true }
             },
           });
+
           // ensure that we do not have sealed balances
           let sealed = false;
-          if (balances_to && balances_to.length > 0) {
-            if(balances_to[0].sealed) sealed = true; 
+          if ( balances_to.length > 0) {
+             sealed = true; 
           }
 
-          if (balances_from && balances_from.length > 0)  {
-            if(balances_from[0].sealed) sealed = true; 
+          if (balances_from.length > 0)  {
+              sealed = true; 
           }
 
           if(!sealed) {
@@ -329,6 +335,7 @@ module.exports = {
               await ctx.broker.emit("postbalance."+statement.from, balance_from);
               await ctx.call("postbalancing_model.insert", { entity: balance_to });
               await ctx.broker.emit("postbalance."+statement.to, balance_to);
+              return null;
             }
           // Return the updated balance
           return statement;
@@ -343,7 +350,7 @@ module.exports = {
     },
     decodeSeal: {
       params: {
-        JWT: {type: "string"}
+        seal: {type: "string"}
       },
       rest: {
         method: "GET",
@@ -351,7 +358,7 @@ module.exports = {
       },
       async handler(ctx) {
         const jwt = require("jsonwebtoken");
-        const decoded = jwt.decode(ctx.params.JWT);
+        const decoded = jwt.decode(ctx.params.seal);
         return decoded;
       }
     },
@@ -396,15 +403,18 @@ module.exports = {
               label: ".clearing",
               isClose: true
             });
-           
-            delete intermediateBalance._id;
-            delete intermediateBalance.id;
-            const signOptions = JSON.parse(process.env.JWT_OPTIONS);
+            if(closeBooking == null) {
+               // This is the case if close booking could not be made - we need to keep it open for later processing.             
+            } else {
+              delete intermediateBalance._id;
+              delete intermediateBalance.id;
+              const signOptions = JSON.parse(process.env.JWT_OPTIONS);
 
-            res.push(await ctx.call("balancing_model.update", {
-             id:_id,
-              sealed: jwt.sign(closeBooking, process.env.JWT_PRIVATEKEY,signOptions)
-            }));
+              res.push(await ctx.call("balancing_model.update", {
+                  id:_id,
+                    sealed: jwt.sign(closeBooking, process.env.JWT_PRIVATEKEY,signOptions)
+              }));
+            }
           }
 
 
