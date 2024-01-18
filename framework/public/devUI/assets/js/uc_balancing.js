@@ -28,6 +28,7 @@ $(document).ready(function() {
     const showLedger = function() {
         const updateTXs =  function(assetId,epoch,label)   {    
                 $.getJSON("/api/balancing/statements?assetId="+assetId+"&epoch="+epoch+"&label="+label,function(data) {
+                                    let saldo = 0;
                                     let html = '<table class="table table-condensed table-striped">';
                                     html += '<thead>';
                                     html += '<tr>';
@@ -35,12 +36,14 @@ $(document).ready(function() {
                                     html += '<th>Von</th>';
                                     html += '<th>An</th>';
                                     html += '<th>Energie</th>';
+                                    html += '<th>Saldo</th>';
                                     html += '</tr>';
                                     html += '</thead>';
                                     html += '<tbody>';
                                     for(let i=0;i<data.length;i++) {
+                                        let mult = -1;
                                         html += '<tr>';
-                                        if(data[i].label == '.clearing') {
+                                        if(data[i].sealed) {
                                             html += '<td><i class="fa fa-lock"></i></td>';
                                         } else {
                                             html += '<td>&nbsp;</td>';
@@ -48,7 +51,9 @@ $(document).ready(function() {
                                         let btnclass = 'btn-light';
                                         if(data[i].from == window.assetId) {
                                             btnclass = 'btn-success';
+                                            mult = 1;
                                         }
+                                        saldo += data[i].energy * mult; 
                                         html += '<td><button class="btn btn-sm '+btnclass+' btnAsset" data-assetId="'+data[i].from+'" data-epoch="'+data[i].epoch+'">' + data[i].from + '</button></td>';
                                         btnclass = 'btn-light';
                                         if(data[i].to == window.assetId) {
@@ -56,6 +61,7 @@ $(document).ready(function() {
                                         }
                                         html += '<td><button class="btn btn-sm '+btnclass+' btnAsset" data-assetId="'+data[i].to+'" data-epoch="'+data[i].epoch+'">' + data[i].to + '</button></td>';
                                         html += '<td>' + (data[i].energy/1000).toFixed(3).replace('.',',') + 'kWh</td>';
+                                        html += '<td>' + (saldo/1000).toFixed(3).replace('.',',') + 'kWh</td>';
                                         html += '</tr>';
                                     }
                                     html += '</tbody>';
@@ -98,6 +104,9 @@ $(document).ready(function() {
             $('#sealBtn').addClass('btn-light');
             $('#sealBtn').removeClass('btn-warning')
             $('#sealBtn').attr('disabled','disabled');
+            $.getJSON("/api/balancing/decodeSeal?seal="+$(this).data('sealed'),function(data) {
+                console.log("Seal is ",data);
+            })
         } else {
             $('#sealBtn').html('<i class="fa fa-unlock-alt"></i>');
             $('#sealBtn').addClass('btn-warning');
