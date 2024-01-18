@@ -236,167 +236,65 @@ module.exports = {
         try {
           // Check if we have a balancing rule for this asset.
           const asset = await ctx.call("asset.get", { assetId: ctx.params.meterId,type:"balance" });
-          if(typeof ctx.params.isClose == 'undefined') {
-            ctx.params.isClose = false;
-          }
+  
           // Initialize the statement and balance objects
           let statement = {
-            from: 'eaf_general',
+            from: 'eaf_generic_balancegroup',
             to: ctx.params.meterId,
             epoch: ctx.params.epoch,
             energy: ctx.params.consumption,
             label: ctx.params.label,
-            counter: 'eaf_general'
+            counter: 'eaf_generic_balancegroup'          
           };
 
           // Apply the balancing rule if one exists
-
-          /*
-          // TODO Handle Balancing Rules with changes in future / past 
-
-          Perspective is from asset not from this:
-            in = Electricity got consumed by the asset
-            out = Electricity got produced by the asset
-          */
+         
           if (asset && asset.balancerule) {
             if (asset.balancerule.from) {
               statement.from = asset.balancerule.from;
               statement.counter =  asset.balancerule.from;
             }
             if (asset.balancerule.to) {
-              statement.from = ctx.params.meterId; // fix for "Einspeiser"
+              statement.from = ctx.params.meterId; 
               statement.to = asset.balancerule.to;
               statement.counter =  asset.balancerule.to;
             }
-          } else {
-            // If there is no balancing rule, the energy is considered to be consumed locally
-        
-          }
-          let cleared='';
-          if(ctx.params.isClose) {
-           //  cleared='_cleared'; We change active balance!
-          }
+          } 
 
-          // Find any existing balance for the given asset and counter asset at epoch
-          let balance_from = {
-            assetId: statement.from,
-            epoch: ctx.params.epoch,
-            in: 0,
-            out: Math.abs(1 * ctx.params.consumption),
-            label: ctx.params.label,
-            created: new Date().getTime(),
-            counter: statement.to
-          };
-
-          const balances_from = await ctx.call("balancing_model.find", {
-            query: {
-              sealed: { "$exists": true },
-              epoch: ctx.params.epoch,
-              assetId: statement.from
-            },
-          });
-
-
-          let balance_to = {
-            assetId: statement.to,
-            epoch: ctx.params.epoch,
-            in: Math.abs(1 * ctx.params.consumption),
-            out: 0,
-            label: ctx.params.label,
-            created: new Date().getTime(),
-            counter: statement.from
-          };
-
-          const balances_to = await ctx.call("balancing_model.find", {
-            query: {
-              epoch: ctx.params.epoch,
-              assetId: statement.to,
-              sealed: { "$exists": true }
-            },
-          });
-
-          // ensure that we do not have sealed balances
+          // validate that we do not have a sealed balances for those assets
           let sealed = false;
-          if ( balances_to.length > 0) {
-             sealed = true; 
-          }
-
-          if (balances_from.length > 0)  {
-              sealed = true; 
-          }
-
-          if(!sealed) {
-                  // Insert the statement into the database
-              if(!ctx.params.isClose) {
-                await ctx.call("statement_model.insert", { entity: statement });
-                await ctx.broker.emit("transferfrom."+statement.from, ctx.params.consumption);
-                await ctx.broker.emit("transferto."+statement.to, ctx.params.consumption);
-              }  else {
-                // if this is a closing, we need to follow the signed ctx.params.consumption to get direction
-                if(ctx.params.consumption < 0) {
-                    statement.from = statement.counter;
-                    statement.to = ctx.params.meterId;
-                    statement.energy = Math.abs(statement.energy) * (-1);
-                } else {
-                    statement.from = ctx.params.meterId;
-                    statement.to = statement.counter;
-                    statement.energy = Math.abs(statement.energy) * (-1);
-                }
-                await ctx.call("statement_model.insert", { entity: statement });
-                await ctx.broker.emit("clearedfrom."+statement.from, statement.energy);
-                await ctx.broker.emit("clearedto."+statement.to, statement.energy);
-                statement.energy *= -1;
-              }
-
-
-              // Update the balance if it exists, otherwise create a new one
-              if (balances_from && balances_from.length > 0) {
-                balance_from.in += balances_from[0].in;
-                balance_from.out += balances_from[0].out;
-                balance_from.id = balances_from[0].id;
-                balance_from._id = balances_from[0]._id;
-                balance_from.updated = new Date().getTime();
-
-                if (typeof balance_from._id == 'undefined') balance_from._id = balance_from.id;
-                if (typeof balance_from.id == 'undefined') balance_from.id = balance_from._id;
-                await ctx.call("balancing"+cleared+"_model.update", balance_from);
-              } else {
-                await ctx.call("balancing"+cleared+"_model.insert", { entity: balance_from });
-              }
-              await ctx.broker.emit("balance."+statement.from, balance_from);
-
-              // Update the balance if it exists, otherwise create a new one
-              if (balances_to && balances_to.length > 0) {
-                balance_to.in += balances_to[0].in;
-                balance_to.out += balances_to[0].out;
-                balance_to.id = balances_to[0].id;
-                balance_to._id = balances_to[0]._id;
-                balance_to.updated = new Date().getTime();
-                
-                if(typeof balance_to._id == 'undefined') balance_to._id = balance_to.id;
-                if(typeof balance_to.id == 'undefined') balance_to.id = balance_to._id;
-
-                await ctx.call("balancing"+cleared+"_model.update", balance_to);
-              } else {
-                await ctx.call("balancing"+cleared+"_model.insert", { entity: balance_to });
-              }
-              await ctx.broker.emit("balance."+statement.to, balance_to);
-
-
-            } else { // if !sealed
-              // handling settlments received after sealing of product (eq. booking on a closed balance)
-              await ctx.call("postbalancing_model.insert", { entity: balance_from });
-              await ctx.broker.emit("postbalance."+statement.from, balance_from);
-              await ctx.call("postbalancing_model.insert", { entity: balance_to });
-              await ctx.broker.emit("postbalance."+statement.to, balance_to);
-              return null;
+          let sealcheck = await ctx.call("balances_sealed_model.find", {
+            query: {
+              assetId: statement.from,
+              epoch: statement.epoch,
+              label: statement.label,
+              seal: {$exists: true}
             }
-          if(!ctx.params.isClose) {
-            // close balance before this. (= auto seal for simple meter based settlement updates)
-          //  ctx.call("balancing.sealBalance", { assetId: ctx.params.meterId, epoch: ctx.params.epoch-1 });
+          });
+          if(sealcheck.length > 0) {
+            sealed = true;
+          } 
+          if(!sealed) {
+            sealcheck = await ctx.call("balances_sealed_model.find", {
+              query: {
+                assetId: statement.to,
+                epoch: statement.epoch,
+                label: statement.label,
+                seal: {$exists: true}
+              }
+            });
+            if(sealcheck.length > 0) {
+              sealed = true;
+            } 
           }
-          // Return the closing statement
-          return statement;
+
+          // In case balance is already sealed, insert settlement to "late" if not to "open"
+          if(sealed) {
+            // One of the parties is already sealed
+            await ctx.call("balance_settlements_late_model.insert",{entity:statement});
+          } else {
+            await ctx.call("balance_settlements_open_model.insert",{entity:statement});
+          }
         } catch(e) {
           // in case of an exception the settlement needs to be handled manually.
           // Handle manual settlement in case of an exception
@@ -439,7 +337,7 @@ module.exports = {
             sealed: { $exists: false}
           },
         });
-        
+
         for(let i=0;i<balances.length;i++) {
             await ctx.call("balancing_model.update", {
               id:balances[i]._id,

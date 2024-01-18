@@ -13,18 +13,18 @@ const DbService = require("moleculer-db");
 
 /** @type {ServiceSchema} */
 module.exports = {
-	name: "balancing_cleared_model",
+	name: "balance_settlements_late_model",
 	
 	adapter: process.db_adapter,
 	
-	collection: "balancing_cleared",
+	collection: "balance_settlements_late",
 
 	mixins: [DbService],
 	/**
 	 * Settings
 	 */
 	settings: {
-		fields: ["_id", "assetId", "in","out","epoch","label","created","updated","sealed","counter"]
+		fields: ["_id", "from", "to","epoch","label","energy"]
    },
 
 	/**
