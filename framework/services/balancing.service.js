@@ -393,7 +393,7 @@ module.exports = {
             }
           if(!ctx.params.isClose) {
             // close balance before this. (= auto seal for simple meter based settlement updates)
-            ctx.call("balancing.sealBalance", { assetId: ctx.params.meterId, epoch: ctx.params.epoch-1 });
+          //  ctx.call("balancing.sealBalance", { assetId: ctx.params.meterId, epoch: ctx.params.epoch-1 });
           }
           // Return the closing statement
           return statement;
@@ -472,7 +472,7 @@ module.exports = {
                   candidate = true;
                 }
               }
-              console.log("Is Candidate",candidate);
+              
               if(candidate) {
                 if(txs[j].to == ctx.params.assetId) {
                   intermediateBalance.out += 1 * txs[j].energy; 
@@ -481,7 +481,6 @@ module.exports = {
                 }
               }
             }
-            console.log('INTERMEDIATE BALANCE',intermediateBalance);
 
             const closeBooking = await ctx.call("balancing.addSettlement",{
               meterId:balances[i].assetId,
@@ -530,8 +529,6 @@ module.exports = {
               }
             }
           }
-
-
         }
         return res;
       },

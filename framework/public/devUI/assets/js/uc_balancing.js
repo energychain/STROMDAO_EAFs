@@ -166,8 +166,8 @@ $(document).ready(function() {
         html += '<tr>';
         html += '<th>Allokation</th>';
         html += '<th>Stromprodukt</th>';
-        html += '<th>Entnahme</th>';
-        html += '<th>Einspeisung</th>';
+        html += '<th>Bezug</th>';
+        html += '<th>Lieferung</th>';
         html += '<th>Verlauf</th>';
         html += '<th id="fromorto"></th>';
         html += '</tr>';
