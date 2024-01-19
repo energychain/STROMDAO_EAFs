@@ -34,6 +34,36 @@ module.exports = {
   // Define the actions of the service
   actions: {
     // Action to add a settlement from a meter to the energy balancing model
+    latestBalances: {
+			rest: {
+				method: "GET",
+				path: "/latestBalances"
+			},
+      params: {
+        assetId: "string",
+      },
+      /**
+       * Returns the top n balances sealed models for a given asset ID.
+       *
+       * @param {Object} ctx - The context object containing the request parameters.
+       * @param {string} ctx.params.assetId - The ID of the asset for which to retrieve the balances sealed models.
+       * @param {number} [ctx.params.n=1] - The number of balances sealed models to retrieve (default is 1).
+       * @return {Promise<Array>} A promise that resolves to an array of the top n balances sealed models.
+       */
+      async handler(ctx) {
+        if(typeof ctx.params.n == 'undefined') ctx.params.n = 1;
+
+        const top = await ctx.call("balances_sealed_model.find", {
+          query: {
+            assetId: ctx.params.assetId
+          },
+          sort: '-epoch',
+          limit: ctx.params.n * 1
+        });
+
+        return top;
+      }
+    },
     statements: {
 			rest: {
 				method: "GET",
@@ -278,6 +308,8 @@ module.exports = {
         });
         if(res.length == 0) {
           return await ctx.call("balancing.unsealedBalance",ctx.params);
+        } else {
+          return res;
         }
       }
     },
