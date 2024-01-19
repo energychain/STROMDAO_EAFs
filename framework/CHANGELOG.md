@@ -1,3 +1,11 @@
+## [0.5.4](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.5.3...v0.5.4) (2024-01-19)
+
+
+### Features
+
+* `balancing.latestBalances` Returns the top n balances sealed models for a given asset ID. ([c6ade19](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/c6ade19e4dec50668bd8b53f8d3d77b9dd79f480))
+* UI Upgrade to match to new balancing concept. Allows to navigate through balances from near history. ([422b6df](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/422b6dfe76075f0b1636521b4ce251d30e4c0014))
+
 ## [0.5.3](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.5.2...v0.5.3) (2024-01-19)
 
 

@@ -33,6 +33,19 @@ module.exports = {
 
   // Define the actions of the service
   actions: {
+    assets: {
+			rest: {
+				method: "GET",
+				path: "/assets"
+			},
+			async handler(ctx) {
+				if((typeof ctx.params.q == 'undefined') || (ctx.params.q.length == 0)) {
+					return (await ctx.call("balance_settlements_active_model.list",{ pageSize: 50,sort:"-epoch"})).rows;
+				} else {
+					return await ctx.call("balance_settlements_active_model.find",{search:ctx.params.q,searchFields:['assetId']});
+				}
+			}
+		},
     // Action to add a settlement from a meter to the energy balancing model
     latestBalances: {
 			rest: {
