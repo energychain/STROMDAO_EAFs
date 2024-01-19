@@ -9,7 +9,7 @@ $(document).ready(function() {
    
     $.getJSON("/api/tariff/customLabels", function(data) {
         customLabels = data;
-        retrieveBalances(window.assetId);
+        retrieveBalances(window.assetId,$.urlParam('epoch'));
     })
 
     const renderTransactions = function(data) {

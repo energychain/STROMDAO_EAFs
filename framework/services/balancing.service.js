@@ -42,7 +42,7 @@ module.exports = {
 				if((typeof ctx.params.q == 'undefined') || (ctx.params.q.length == 0)) {
 					return (await ctx.call("balance_settlements_active_model.list",{ pageSize: 50,sort:"-epoch"})).rows;
 				} else {
-					return await ctx.call("balance_settlements_active_model.find",{search:ctx.params.q,searchFields:['assetId']});
+					return await ctx.call("balance_settlements_active_model.find",{search:ctx.params.q,searchFields:['from','to']});
 				}
 			}
 		},

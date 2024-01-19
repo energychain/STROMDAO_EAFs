@@ -9,17 +9,18 @@ $(document).ready(function() {
         }
         $('#searchResults').show();
         let html = '<table class="table table-condensed table-striped">';
-        html += '<thead><tr><th>Kennung</th><th>Produkt</th><th>Bezug</th><th>Einspeisung</th></tr></thead>';
+        html += '<thead><tr><th>Produkt</th><th>Von</th><th>An</th><th>Energie</th></tr></thead>';
         html += '<tbody>';
         for(let i=0;i<data.length;i++) {
-            html += '<tr data-id="'+data[i].assetId+'">';
-            html += '<td>'+data[i].assetId+'</td>';
-            html += '<td>'+new Date(data[i].time).toLocaleString()+'</td>';
-            html += '<td>'+(data[i].in/1000).toFixed(3).replace('.',',')+' kWh</td>';
-            html += '<td>'+(data[i].out/1000).toFixed(3).replace('.',',')+' kWh</td>';
+            html += '<tr data-id="'+data[i].from+'">';
+            html += '<td>'+data[i].epoch + '</td>';
             html += '<td>';
-            html += '<button class="btn btn-xs btn-light btnClear openAssetBalancing" title="Bilanzierung öffnen" data-epoch="'+data[i].epoch+'" data-id="'+data[i].assetId+'"><i class="fa fa-balance-scale"></i></button>';
+            html +=   '<button class="btn btn-xs btn-light btnClear openAssetBalancing" title="Bilanzierung öffnen" data-epoch="'+data[i].epoch+'" data-id="'+data[i].from+'">'+data[i].from+'</button>';
             html += '</td>';
+            html += '<td>';
+            html +=     '<button class="btn btn-xs btn-light btnClear openAssetBalancing" title="Bilanzierung öffnen" data-epoch="'+data[i].epoch+'" data-id="'+data[i].to+'">'+data[i].to+'</button>';
+            html += '</td>';
+            html += '<td>'+(data[i].energy/1000).toFixed(3).replace('.',',')+' kWh</td>';
             html += '</tr>';
         }
         html += '</tbody>';
