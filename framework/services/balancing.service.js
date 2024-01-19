@@ -51,15 +51,36 @@ module.exports = {
        * @return {Promise<Array>} A promise that resolves to an array of the top n balances sealed models.
        */
       async handler(ctx) {
-        if(typeof ctx.params.n == 'undefined') ctx.params.n = 1;
-
-        const top = await ctx.call("balances_sealed_model.find", {
-          query: {
-            assetId: ctx.params.assetId
-          },
-          sort: '-epoch',
-          limit: ctx.params.n * 1
+        if(typeof ctx.params.n == 'undefined') ctx.params.n = 1; else ctx.params.n *= 1;
+        let top = [];
+        let query =  {
+          "$or": [ { "from": ctx.params.assetId }, { "to": ctx.params.assetId}],
+        };
+        if((typeof ctx.params.before !== 'undefined') && (!isNaN(ctx.params.before))) {
+            query.epoch = { $lt: ctx.params.before *1 };
+        }
+        const settlements = await ctx.call("balance_settlements_active_model.find", {
+          query,
+          limit: 1,
+          sort: "-epoch"
         });
+        if(settlements.length == 0) {
+          return top;
+        }
+        const top_epoch = settlements[0].epoch;
+        for(let e = top_epoch;(e > top_epoch - (ctx.params.n));e--) {
+          const epoch_balance = await ctx.call("balancing.balance", {
+            assetId: ctx.params.assetId,
+            epoch:e
+         });
+         top.push(epoch_balance);
+        }
+
+        for(let i=0;i<top.length;i++) {
+          if(typeof top[i].time == 'undefined') {
+            top[i].time = top[i].epoch * process.env.EPOCH_DURATION;
+          }
+        }
 
         return top;
       }
@@ -307,9 +328,15 @@ module.exports = {
           }
         });
         if(res.length == 0) {
-          return await ctx.call("balancing.unsealedBalance",ctx.params);
-        } else {
+          res = await ctx.call("balancing.unsealedBalance",ctx.params);
+          if(res.clearing.energy !== 0) {
+            res.energy = (-1) * res.clearing.energy; 
+          }
+          res.energy *= -1;
+
           return res;
+        } else {
+          return res[0];
         }
       }
     },
@@ -372,10 +399,7 @@ module.exports = {
             epoch: ctx.params.epoch * 1
           },
         });
-        console.log("Query",{
-          "$or": [ { "from": ctx.params.assetId }, { "to": ctx.params.assetId}],
-          epoch: ctx.params.epoch * 1
-        });
+
         balance.upstream = await ctx.call("balancing.getUpstream", {assetId: ctx.params.assetId});
 
         for(let i=0;i<settlements.length;i++) {
