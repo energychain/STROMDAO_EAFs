@@ -24,9 +24,8 @@ module.exports = {
 	 * Settings
 	 */
 	settings: {
-		fields: ["_id", "assetId", "epoch","label","seal"]
+		fields: ["_id", "assetId", "epoch","in","out","energy","upstream","seal"]
     },
-
 	/**
 	 * Dependencies
 	 */

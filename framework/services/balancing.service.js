@@ -25,6 +25,7 @@
 // * `statement_model`: The statement model
 
 "use strict";
+const ROOT_BALANCE_GROUP = "eaf_generic_balancegroup";
 
 // Create a new Moleculer service
 module.exports = {
@@ -33,51 +34,6 @@ module.exports = {
   // Define the actions of the service
   actions: {
     // Action to add a settlement from a meter to the energy balancing model
-    balance: {
-			rest: {
-				method: "GET",
-				path: "/balance"
-			},
-      params: {
-        assetId: "string",
-      },
-      async handler(ctx) {
-        const EPOCH_DURATION = process.env.EPOCH_DURATION;
-        if((typeof ctx.params.epoch == 'undefined')||(ctx.params.epoch == null)) {
-          ctx.params.epoch = Math.floor(new Date().getTime() / EPOCH_DURATION);
-        } else {
-          ctx.params.epoch = 1 * ctx.params.epoch;
-        }
-        
-        let res = await ctx.call("balancing_model.find",{
-          query:{
-            assetId: ctx.params.assetId,
-            epoch:  {$lte: ctx.params.epoch * 1 }
-          },
-          limit: 24,
-          sort: "-epoch"
-        });
-        let cleaned = {};
-        for(let i=0;i<res.length;i++) {
-          res[i].time = res[i].epoch * EPOCH_DURATION;
-          delete res[i]._id;
-          delete res[i].id;
-          if(typeof cleaned["epoch_"+res[i].epoch] == 'undefined') {
-              cleaned["epoch_"+res[i].epoch] = res[i];
-            } else {
-              if(res[i].label == '.clearing') {
-                cleaned["epoch_"+res[i].epoch] = res[i]; // Clearings always replace other balances
-            }
-          }
-        }
-        res = [];
-        for (const [key, value] of Object.entries(cleaned)) {
-          res.push(value);
-        }
-        
-        return res;
-      }
-    },
     statements: {
 			rest: {
 				method: "GET",
@@ -180,7 +136,7 @@ module.exports = {
         assetId: "string"
       },
       async handler(ctx) {
-        let upstream = 'eaf_generic_balancegroup';
+        let upstream = ROOT_BALANCE_GROUP;
         const asset = await ctx.call("asset.get", { assetId: ctx.params.assetId,type:"balance" });
         if (asset && asset.balancerule) {
           if(typeof asset.balancerule.from !== 'undefined') {
@@ -218,12 +174,12 @@ module.exports = {
   
           // Initialize the statement and balance objects
           let statement = {
-            from: 'eaf_generic_balancegroup',
+            from: ROOT_BALANCE_GROUP,
             to: ctx.params.meterId,
-            epoch: ctx.params.epoch,
+            epoch: ctx.params.epoch * 1,
             energy: ctx.params.consumption,
             label: ctx.params.label,
-            counter: 'eaf_generic_balancegroup'          
+            counter: ROOT_BALANCE_GROUP         
           };
 
           // Apply the balancing rule if one exists
@@ -297,20 +253,72 @@ module.exports = {
         return decoded;
       }
     },
+    balance: {
+      params: {
+        assetId: { type: "string" },
+        epoch: { type: "any" }
+      },
+      rest: {
+				method: "GET",
+				path: "/balance"
+			},
+      async handler(ctx) {
+        let res= await ctx.call("balances_sealed_model.find", {
+          query: {
+            assetId: ctx.params.assetId,
+            epoch: ctx.params.epoch * 1,
+            seal: {$exists: true}
+          }
+        });
+        if(res.length == 0) {
+          return await ctx.call("balancing.unsealedBalance",ctx.params);
+        }
+      }
+    },
+    sealedBalance: {
+      params: {
+        assetId: { type: "string" },
+        epoch: { type: "any" }
+      },
+      rest: {
+				method: "GET",
+				path: "/sealedBalance"
+			},
+      async handler(ctx) {
+        return await ctx.call("balances_sealed_model.find", {
+          query: {
+            assetId: ctx.params.assetId,
+            epoch: ctx.params.epoch * 1,
+            seal: {$exists: true}
+          }
+        });
+      }
+    },
     unsealedBalance: {
       params: {
         assetId: { type: "string" },
-        epoch: { type: "any" },
-        sealed: { type: "any", optional:true }
+        epoch: { type: "any" }
       },
       rest: {
 				method: "GET",
 				path: "/unsealedBalance"
 			},
       async handler(ctx) {
+        let sealcheck = await ctx.call("balances_sealed_model.find", {
+          query: {
+            assetId: ctx.params.assetId,
+            epoch: ctx.params.epoch * 1,
+            seal: {$exists: true}
+          }
+        });
+        if(sealcheck.length !== 0) {
+          console.error("balance already sealed",ctx.params);
+          return { "err": "balance already sealed" };
+        }
+
         let balance = {
           assetId: ctx.params.assetId,
-          epoch: ctx.params.epoch,
+          epoch: ctx.params.epoch * 1,
           in: 0,
           out: 0,
           energy: 0,
@@ -319,13 +327,16 @@ module.exports = {
           clearing: {}
         }
 
-        let settlements = await ctx.call("balance_settlements_active_model.find", {
+        const settlements = await ctx.call("balance_settlements_active_model.find", {
           query: {
-            assetId: ctx.params.assetId,
+            "$or": [ { "from": ctx.params.assetId }, { "to": ctx.params.assetId}],
             epoch: ctx.params.epoch * 1
           },
         });
-
+        console.log("Query",{
+          "$or": [ { "from": ctx.params.assertId }, { "to": ctx.params.assetId}],
+          epoch: ctx.params.epoch * 1
+        });
         balance.upstream = await ctx.call("balancing.getUpstream", {assetId: ctx.params.assetId});
 
         for(let i=0;i<settlements.length;i++) {
@@ -336,30 +347,74 @@ module.exports = {
           }
           if(settlements[i].from == balance.upstream) {
             balance.upstreamenergy += settlements[i].energy * 1;
-          } else {
+          } else if(settlements[i].to == balance.upstream) {
             balance.upstreamenergy -= settlements[i].energy * 1;
           }
           balance.energy = balance.out - balance.in;
         }
-
+        const energybalance = balance.energy + balance.upstreamenergy;
+        balance.clearing = {
+          from:balance.upstream,
+          to:ctx.params.assetId,
+          epoch: ctx.params.epoch * 1,
+          energy: energybalance
+        } 
         return balance;
       }
     },
-    sealBalance: {
+    seal: {
       params: {
         assetId: { type: "string" },
         epoch: { type: "any" }
       },
       rest: {
 				method: "GET",
-				path: "/sealBalance"
+				path: "/seal"
 			},
       async handler(ctx) {
         const jwt = require("jsonwebtoken");
 
-       
-        
-        return res;
+        let sealcheck = await ctx.call("balances_sealed_model.find", {
+          query: {
+            assetId: ctx.params.assetId,
+            epoch: ctx.params.epoch * 1,
+            seal: {$exists: true}
+          }
+        });
+        if(sealcheck.length !== 0) {
+          console.error("balance already sealed",ctx.params);
+          return { "err": "balance already sealed" };
+        }
+
+        let intermediateBalance = await ctx.call("balancing.unsealedBalance",ctx.params);
+        if(intermediateBalance.clearing.energy !== 0) {
+          let statement = {
+            from: intermediateBalance.clearing.from,
+            to:intermediateBalance.clearing.to,
+            epoch: ctx.params.epoch * 1,
+            energy: intermediateBalance.clearing.energy,
+            label: ".end"
+          }
+          await ctx.call("balance_settlements_late_model.insert",{entity:statement});
+          intermediateBalance = await ctx.call("balancing.unsealedBalance",ctx.params);
+        }
+        if(intermediateBalance.clearing.energy == 0) {
+          let seal_content = {
+            assetId: ctx.params.assetId,
+            epoch: ctx.params.epoch * 1,
+            in: intermediateBalance.in,
+            out: intermediateBalance.out,
+            energy: intermediateBalance.energy,
+            upstream: intermediateBalance.upstream
+          }
+          const res = jwt.sign(seal_content, process.env.JWT_SECRET);
+          seal_content.seal = res;
+          await ctx.call("balances_sealed_model.insert",{entity:seal_content});
+          return seal_content;
+        } else {
+          console.error("Unable to seal balance. Unsealed balance is not zero",intermediateBalance);
+          throw "Unable to seal balance. Unsealed balance is not zero";
+        }
       },
     }
   },
