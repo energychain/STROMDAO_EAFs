@@ -1,3 +1,19 @@
+## [0.5.3](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.5.2...v0.5.3) (2024-01-19)
+
+
+### Features
+
+* auto sealing of simple meter reading based addSettlement calls to balancing. ([f4bd29d](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/f4bd29d0b94380089f4c3c9337743c21fb33bde9))
+* Re-implemented auto seal. Auto Seal is an optional parameter to the addSettlement method of balancing. The epoch n-value will be automatically sealed. Useful for meter readings - might be used with other balancing points in the future, but not implemented so far. ([93efb97](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/93efb975c9523055d0f7f75c30d467b8dd8c5ec3))
+
+
+### Bug Fixes
+
+* Add counter partner for closed balances ([983cdd0](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/983cdd0b2ca5752b9c98fae6b879a349d5c1c258))
+* Handling of closing booking in energy balancing. ([dafc569](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/dafc5693cb5ff6c29bfaa818f55173fb90996c38))
+* Handling of sealed balances. In case addSettlement is performed with a partner having a sealed balance a null will be returned instead of a transaction statement. ([139e252](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/139e25273e1e4db04b1bb08e5d19d4cf94beca4a))
+* Missing parameter in counter statement ([99e2984](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/99e298446e4f8e4a3993274d492456e126f13caf))
+
 ## [0.5.2](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.5.1...v0.5.2) (2024-01-17)
 
 

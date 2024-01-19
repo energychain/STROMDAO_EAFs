@@ -330,7 +330,8 @@ module.exports = {
           energy: 0,
           upstream: "",
           upstreamenergy:0,
-          clearing: {}
+          clearing: {},
+          transactions: []
         }
 
         const settlements = await ctx.call("balance_settlements_active_model.find", {
@@ -357,6 +358,7 @@ module.exports = {
             balance.upstreamenergy -= settlements[i].energy * 1;
           }
           balance.energy = balance.out - balance.in;
+          balance.transactions.push(settlements[i]);
         }
         const energybalance = balance.energy + balance.upstreamenergy;
         balance.clearing = {
@@ -415,6 +417,7 @@ module.exports = {
           const signOptions = JSON.parse(process.env.JWT_OPTIONS);
           const res = jwt.sign(seal_content, process.env.JWT_PRIVATEKEY,signOptions);
           seal_content.seal = res;
+          seal_content.transactions = intermediateBalance.transactions;
           await ctx.call("balances_sealed_model.insert",{entity:seal_content});
           return seal_content;
         } else {
