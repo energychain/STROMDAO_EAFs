@@ -230,6 +230,12 @@ module.exports = {
           } else {
             await ctx.call("balance_settlements_active_model.insert",{entity:statement});
           }
+          if(typeof ctx.params.autoseal !== 'undefined') {
+            ctx.call("balancing.seal",{
+              assetId:ctx.params.meterId,
+              epoch:ctx.params.epoch - (1*ctx.params.autoseal)
+            });
+          }
         } catch(e) {
           // in case of an exception the settlement needs to be handled manually.
           // Handle manual settlement in case of an exception
@@ -334,7 +340,7 @@ module.exports = {
           },
         });
         console.log("Query",{
-          "$or": [ { "from": ctx.params.assertId }, { "to": ctx.params.assetId}],
+          "$or": [ { "from": ctx.params.assetId }, { "to": ctx.params.assetId}],
           epoch: ctx.params.epoch * 1
         });
         balance.upstream = await ctx.call("balancing.getUpstream", {assetId: ctx.params.assetId});
@@ -387,7 +393,7 @@ module.exports = {
         }
 
         let intermediateBalance = await ctx.call("balancing.unsealedBalance",ctx.params);
-        if(intermediateBalance.clearing.energy !== 0) {
+        if((intermediateBalance.energy !== 0)&&(intermediateBalance.clearing.energy !== 0)){
           let statement = {
             from: intermediateBalance.clearing.from,
             to:intermediateBalance.clearing.to,
@@ -395,19 +401,19 @@ module.exports = {
             energy: intermediateBalance.clearing.energy,
             label: ".end"
           }
-          await ctx.call("balance_settlements_late_model.insert",{entity:statement});
+          await ctx.call("balance_settlements_active_model.insert",{entity:statement});
           intermediateBalance = await ctx.call("balancing.unsealedBalance",ctx.params);
         }
-        if(intermediateBalance.clearing.energy == 0) {
+        if((intermediateBalance.energy == 0)||(intermediateBalance.clearing.energy == 0)) {
           let seal_content = {
             assetId: ctx.params.assetId,
             epoch: ctx.params.epoch * 1,
-            in: intermediateBalance.in,
-            out: intermediateBalance.out,
-            energy: intermediateBalance.energy,
-            upstream: intermediateBalance.upstream
+            upstream: intermediateBalance.upstream,
+            balance: intermediateBalance.in,
+            energy: intermediateBalance.upstreamenergy
           }
-          const res = jwt.sign(seal_content, process.env.JWT_SECRET);
+          const signOptions = JSON.parse(process.env.JWT_OPTIONS);
+          const res = jwt.sign(seal_content, process.env.JWT_PRIVATEKEY,signOptions);
           seal_content.seal = res;
           await ctx.call("balances_sealed_model.insert",{entity:seal_content});
           return seal_content;

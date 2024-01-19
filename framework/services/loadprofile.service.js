@@ -85,6 +85,7 @@ module.exports = {
 					await ctx.call("loadprofile_model.insert",{entity:existing});
 				}
 				// Forward to balancing (asynchronously)
+				ctx.params.autoseal = 1; // Auto seal for meter readings the previous epoch				
 				ctx.call("balancing.addSettlement",ctx.params);
 				return;
 			}
