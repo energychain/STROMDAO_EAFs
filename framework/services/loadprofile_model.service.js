@@ -24,7 +24,7 @@ module.exports = {
 	 * Settings
 	 */
 	settings: {
-		fields: ["_id", "meterId", "epoch","epoch_of_day","day_of_week","month_of_year","label","consumption"],	   },
+		fields: ["_id", "meterId", "epoch","epoch_of_day","day_of_week","month_of_year","label","consumption","co2eq"],	   },
 
 	/**
 	 * Dependencies
