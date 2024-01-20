@@ -176,6 +176,7 @@ module.exports = {
 							}
 							remain_consumption -= epochConsumption;
 							settlement[labels[i].label] += epochConsumption;
+
 							if(typeof ctx.params.meterId !== 'undefined') { 
 								await ctx.call("loadprofile.addSettlement",{
 									meterId: ctx.params.meterId,
