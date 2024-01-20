@@ -212,7 +212,9 @@ module.exports = {
 					"time":ctx.params.time * 1,
 					"virtual_0":0,
 					"consumption":0,
-					"processed":"tbd"
+					"processed":"tbd",
+					"consumption_co2eq":0,
+					"co2eq":0
 				}
 				const labels = await ctx.call("tariff.customLabels");
 
@@ -283,8 +285,7 @@ module.exports = {
 							transientReading[key] += 1 * value; 
 							transientReading['consumption_'+key] = 1 * value; 
 						}
-						delete transientReading['consumption_co2eq'];
-						transientReading.co2eq = 1 * settlement.co2eq; 
+						transientReading.co2eq += 1 * settlement.co2eq; 
 						transientReading.reading = ctx.params.reading * 1;
 						transientReading.time = ctx.params.time * 1;
 						transientReading.id = transientReading._id;
