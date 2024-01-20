@@ -24,7 +24,7 @@ module.exports = {
 	 * Settings
 	 */
 	settings: {
-		fields: ["_id", "from", "to","epoch","label","energy"]
+		fields: ["_id", "from", "to","epoch","label","energy","co2eq"]
    },
 
 	/**
