@@ -243,6 +243,7 @@ module.exports = {
             epoch: ctx.params.epoch * 1,
             energy: ctx.params.consumption,
             label: ctx.params.label,
+            co2eq: ctx.params.co2eq,
             counter: ROOT_BALANCE_GROUP         
           };
 
@@ -398,10 +399,14 @@ module.exports = {
           assetId: ctx.params.assetId,
           epoch: ctx.params.epoch * 1,
           in: 0,
+          in_co2eq:0,
           out: 0,
+          out_co2eq:0,
           energy: 0,
           upstream: "",
           upstreamenergy:0,
+          upstreamco2eq:0,
+          co2eq:0,
           clearing: {},
           transactions: []
         }
@@ -418,23 +423,32 @@ module.exports = {
         for(let i=0;i<settlements.length;i++) {
           if(settlements[i].from == ctx.params.assetId) {
             balance.out += settlements[i].energy * 1;
+            balance.out_co2eq += settlements[i].co2eq * 1;
           } else {
             balance.in += settlements[i].energy * 1;
+            balance.in_co2eq += settlements[i].co2eq * 1;
           }
+
           if(settlements[i].from == balance.upstream) {
             balance.upstreamenergy += settlements[i].energy * 1;
+            balance.upstreamco2eq += settlements[i].co2eq * 1;
+            upstreamco2eq
           } else if(settlements[i].to == balance.upstream) {
             balance.upstreamenergy -= settlements[i].energy * 1;
+            balance.upstreamco2eq -= settlements[i].co2eq * 1;
           }
           balance.energy = balance.out - balance.in;
+          balance.co2eq = balance.out_co2eq - balance.in_co2eq;
           balance.transactions.push(settlements[i]);
         }
         const energybalance = balance.energy + balance.upstreamenergy;
+        const co2eqbalance = balance.co2eq + balance.upstreamco2eq;
         balance.clearing = {
           from:balance.upstream,
           to:ctx.params.assetId,
           epoch: ctx.params.epoch * 1,
-          energy: energybalance
+          energy: energybalance,
+          co2eq: co2eqbalance
         } 
         return balance;
       }
@@ -470,6 +484,7 @@ module.exports = {
             to:intermediateBalance.clearing.to,
             epoch: ctx.params.epoch * 1,
             energy: intermediateBalance.clearing.energy,
+            co2eq: intermediateBalance.clearing.co2eq,
             label: ".end"
           }
           await ctx.call("balance_settlements_active_model.insert",{entity:statement});
@@ -481,7 +496,8 @@ module.exports = {
             epoch: ctx.params.epoch * 1,
             upstream: intermediateBalance.upstream,
             balance: intermediateBalance.in,
-            energy: intermediateBalance.upstreamenergy
+            energy: intermediateBalance.upstreamenergy,
+            co2eq: intermediateBalance.upstreamco2eq
           }
           const signOptions = JSON.parse(process.env.JWT_OPTIONS);
           const res = jwt.sign(seal_content, process.env.JWT_PRIVATEKEY,signOptions);

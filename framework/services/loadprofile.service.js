@@ -69,7 +69,8 @@ module.exports = {
 					label: ctx.params.label,
 					epoch_of_day: ctx.params.epoch - Math.floor(midnight / EPOCH_DURATION),
 					day_of_week: new Date(ctx.params.epoch * EPOCH_DURATION).getDay(),
-					month_of_year: new Date(ctx.params.epoch * EPOCH_DURATION).getMonth()
+					month_of_year: new Date(ctx.params.epoch * EPOCH_DURATION).getMonth(),
+					co2eq:0
 				};
 
 				if(existsings.length > 0) {
@@ -78,6 +79,7 @@ module.exports = {
 
 				// apply new values
 				existing.consumption += 1 * ctx.params.consumption;
+				existing.co2eq += 1 * ctx.params.co2eq;
 				if((typeof existing._id !== 'undefined') || (typeof existing.id !== 'undefined')) {
 					if(typeof existing._id !== 'undefined') existing.id = existing._id;
 					await ctx.call("loadprofile_model.update",existing);
