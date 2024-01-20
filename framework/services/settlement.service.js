@@ -207,7 +207,7 @@ module.exports = {
 				if(selectedKey !== null) {
 					settlement[selectedKey] += sum - ctx.params.consumption;
 				}
-				settlement.co2eq = 1 * co2eq;
+				settlement.co2eq = Math.round(1 * co2eq);
 
 				await ctx.broker.emit("settlement.created", settlement);
 				return settlement;
