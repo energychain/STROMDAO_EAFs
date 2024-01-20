@@ -283,6 +283,7 @@ module.exports = {
 							transientReading[key] += 1 * value; 
 							transientReading['consumption_'+key] = 1 * value; 
 						}
+						delete transientReading['consumption_co2eq'];
 
 						transientReading.reading = ctx.params.reading * 1;
 						transientReading.time = ctx.params.time * 1;
@@ -329,6 +330,7 @@ module.exports = {
 						"reading":transientReading.reading,
 						"endTime":transientReading.time,
 						"consumption":transientReading.consumption,
+						"co2eq":transientReading.co2eq
 					}
 					for (const [key, value] of Object.entries(transientReading)) {
 						if((key.indexOf('virtual_') == 0) || (key.indexOf('consumption_') == 0 )) {

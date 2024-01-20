@@ -123,6 +123,7 @@ module.exports = {
 			
 
 				const EPOCH_DURATION = 1 * require("../runtime.settings.js")().EPOCH_DURATION;
+				let co2eq = 0;
 
 				let settlement = {};
 				let remain_consumption = ctx.params.consumption * 1;
@@ -135,6 +136,7 @@ module.exports = {
 							settlement[labels[0].label] = 0;
 						}
 						settlement[labels[0].label] += remain_consumption;
+						co2eq += 1 * (remain_consumption * (labels[0].co2eq));
 						if(typeof ctx.params.meterId !== 'undefined') {
 								await ctx.call("loadprofile.addSettlement",{
 									meterId: ctx.params.meterId,
@@ -155,6 +157,7 @@ module.exports = {
 						let partOfFirstEpoch = 1-((ctx.params.startTime - (labels[0].epoch * EPOCH_DURATION))/EPOCH_DURATION);	
 						let epochConsumption = partOfFirstEpoch * avgepoch_consumption;				
 						settlement[labels[0].label] += epochConsumption;
+						co2eq += 1 * (epochConsumption * (labels[0].co2eq));
 						if(typeof ctx.params.meterId !== 'undefined') {
 							await ctx.call("loadprofile.addSettlement",{
 								meterId: ctx.params.meterId,
@@ -176,7 +179,7 @@ module.exports = {
 							}
 							remain_consumption -= epochConsumption;
 							settlement[labels[i].label] += epochConsumption;
-
+							co2eq += 1 * (epochConsumption * (labels[i].co2eq));
 							if(typeof ctx.params.meterId !== 'undefined') { 
 								await ctx.call("loadprofile.addSettlement",{
 									meterId: ctx.params.meterId,
@@ -193,16 +196,19 @@ module.exports = {
 				// Sanitycheck and Round
 				let sum = 0;
 				let selectedKey = null;
+			
 				for (let [key, value] of Object.entries(settlement)) {
 					value = Math.round(value);
 					settlement[key] = value;
 					sum +=  1 * value;
 					selectedKey = key;
+					
 				}
 				if(selectedKey !== null) {
 					settlement[selectedKey] += sum - ctx.params.consumption;
 				}
-				
+				settlement.co2eq = 1 * co2eq;
+
 				await ctx.broker.emit("settlement.created", settlement);
 				return settlement;
 			}

@@ -24,7 +24,7 @@ module.exports = {
 	 * Settings
 	 */
 	settings: {
-		fields: ["_id", "meterId", "reading","time","virtual_0","virtual_1","virtual_2","virtual_3","virtual_4","virtual_5","virtual_6","virtual_7","virtual_8","virtual_9","clearingJWT"],
+		fields: ["_id", "meterId", "reading","time","co2eq","virtual_0","virtual_1","virtual_2","virtual_3","virtual_4","virtual_5","virtual_6","virtual_7","virtual_8","virtual_9","clearingJWT"],
    },
 
 	/**
