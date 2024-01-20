@@ -432,7 +432,6 @@ module.exports = {
           if(settlements[i].from == balance.upstream) {
             balance.upstreamenergy += settlements[i].energy * 1;
             balance.upstreamco2eq += settlements[i].co2eq * 1;
-            upstreamco2eq
           } else if(settlements[i].to == balance.upstream) {
             balance.upstreamenergy -= settlements[i].energy * 1;
             balance.upstreamco2eq -= settlements[i].co2eq * 1;
