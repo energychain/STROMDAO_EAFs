@@ -17,6 +17,7 @@ module.exports =  function(params) {
 
     let gsiCache = null;
     let epochData = {};
+    let epochCO2 = {};
 
     return {
         lookup: async function(epoch) {
@@ -28,6 +29,7 @@ module.exports =  function(params) {
                 for(let i=0;i<gsiCache.length;i++) {
                     gsiCache[i].label = Math.floor((i/gsiCache.length)*TARIFF_SEGMENTS)+1;
                     epochData["epoch_"+Math.floor(gsiCache[i].timeStamp/EPOCH_DURATION)] = gsiCache[i].label;
+                    epochCO2["epoch_"+Math.floor(gsiCache[i].timeStamp/EPOCH_DURATION)] = gsiCache[i].co2_g_oekostrom;
                 }
             }
             if((gsiCache == null) || (typeof epochData["epoch_"+epoch] == 'undefined')) {
@@ -35,13 +37,15 @@ module.exports =  function(params) {
             }
             
             let segment = JSON.parse(process.env.DEFAULT_SEGMENT);
-
+            let co2eq = 35/1000;
             if(typeof epochData["epoch_"+epoch] !== 'undefined') {
                 segment = epochData["epoch_"+epoch];
+                co2eq = epochCO2["epoch_"+epoch];
             }
             return {
                 epoch: epoch,
-                label: "virtual_"+segment
+                label: "virtual_"+segment,
+                co2eq: co2eq
             }  
         }
     };
