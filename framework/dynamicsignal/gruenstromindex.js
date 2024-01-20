@@ -37,7 +37,7 @@ module.exports =  function(params) {
             }
             
             let segment = JSON.parse(process.env.DEFAULT_SEGMENT);
-            let co2eq = 35/1000;
+            let co2eq = 35;
             if(typeof epochData["epoch_"+epoch] !== 'undefined') {
                 segment = epochData["epoch_"+epoch];
                 co2eq = epochCO2["epoch_"+epoch];

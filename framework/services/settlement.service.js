@@ -120,7 +120,8 @@ module.exports = {
 					endTime: ctx.params.endTime,
 					injectedTariff:	ctx.params.injectedTariff // metering might have received signed labels that will overwrite actual 				
 				});
-				
+			
+
 				const EPOCH_DURATION = 1 * require("../runtime.settings.js")().EPOCH_DURATION;
 
 				let settlement = {};
@@ -139,7 +140,8 @@ module.exports = {
 									meterId: ctx.params.meterId,
 									epoch: labels[0].epoch,
 									consumption: remain_consumption,
-									label: labels[0].label							
+									label: labels[0].label,
+									co2eq:	remain_consumption * (labels[0].co2eq)						
 								})
 						}
 						remain_consumption = 0;
@@ -158,7 +160,8 @@ module.exports = {
 								meterId: ctx.params.meterId,
 								epoch: labels[0].epoch,
 								consumption: epochConsumption,
-								label: labels[0].label							
+								label: labels[0].label,
+								co2eq: epochConsumption * (labels[0].co2eq)						
 							});
 						}
 						remain_consumption -= epochConsumption;
@@ -178,7 +181,8 @@ module.exports = {
 									meterId: ctx.params.meterId,
 									epoch: labels[i].epoch,
 									consumption: epochConsumption,
-									label: labels[i].label							
+									label: labels[i].label,
+									co2eq: epochConsumption * (labels[i].co2eq)								
 								});
 							}
 						}

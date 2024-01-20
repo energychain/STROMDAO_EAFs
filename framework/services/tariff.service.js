@@ -263,7 +263,6 @@ module.exports = {
 				if(changeResults.length > 0) {
 					let pricesNew = {};
 					for (const [key, value] of Object.entries(labels)) {
-						console.log(changeResults);
 						for(let i=0;(i<changeResults.length) && (typeof pricesNew[key] == 'undefined') ;i++) {
 							if(changeResults[i].label == key) {
 								pricesNew[key] = changeResults[i].price;
@@ -366,7 +365,7 @@ module.exports = {
 						// Implementation for actual dynamics source
 						
 						existingEpochs["epoch_"+i] = await dynamic.lookup(i);
-						
+
 						let price_info = await ctx.call("price_model.find",{
 							query:{
 								epoch: {
