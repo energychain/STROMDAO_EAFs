@@ -284,7 +284,7 @@ module.exports = {
 							transientReading['consumption_'+key] = 1 * value; 
 						}
 						delete transientReading['consumption_co2eq'];
-
+						transientReading.co2eq = 1 * settlement.co2eq; 
 						transientReading.reading = ctx.params.reading * 1;
 						transientReading.time = ctx.params.time * 1;
 						transientReading.id = transientReading._id;
