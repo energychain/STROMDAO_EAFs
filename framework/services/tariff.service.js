@@ -379,7 +379,6 @@ module.exports = {
 						if((typeof price_info !== 'undefined') && (price_info !== null)) {
 							existingEpochs["epoch_"+i].price = price_info[0].price;
 							existingEpochs["epoch_"+i].priceOfEpoch = price_info[0].epoch;
-							existingEpochs["epoch_"+i].co2eq = price_info[0].co2eq;
 						}
 
 						await ctx.call("tariff_model.insert",{
