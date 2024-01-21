@@ -79,7 +79,7 @@ module.exports = {
 
 				// apply new values
 				existing.consumption += 1 * ctx.params.consumption;
-				existing.co2eq += 1 * ctx.params.co2eq;
+				existing.co2eq += Math.round(1 * ctx.params.co2eq);
 				if((typeof existing._id !== 'undefined') || (typeof existing.id !== 'undefined')) {
 					if(typeof existing._id !== 'undefined') existing.id = existing._id;
 					await ctx.call("loadprofile_model.update",existing);

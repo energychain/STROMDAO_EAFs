@@ -243,7 +243,7 @@ module.exports = {
             epoch: ctx.params.epoch * 1,
             energy: ctx.params.consumption,
             label: ctx.params.label,
-            co2eq: ctx.params.co2eq,
+            co2eq: Math.round(ctx.params.co2eq),
             counter: ROOT_BALANCE_GROUP         
           };
 
