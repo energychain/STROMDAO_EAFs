@@ -1,3 +1,23 @@
+## [0.5.5](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.5.4...v0.5.5) (2024-01-22)
+
+
+### Features
+
+* Added carbon accounting support to balancing service (untested). ([0dbb118](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/0dbb11808b314227c7f80abbb4f1752e3c58ca3e))
+* Handling CO2eq information if dynamic source provides it. Implemented for the green power index (GSI https://gruenstromindex.de/). Provides actual information for carbon accounting parallel to the energy balancing (not implmented so far). ([f157ee1](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/f157ee10b8bfd7dadd47812a521deeca81fb7311))
+* Settlement service handles co2eq information from dynamic pricing source (if available). ([1681678](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/16816781bc107d44634a2c1478a710a09f091a61))
+
+
+### Bug Fixes
+
+* Added missing co2eq column in tariff model caused settlement to not provide co2eq information to upstream services like loadprofile or balancing. ([b3bdb73](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/b3bdb735c84d22ca95c3fca2caf170f326edf52a))
+* Balancing addSettlement and loadprofile requires rounded values for co2eq to prevent floating point operations in downstream processing. ([3ebda96](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/3ebda961b2031d5d8c78b823ca9f5ad18a99e1e1))
+* https://github.com/energychain/STROMDAO_EAFs/issues/18 ([d32819d](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/d32819d53560b3f6ae59fc366b978d96d503b52d))
+* Missing balance tags for carbon accounting in models ([5f5a70f](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/5f5a70fcb5d57a4e3eb420a7388d8abdc4c2a05b))
+* Missing co2eq handling in metering service and readings_model. ([1e4a3fa](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/1e4a3fa56401d1416b7d1d293e70281017715d28))
+* Missing search handler for global search in case no meter. ([1e672f8](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/1e672f8c23b92e889a2207d3e4e1469851b7a52f))
+* Reworked search handling for free text search and finding in transactions of balancing. ([459b2d9](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/459b2d94d57dc7a7e67172b054e7a2e3a6fa6ca3))
+
 ## [0.5.4](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.5.3...v0.5.4) (2024-01-19)
 
 

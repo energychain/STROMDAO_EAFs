@@ -97,8 +97,8 @@ $(document).ready(function() {
     }
 
     const runSearch = function() {
-        $('#cardMeters').hide();
-        $('#cardBalancing').hide();
+       // $('#cardMeters').hide(); Zero results will make it impossible to add a meter manually.
+       // $('#cardBalancing').hide();
 
         $('#searchResults').show();
         $('#searchResults').html('Searching...');
