@@ -16,7 +16,7 @@ $(document).ready(function() {
         let html = '';
         html += '<table class="table table-condensed table-striped">';
         html += '<thead>';
-        html += '<tr><th>Von</th><th>Nach</th><th class="text-end">Energie</th></tr>';
+        html += '<tr><th>Von</th><th>Nach</th><th class="text-end">Treibhausgasemission</th><th class="text-end">Energie</th></tr>';
         html += '</thead>';
         html += '<tbody>';
         for(let i=0;i<data.transactions.length;i++) {
