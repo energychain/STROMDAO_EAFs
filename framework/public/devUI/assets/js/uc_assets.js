@@ -118,7 +118,7 @@ $(document).ready(function() {
         $('#balancingResult').html('...');
  
         $.getJSON("/api/debit/assets?q=" + $('#searchMeter').val(), renderResultSet);
-        $.getJSON("/api/asset/find?q=" + $('#searchMeter').val(), renderBalancingSet);
+        $.getJSON("/api/asset/find?type=balance&q=" + $('#searchMeter').val(), renderBalancingSet);
 
     }
     $('.delayBtn').click(function() {
