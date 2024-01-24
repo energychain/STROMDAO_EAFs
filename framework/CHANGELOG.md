@@ -1,3 +1,10 @@
+## [0.5.6](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.5.5...v0.5.6) (2024-01-24)
+
+
+### Features
+
+* CO2 emission visible on admin ui. QR Code for certificate transfer/download of electricity products. ([7b4b7c9](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/7b4b7c987c5c8bd7138aa0ffc90e0e46f183be82))
+
 ## [0.5.5](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.5.4...v0.5.5) (2024-01-22)
 
 
