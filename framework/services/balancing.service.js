@@ -248,8 +248,13 @@ module.exports = {
           };
 
           // Apply the balancing rule if one exists
-         
-          if (asset && asset.balancerule) {
+          if((typeof asset == 'undefined')||(asset == null)) {
+              await ctx.call("asset.upsert",{
+                type:"balance",
+                assetId:ctx.params.meterId,
+                balance_activated:new Date().getTime()
+              })
+          } else if (asset && asset.balancerule) {
             if (asset.balancerule.from) {
               statement.from = asset.balancerule.from;
               statement.counter =  asset.balancerule.from;
@@ -259,6 +264,11 @@ module.exports = {
               statement.to = asset.balancerule.to;
               statement.counter =  asset.balancerule.to;
             }
+            await ctx.call("asset.upsert",{
+              type:"balance",
+              assetId:ctx.params.meterId,
+              balance_updated:new Date().getTime()
+            })
           } 
 
           // validate that we do not have a sealed balances for those assets

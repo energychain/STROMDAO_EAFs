@@ -29,6 +29,19 @@ module.exports = {
 	 * Actions
 	 */
 	actions: {
+		find: {
+			rest: "/find",
+			params: {
+				q: {
+					type: "string",
+					optional:false
+				}
+			},
+			async handler(ctx) {
+				return await db.collection("assets").find({"assetId" : {$regex : ctx.params.q},"type":"balance"}).toArray();
+			}
+
+		},
 		upsert: {
 			rest: "/upsert",
 			params: {
