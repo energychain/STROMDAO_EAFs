@@ -9,18 +9,31 @@ $(document).ready(function() {
         }
         $('#searchResults').show();
         let html = '<table class="table table-condensed table-striped">';
-        html += '<thead><tr><th>Produkt</th><th>Von</th><th>An</th><th>Energie</th></tr></thead>';
+        html += '<thead><tr><th>Kennung</th><th>Von</th><th>An</th></tr></thead>';
         html += '<tbody>';
         for(let i=0;i<data.length;i++) {
             html += '<tr data-id="'+data[i].from+'">';
-            html += '<td>'+data[i].epoch + '</td>';
             html += '<td>';
-            html +=   '<button class="btn btn-xs btn-light btnClear openAssetBalancing" title="Bilanzierung öffnen" data-epoch="'+data[i].epoch+'" data-id="'+data[i].from+'">'+data[i].from+'</button>';
+            html +=   '<button class="btn btn-xs btn-light btnClear openAssetBalancing" title="Bilanzierung öffnen" data-id="'+data[i].assetId+'">'+data[i].assetId+'</button>';
             html += '</td>';
-            html += '<td>';
-            html +=     '<button class="btn btn-xs btn-light btnClear openAssetBalancing" title="Bilanzierung öffnen" data-epoch="'+data[i].epoch+'" data-id="'+data[i].to+'">'+data[i].to+'</button>';
-            html += '</td>';
-            html += '<td>'+(data[i].energy/1000).toFixed(3).replace('.',',')+' kWh</td>';
+            if(typeof data[i].balancerule == 'undefined') {
+                html += '<td colspan="2">&nbsp;</td>';
+            } else {
+                if(typeof data[i].balancerule.from !== 'undefined') {
+                    html += '<td>';
+                    html +=   '<button class="btn btn-xs btn-light btnClear openAssetBalancing" title="Bilanzierung öffnen" data-id="'+data[i].balancerule.from+'">'+data[i].balancerule.from+'</button>';
+                    html += '</td>';
+                } else {
+                    html += '<td>&nbsp;</td>';
+                }
+                if(typeof data[i].balancerule.to !== 'undefined') {
+                    html += '<td>';
+                    html +=   '<button class="btn btn-xs btn-light btnClear openAssetBalancing" title="Bilanzierung öffnen" data-id="'+data[i].balancerule.to+'">'+data[i].balancerule.to+'</button>';
+                    html += '</td>';
+                } else {
+                    html += '<td>&nbsp;</td>';
+                }
+            }
             html += '</tr>';
         }
         html += '</tbody>';
@@ -105,7 +118,7 @@ $(document).ready(function() {
         $('#balancingResult').html('...');
  
         $.getJSON("/api/debit/assets?q=" + $('#searchMeter').val(), renderResultSet);
-        $.getJSON("/api/assets/find?q=" + $('#searchMeter').val(), renderBalancingSet);
+        $.getJSON("/api/asset/find?q=" + $('#searchMeter').val(), renderBalancingSet);
 
     }
     $('.delayBtn').click(function() {

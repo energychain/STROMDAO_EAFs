@@ -29,19 +29,6 @@ module.exports = {
 	 * Actions
 	 */
 	actions: {
-		find: {
-			rest: "/find",
-			params: {
-				q: {
-					type: "string",
-					optional:false
-				}
-			},
-			async handler(ctx) {
-				return await db.collection("assets").find({"assetId" : {$regex : ctx.params.q},"type":"balance"}).toArray();
-			}
-
-		},
 		upsert: {
 			rest: "/upsert",
 			params: {
@@ -99,7 +86,10 @@ module.exports = {
 			}
 		},
 		find: {
-			rest: "/find",
+			rest: {
+				method: "GET",
+				path: "/find"
+			},
 			openapi: {
 				summary: "Native MongoDB find.",
 			},
@@ -120,8 +110,11 @@ module.exports = {
 								"clientMeta.location.country" : "text"
 							}
 					*/
-
-					let res = await db.collection("assets").find(ctx.params).toArray();
+						let query = {"assetId" : {$regex : ctx.params.q}};
+						if(typeof ctx.params.type !== 'undefined') {
+							query.type = ctx.params.type;
+						}
+					let res = await db.collection("assets").find(query).toArray();
 					for(let i=0;i<res.length;i++) {
 						delete res[i]._id;
 					}
