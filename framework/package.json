@@ -48,7 +48,7 @@
   "bugs": {
     "url": "https://github.com/energychain/STROMDAO_EAFs/issues"
   },
-  "homepage": "https://github.com/energychain/STROMDAO_EAFs#readme",
+  "homepage": "https://energy.js.org/",
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
     "@spailybot/moleculer-auto-openapi": "^1.2.0",

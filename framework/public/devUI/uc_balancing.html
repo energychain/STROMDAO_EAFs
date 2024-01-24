@@ -34,8 +34,9 @@
         <div class="card" style="margin-bottom: 25px;">
             <div class="card-body">
                 <h3>
-                    <div class="btn-group float-end" role="group"><button class="btn btn-dark" id="backBtn" type="button"><i class="fa fa-backward"></i></button><button class="btn btn-dark" id="fwdBtn" type="button"><i class="fa fa-forward"></i></button></div>Energie Bilanz:&nbsp;<span class="assetLabel">-</span>
+                    <div class="btn-group float-end" role="group"><button class="btn btn-dark" id="backBtn" type="button" title="zurück"><i class="fa fa-backward"></i></button><button class="btn btn-dark" id="fwdBtn" type="button" title="vor"><i class="fa fa-forward"></i></button></div>Energie Bilanz:&nbsp;<span class="assetLabel">-</span>
                 </h3>
+                <div id="profileDiv"><canvas id="profileChart"></canvas></div>
                 <div id="balances"></div>
             </div>
         </div>
@@ -97,11 +98,28 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="modalSeal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Zertifikat</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center d-lg-flex justify-content-lg-center">
+                    <div class="text-center w-100">
+                        <div id="qrcode" style="width: 256px;height: 256px;"></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><input class="form-control-plaintext" type="text" id="certificate" value="./." readonly=""><button class="btn btn-dark" id="copy-button" type="button">in Zwischenablage kopieren</button></div>
+            </div>
+        </div>
+    </div>
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
+    <script src="assets/js/3party/chart.js?h=eeca2582f0217edc4ac85af347e0d4ad"></script>
+    <script src="assets/js/3party/qrcode.js?h=517b55d3688ce9ef1085a3d9632bcb97"></script>
     <script src="assets/js/utils.js?h=b6a1e690b2a987d9af7e9692dff15273"></script>
     <script src="assets/js/3party/marked.min.js?h=26085551a49dd1635b48b42f08c3d583"></script>
-    <script src="assets/js/uc_balancing.js?h=8b9434e6178ef1163f132e8f99fa7098"></script>
+    <script src="assets/js/uc_balancing.js?h=f448e0f79cae79dc85e4bb641cd6371f"></script>
 </body>
 
 </html>
