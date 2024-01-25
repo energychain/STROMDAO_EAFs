@@ -63,6 +63,7 @@ module.exports = {
             } else {
                 mol[0].mol = ctx.params.mol;
                 mol[0].updated = new Date().getTime();
+                mol[0].id = mol[0]._id;
                 await ctx.call("meritorder_model.update",mol[0]);
             }
         },
