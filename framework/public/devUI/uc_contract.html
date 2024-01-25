@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Use Case: Energy Profile</title>
+    <title>Use Case: Assets</title>
     <meta name="description" content="Energy Application Frameworks">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css?h=cd822b7fd22c8a95a68470c795adea69">
     <link rel="stylesheet" href="assets/fonts/font-awesome.min.css?h=fbfa80fe81882dd47f8abd5cbb011b19">
@@ -31,18 +31,41 @@
         </nav>
     </header>
     <div class="container">
-        <div class="card" style="margin-bottom: 25px;">
-            <div class="card-body">
-                <h3>Tagesprofil</h3>
-                <div id="profileDiv"><canvas id="profileChart"></canvas></div>
+        <form id="frmMO" style="margin-bottom: 25px;">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Stromvertrag von&nbsp;<span class="assetId">-</span></h3><input class="form-control" type="hidden" id="assetId" name="assetId">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-check"><input class="form-check-input" type="radio" id="formCheck-1" name="direction" value="to"><label class="form-check-label" for="formCheck-1">&nbsp;Lieferung an</label></div>
+                        </div>
+                        <div class="col">
+                            <div class="form-check"><input class="form-check-input" type="radio" id="formCheck-2" checked="" name="direction" value="from"><label class="form-check-label" for="formCheck-2">&nbsp;Bezug von</label></div>
+                        </div>
+                    </div>
+                    <div class="input-group" style="margin-top: 15px;"><span class="input-group-text">Bilanzierungspunkt</span><input class="form-control" type="text" id="partnerId" name="partnerId" required=""></div><small class="form-text" style="margin-bottom: 25px;">Vertragspartner für diese Lieferung/Einspeisung</small>
+                    <h4 style="margin-top: 25px;">Energie</h4>
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="col">
+                            <div class="input-group"><span class="input-group-text">Min</span><input class="form-control" type="number" id="load_min" step="1" min="0" name="energy_min" value="0" required=""></div><small class="form-text">je Epoche/Stromprodukt</small>
+                        </div>
+                        <div class="col">
+                            <div class="input-group"><span class="input-group-text">Max</span><input class="form-control" type="number" id="load_max" step="1" min="0" name="load_max" value="0" required=""></div><small class="form-text">je Epoche/Stromprodukt</small>
+                        </div>
+                        <div class="col">
+                            <div class="input-group"><span class="input-group-text">Gesamt</span><input class="form-control" type="number" id="energy" step="1" min="0" name="energy" value="0" required=""></div><small class="form-text">Energiemenge in Laufzeit</small>
+                        </div>
+                    </div>
+                    <h4 style="margin-top: 25px;">Erfüllt wenn</h4>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-check"><input class="form-check-input" type="radio" id="formCheck-3" checked="" name="fulfillment" value="energy"><label class="form-check-label" for="formCheck-3">erreichen Gesamt</label></div>
+                        </div>
+                    </div>
+                    <div class="text-end"><button class="btn btn-dark" id="btnSubmit" type="submit"><i class="fa fa-check" style="margin-right: 5px;"></i>Freigeben</button></div>
+                </div>
             </div>
-        </div>
-        <div class="card" style="margin-bottom: 25px;">
-            <div class="card-body">
-                <h3>Aktuelle Vorhersage&nbsp;</h3>
-                <div id="predictionDiv"><canvas id="predictionChart"></canvas></div>
-            </div>
-        </div>
+        </form>
         <footer class="footer mt-auto py-3 bg-white" style="margin-bottom: 25px;">
             <p class="text-center">powered by <a href="https://github.com/energychain/STROMDAO_EAFs" target="_blank"><strong>STROM</strong></a><a href="https://github.com/energychain/STROMDAO_EAFs" target="_blank">DAO Energy Application Frameworks</a></p>
             <div class="offcanvas offcanvas-end" tabindex="-1" data-bs-backdrop="false" id="helpBar">
@@ -74,9 +97,7 @@
     </div>
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
-    <script src="assets/js/3party/chart.js?h=eeca2582f0217edc4ac85af347e0d4ad"></script>
     <script src="assets/js/utils.js?h=b6a1e690b2a987d9af7e9692dff15273"></script>
-    <script src="assets/js/uc_energyprofile.js?h=de66c10f489bb94a38994be53336457b"></script>
     <script src="assets/js/3party/marked.min.js?h=26085551a49dd1635b48b42f08c3d583"></script>
     <script src="assets/js/uc_contract.js?h=f3ad95a4c2133df734c874a6d3bbef70"></script>
 </body>
