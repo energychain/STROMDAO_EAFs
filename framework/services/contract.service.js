@@ -1,8 +1,5 @@
 "use strict";
 
-const axios = require("axios");
-
-
 /**
  * @typedef {import('moleculer').ServiceSchema} ServiceSchema Moleculer's Service Schema
  * @typedef {import('moleculer').Context} Context Moleculer's Context
@@ -23,7 +20,7 @@ module.exports = {
   actions: {
     add: {
       rest: {
-        method: "GET",
+        method: "POST",
         path: "/add"
       },
       params: {
@@ -47,8 +44,13 @@ module.exports = {
        * @return {Array} the result of the function
        */
       async handler(ctx) {
-            ctx.params.contractId = await ctx.call("access.randomString",{});
+            ctx.params.contractId = await ctx.call("access.randomString",{length:10});
             const contract = await ctx.call("contract_model.insert",{entity:ctx.params});
+            // for the moment we only allow one entry in the MOL
+            await ctx.call("meritorder.set",{
+              assetId:ctx.params.assetId,
+              mol:[ctx.params]
+            });
             return ctx.params;
       },
     }
