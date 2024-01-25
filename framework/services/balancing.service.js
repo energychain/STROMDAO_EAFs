@@ -341,7 +341,7 @@ module.exports = {
       },
       rest: {
 				method: "GET",
-				path: "/balance"
+				path: "/isSealed"
 			},
       async handler(ctx) {
         let res= await ctx.call("balances_sealed_model.find", {
