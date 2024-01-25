@@ -62,7 +62,7 @@ module.exports = {
                await ctx.call("meritorder_model.insert",{entity:{assetId:ctx.params.assetId,mol:ctx.params.mol,updated:new Date().getTime()}});
             } else {
                 mol[0].mol = ctx.params.mol;
-                nol[0].updated = new Date().getTime();
+                mol[0].updated = new Date().getTime();
                 await ctx.call("meritorder_model.update",mol[0]);
             }
         },
