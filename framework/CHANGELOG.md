@@ -1,3 +1,21 @@
+## [0.6.0](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.5.6...v0.6.0) (2024-01-25)
+
+
+### Features
+
+* Adding fulltext search of balancing points to admin ui. ([39ae2ee](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/39ae2ee5ccf121a514fa14348c8d60841de6f198))
+* Allow searching for balancing points using partial assetIds ([da6aaf9](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/da6aaf9f22fd604faa200f9f56f7819de66b796e))
+* Implement Balancing Group Management with Contract & MeritOrder Services ([62b2ffe](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/62b2ffe856b9305520c9010ae8b7c5dd34a1c2ed))
+* Initial implementation of Merit Order List - needs to be triggered by balancing service. Initial implementation of contract service (power purchase agreements) - will give contracts that are used in balancing via merit order list (mol). ([5be6fef](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/5be6fefa7e1c8df84307194f93b5d5fff35a2118))
+
+
+### Bug Fixes
+
+* adding type in asset search query. ([19d35fa](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/19d35faa5b2b90a69c8dac8bb478fb22d48697aa))
+* Missing id parameter handling in case mongodb is used to persist (stateful operation) ([3ccb85a](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/3ccb85a089d528e94b44d581b1975b92aefa552e))
+* Putting contract into MOL (replace MOL if already exists). ([c60a444](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/c60a444b8db7797f5980cb10d6880b71e0e30d99))
+* Removed typo in meritorder preventing updates of existing MOL ([1ad81c5](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/1ad81c5b43f70e36b16b4f07ba240873711fe72c))
+
 ## [0.5.6](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.5.5...v0.5.6) (2024-01-24)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "stromdao-eaf",
-  "version": "0.5.6",
+  "version": "0.6.0",
   "description": "STROMDAO Energy Application Framework - Referenzimplementierung für dynamische Stromtarife",
   "scripts": {
     "dev": "node ./run-eaf",
