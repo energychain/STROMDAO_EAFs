@@ -59,6 +59,7 @@ module.exports = {
 
         // Writing to InfluxDB using Axios
         try {
+          // We need to return in case of a write timeout
           const res = await axios.post(writeEndpoint, data);
           return res.data;
         } catch (error) {

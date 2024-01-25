@@ -334,6 +334,28 @@ module.exports = {
         return decoded;
       }
     },
+    isSealed: {
+      params: {
+        assetId: { type: "string" },
+        epoch: { type: "any" }
+      },
+      rest: {
+				method: "GET",
+				path: "/balance"
+			},
+      async handler(ctx) {
+        let res= await ctx.call("balances_sealed_model.find", {
+          query: {
+            assetId: ctx.params.assetId,
+            epoch: ctx.params.epoch * 1,
+            seal: {$exists: true}
+          }
+        });
+        if(res.length == 0) {
+          return false;
+        } else return true;
+      }
+    },
     balance: {
       params: {
         assetId: { type: "string" },
@@ -459,6 +481,8 @@ module.exports = {
           energy: energybalance,
           co2eq: co2eqbalance
         } 
+        balance = await ctx.call("meritorder.probeBalance",balance);
+
         return balance;
       }
     },
@@ -497,7 +521,11 @@ module.exports = {
             label: ".end"
           }
           await ctx.call("balance_settlements_active_model.insert",{entity:statement});
-          intermediateBalance = await ctx.call("balancing.unsealedBalance",ctx.params);
+          intermediateBalance = await ctx.call("balancing.unsealedBalance",ctx.params); // Hier könnte man die MOL danach abrufen
+
+          // TODO: Handover info that balance will be sealed.
+          intermediateBalance.seal = true;
+          await ctx.call("meritorder.process",intermediateBalance); // different to unsealedBalance Call! Just booking
         }
         if((intermediateBalance.energy == 0)||(intermediateBalance.clearing.energy == 0)) {
           let seal_content = {
