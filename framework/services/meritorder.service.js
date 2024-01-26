@@ -229,6 +229,7 @@ module.exports = {
               // Identify relevant transactions and change balanced of contract
               if(ctx.params.transactions[i].accounting == 'mol') {
                   await ctx.call("contract.process",ctx.params.transactions[i]);
+                  await ctx.call("balance_settlements_active_model.insert",{entity:ctx.params.transactions[i]});
                   // Not handled in MOL!
               }
           }

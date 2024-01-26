@@ -43,6 +43,8 @@ module.exports = {
             findContract[0].balanced += 1 * ctx.params.energy;
             if(typeof findContract[0].id == 'undefined') findContract[0].id = findContract[0]._id;
             await ctx.call("contract_model.update",findContract[0]); 
+            // Add transactions to balances.
+            
         } else {
           // Inconsistent data
           console.error("contract.process: Inconsistent data for contractId: ",ctx.params.contractId);
