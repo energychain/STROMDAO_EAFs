@@ -529,6 +529,7 @@ module.exports = {
         if((intermediateBalance.energy == 0)||(intermediateBalance.clearing.energy == 0)) {
             const audit = await ctx.call("audit.requestApproval",intermediateBalance);
             if( (audit).success ) {
+              intermediateBalance.auditId = audit.auditId;
               await ctx.call("meritorder.process",intermediateBalance); // different to unsealedBalance Call! Just booking
               let seal_content = {
                 assetId: ctx.params.assetId,
@@ -536,8 +537,10 @@ module.exports = {
                 upstream: intermediateBalance.upstream,
                 balance: intermediateBalance.in,
                 energy: intermediateBalance.upstreamenergy,
-                co2eq: intermediateBalance.upstreamco2eq
+                co2eq: intermediateBalance.upstreamco2eq,
+                auditId: audit.auditId
               }
+
               const signOptions = JSON.parse(process.env.JWT_OPTIONS);
               const res = jwt.sign(seal_content, process.env.JWT_PRIVATEKEY,signOptions);
               seal_content.seal = res;
