@@ -13,7 +13,7 @@
 /** @type {ServiceSchema} */
 module.exports = {
 	name: "tariff",
-
+	cacher: "Memory",
 	/**
 	 * Dependencies
 	 */
@@ -28,6 +28,7 @@ module.exports = {
 				method: "GET",
 				path: "/customLabels"
 			},
+			cache: true,
 			/**
 			 * Provides displayable values (labels) for price segments. Mainly used by views (UI).
 			 *
@@ -183,6 +184,7 @@ module.exports = {
 				method: "GET",
 				path: "/getPrices"
 			},
+			cache: true,
 			params: {
 				epoch: { $$t: "Epoch to get price information for.", type: "number", optional: true, example:4711 }
 			},
@@ -327,9 +329,11 @@ module.exports = {
 		 * @returns
 		 */
 		labels: {
+			cache: true,
 			rest: {
 				method: "GET",
-				path: "/labels"
+				path: "/labels",
+	
 			},
 			async handler(ctx) {
 				

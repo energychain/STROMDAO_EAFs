@@ -14,6 +14,7 @@ const DbService = require("moleculer-db");
 /** @type {ServiceSchema} */
 module.exports = {
 	name: "tariff_model",
+	cacher: "Memory",
 	
 	adapter: process.db_adapter,
 	
