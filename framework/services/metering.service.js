@@ -318,7 +318,10 @@ module.exports = {
 					  } else {
 						// Invalid transient reading - do not update
 						transientReading.processed = false;
-						if(transientReading.time + READING_RATE_LIMIT > ctx.params.time  ) transientReading.debug = "time";
+						if(transientReading.time + READING_RATE_LIMIT > ctx.params.time  ) {
+							transientReading.debug = "time";
+							transientReading.debug_wait =  transientReading.time + READING_RATE_LIMIT;
+						}
 						if(transientReading.meterId != ctx.params.meterId) transientReading.debug = "meterId";
 						if(transientReading.reading > ctx.params.reading) transientReading.debug = "reading";
 					  }
