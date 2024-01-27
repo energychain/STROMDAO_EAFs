@@ -525,27 +525,35 @@ module.exports = {
 
           // TODO: Handover info that balance will be sealed.
           intermediateBalance.seal = true;
-          await ctx.call("meritorder.process",intermediateBalance); // different to unsealedBalance Call! Just booking
         }
         if((intermediateBalance.energy == 0)||(intermediateBalance.clearing.energy == 0)) {
-          let seal_content = {
-            assetId: ctx.params.assetId,
-            epoch: ctx.params.epoch * 1,
-            upstream: intermediateBalance.upstream,
-            balance: intermediateBalance.in,
-            energy: intermediateBalance.upstreamenergy,
-            co2eq: intermediateBalance.upstreamco2eq
+            const audit = await ctx.call("audit.requestApproval",intermediateBalance);
+            if( (audit).success ) {
+              await ctx.call("meritorder.process",intermediateBalance); // different to unsealedBalance Call! Just booking
+              let seal_content = {
+                assetId: ctx.params.assetId,
+                epoch: ctx.params.epoch * 1,
+                upstream: intermediateBalance.upstream,
+                balance: intermediateBalance.in,
+                energy: intermediateBalance.upstreamenergy,
+                co2eq: intermediateBalance.upstreamco2eq
+              }
+              const signOptions = JSON.parse(process.env.JWT_OPTIONS);
+              const res = jwt.sign(seal_content, process.env.JWT_PRIVATEKEY,signOptions);
+              seal_content.seal = res;
+              seal_content.transactions = intermediateBalance.transactions;
+              await ctx.call("balances_sealed_model.insert",{entity:seal_content});
+              ctx.broker.broadcast("balances.sealed", seal_content);
+              return seal_content;
+            } else {
+              console.error("Unable to seal balance. Audit failed",intermediateBalance,audit );
+              throw "Unable to seal balance. Audit '"+audit.auditId+"' failed.";
+            }
+            
+          } else {
+            console.error("Unable to seal balance. Unsealed balance is not zero",intermediateBalance);
+            throw "Unable to seal balance. Unsealed balance is not zero";
           }
-          const signOptions = JSON.parse(process.env.JWT_OPTIONS);
-          const res = jwt.sign(seal_content, process.env.JWT_PRIVATEKEY,signOptions);
-          seal_content.seal = res;
-          seal_content.transactions = intermediateBalance.transactions;
-          await ctx.call("balances_sealed_model.insert",{entity:seal_content});
-          return seal_content;
-        } else {
-          console.error("Unable to seal balance. Unsealed balance is not zero",intermediateBalance);
-          throw "Unable to seal balance. Unsealed balance is not zero";
-        }
       },
     }
   },
