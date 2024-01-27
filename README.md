@@ -3,8 +3,7 @@
 [![codecov](https://codecov.io/gh/energychain/STROMDAO_EAFs/graph/badge.svg?token=O04DB3uPAJ)](https://codecov.io/gh/energychain/STROMDAO_EAFs)
 ![GitHub issues](https://img.shields.io/github/issues/energychain/STROMDAO_EAFs)
 
-# EAFs - Zählerstandsgangmessung für dynamische Stromtarife
-**Referenzimplementierung der STROMDAO GmbH**
+**Das [STROMDAO Energy Application Framework (EAF)](https://energy.js.org) ist eine Open-Source-Referenzimplementierung für digitale Energieinfrastruktur. Es dient zur Modellierung, Analyse und Entwicklung von Energiesystemen und -anwendungen. Das EAF wird in verschiedenen Kontexten eingesetzt, darunter für die Entwicklung maßgeschneiderter Energieanwendungen für Endnutzer und zur Förderung nachhaltigen Verhaltens. Es handelt sich um ein Werkzeug, das eine offene und interoperable Umgebung für Energieanwendungen schafft. Darüber hinaus ist das EAF Teil eines größeren Vorhabens zur Schaffung eines Referenzrahmens für energiebezogene Anwendungen und Einsparungen.**
 
 Das STROMDAO Energy Application Framework (EAF) adressiert die Aspekte der Implementierung dynamischer Tarife wie folgt:
 

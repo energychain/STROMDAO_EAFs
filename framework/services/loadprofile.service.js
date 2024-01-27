@@ -88,7 +88,7 @@ module.exports = {
 				}
 				// Forward to balancing (asynchronously)
 				ctx.params.autoseal = 1; // Auto seal for meter readings the previous epoch				
-				ctx.call("balancing.addSettlement",ctx.params);
+				await ctx.call("balancing.addSettlement",ctx.params);
 				return;
 			}
 		},

@@ -4,7 +4,8 @@
 ![GitHub issues](https://img.shields.io/github/issues/energychain/STROMDAO_EAFs)
 
 # STROMDAO-EAF
-The [STROMDAO Energy Application Framework (EAF)](https://github.com/energychain/STROMDAO_EAFs) provides an innovative platform for electricity providers to implement and offer dynamic, event-variable electricity tariffs.
+
+The [STROMDAO Energy Application Framework (EAF)](https://github.com/energychain/STROMDAO_EAFs) is an open source reference implementation for digital energy infrastructure. It is used to model, analyze and develop energy systems and applications. The EAF is used in various contexts, including the development of customized energy applications for end users and the promotion of sustainable behavior. It is a tool that creates an open and interoperable environment for energy applications. In addition, the EAF is part of a larger project to create a common European reference framework for energy-related applications and savings.
 
 ## Demo
 
