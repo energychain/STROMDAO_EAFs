@@ -1,5 +1,17 @@
 ## [0.6.2](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.1...v0.6.2) (2024-01-28)
 
+### Increment
+
+Add Balancing Helper UI Component to EAF
+
+The Balancing Helper UI component has been integrated into the Energy Application Framework (EAF). The component allows users to configure energy balancing for a specific balancing point through the 'uc_balancing.html' page in the admin interface. This update facilitates defining which metering points feed into a balancing point and which of them draw energy from it, enabling applications such as community energy collectives, tenant power models, and cloud storage solutions to operate effectively.
+
+- Implemented Balancing Helper on `uc_balancing.html`
+- Added configuration options for injection and withdrawal metering points
+- Enabled configuration of energy balancing for different use cases
+- Included documentation and help tooltips for user guidance
+- Improved admin interface for seamless navigation to Balancing Helper settings
+
 ## [0.6.1](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.0...v0.6.1) (2024-01-28)
 
 
