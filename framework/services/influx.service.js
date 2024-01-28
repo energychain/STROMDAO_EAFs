@@ -33,6 +33,7 @@ module.exports = {
           type: "string",
         },
       },
+      timeout: 60000,
       async handler(ctx) {
 
         function objectToInfluxLineProtocol(obj) {
