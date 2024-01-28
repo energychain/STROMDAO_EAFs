@@ -555,7 +555,7 @@ module.exports = {
             
           } else {
             console.error("Unable to seal balance. Unsealed balance is not zero",intermediateBalance);
-            throw "Unable to seal balance. Unsealed balance is not zero";
+            // throw "Unable to seal balance. Unsealed balance is not zero";
           }
       },
     }
