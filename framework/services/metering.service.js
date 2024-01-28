@@ -29,7 +29,19 @@ module.exports = {
 	 * Actions
 	 */
 	actions: {
-		
+		assets: {
+			rest: {
+				method: "GET",
+				path: "/assets"
+			},
+			async handler(ctx) {
+				if((typeof ctx.params.q == 'undefined') || (ctx.params.q.length == 0)) {
+					return (await ctx.call("readings_model.list",{ pageSize: 50,sort:"-clearingTime"})).rows;
+				} else {
+					return await ctx.call("readings_model.find",{search:ctx.params.q,searchFields:['meterId']});
+				}
+			}
+		},
 		lastReading: {
 			rest: {
 				method: "GET",
