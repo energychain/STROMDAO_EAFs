@@ -35,7 +35,8 @@ module.exports = {
 				if((typeof ctx.params.q == 'undefined') || (ctx.params.q.length == 0)) {
 					return (await ctx.call("debit_model.list",{ pageSize: 50,sort:"-clearingTime"})).rows;
 				} else {
-					return await ctx.call("debit_model.find",{search:ctx.params.q,searchFields:['meterId']});
+					const regex = new RegExp(`^${ctx.params.q}`, 'i');
+					return await ctx.call("debit_model.find",{query:{ meterId: { $regex: regex }  }});
 				}
 			}
 		},
