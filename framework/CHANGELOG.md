@@ -1,3 +1,19 @@
+## [0.6.1](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.0...v0.6.1) (2024-01-28)
+
+
+### Bug Fixes
+
+* Adding assets method to allow searching for metering service ([59f9b42](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/59f9b423ab8ccae757f3d2ee4cb4577a75123f9c))
+* Avoid throwing exception in case balance could not be sealed. Blocks energy community operation. ([7b770e5](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/7b770e5db73a3da866e46e298f7191886921e064))
+* Balance UI Chart is now left=old right=new ([4b5488b](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/4b5488ba150964e01a2432b51ba3149f9dd24764))
+* debit.assets search allows prefix search on meterId field. ([195e520](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/195e520b2575fac4e8e0cf5321b9d96d510e0e60))
+* detach from metering call for balancing removed to allow tracing. (temp) ([a77c0a9](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/a77c0a9505063ce3e30c7f69f2dad16f463bce0c))
+* Increase timeout (now 60s) to allow operation on slow Influx servers like on a RPi. ([87ce563](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/87ce5633b37d334a381622fd175a2f94a9558987))
+* Local GET API Request handler for isSealed must be issealed not balance ([2533941](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/2533941e36f314e29167bdd7c849db06e614df51))
+* Missing ";" in meritorder service ([3332b31](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/3332b31bfd33ad2643e5b4e5f91ab6e829922c0a))
+* Missing assetId on contract call from meritorder. ([2a504b9](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/2a504b954e8acadba29e66b60da383915623b7f3))
+* Missing balancing of MOL/contract based transactions. ([2bfddaf](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/2bfddafb56103d8cba653f44686c7f117eb4147b))
+
 ## [0.6.0](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.5.6...v0.6.0) (2024-01-25)
 
 
