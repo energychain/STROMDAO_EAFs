@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="de">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Use Case: Balancing</title>
+    <meta name="description" content="Energy Application Frameworks">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css?h=cd822b7fd22c8a95a68470c795adea69">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css?h=fbfa80fe81882dd47f8abd5cbb011b19">
+    <link rel="stylesheet" href="assets/css/Navbar-With-Button-icons.css?h=befd8a398792e305b7ffd4a176b5b585">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md bg-light shadow" style="margin-bottom: 30px;">
+            <div class="container-fluid"><a class="navbar-brand" href="./"><strong>STROM</strong>DAO&nbsp;<strong>EAF</strong>s</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navcol-1">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" href="uc_tariff.html">Tarif</a></li>
+                        <li class="nav-item"><a class="nav-link" href="uc_settlement.html">Settlement</a></li>
+                        <li class="nav-item"><a class="nav-link" href="uc_assets.html">Kennungen</a></li>
+                        <li class="nav-item col-6" style="padding-left: 15px;">
+                            <form class="ms-auto" action="./uc_assets.html" method="get">
+                                <div class="input-group"><input class="form-control" type="search" id="searchMeter" name="meterId" required="" minlength="2" autocomplete="on" autofocus=""><button class="btn btn-dark" type="submit"><i class="fa fa-search"></i></button></div>
+                            </form>
+                        </li>
+                    </ul>
+                </div><button class="btn btn-dark disabled" id="helpButton" type="button" disabled="disabled"><i class="fa fa-book"></i></button>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="card" style="margin-bottom: 25px;">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>Einspeiser</h3>
+                        <div id="einspeiser"></div>
+                    </div>
+                    <div class="col">
+                        <h3>Bezieher</h3>
+                        <div id="bezieher"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form id="balancerule">
+            <div class="card" style="margin-bottom: 25px;">
+                <div class="card-body">
+                    <h3>Ausgleich:&nbsp;<span class="assetLabel">-</span>&nbsp;</h3>
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="col">
+                            <div class="form-check"><input class="form-check-input" type="radio" id="direction-from" name="direction" checked="" value="in"><label class="form-check-label" for="direction-from">Bezug von</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" id="direction-to" name="direction" value="out"><label class="form-check-label" for="direction-to">Einspeisung für</label></div>
+                        </div>
+                        <div class="col-8">
+                            <div class="input-group"><span class="input-group-text">Allokation</span><input class="form-control" type="text" id="allocation" required="" minlength="2" name="allocation" value="eaf_generic_balancegroup"></div>
+                        </div>
+                    </div><button class="btn btn-dark float-end" id="btnRule" type="submit"><i class="fa fa-floppy-o" style="margin-right: 5px;"></i>speichern</button>
+                </div>
+            </div>
+        </form>
+        <footer class="footer mt-auto py-3 bg-white" style="margin-bottom: 25px;">
+            <p class="text-center">powered by <a href="https://github.com/energychain/STROMDAO_EAFs" target="_blank"><strong>STROM</strong></a><a href="https://github.com/energychain/STROMDAO_EAFs" target="_blank">DAO Energy Application Frameworks</a></p>
+            <div class="offcanvas offcanvas-end" tabindex="-1" data-bs-backdrop="false" id="helpBar">
+                <div class="offcanvas-header"><a class="link-body-emphasis d-flex align-items-center me-md-auto mb-3 mb-md-0 text-decoration-none" href="/"><i class="fa fa-book me-3" style="font-size: 25px;"></i><span class="fs-4">Dokumentation</span></a><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="offcanvas"></button></div>
+                <div class="offcanvas-body d-flex flex-column justify-content-between p-0">
+                    <div>
+                        <hr class="my-0">
+                        <div class="list-group list-group-flush border-bottom scrollarea" id="helpGroup"><a class="list-group-item list-group-item-action active py-3 lh-tight" href="#" aria-current="true">
+                                <div class="d-flex justify-content-between align-items-center w-100"><strong class="mb-1">List group item heading</strong><small>Wed</small></div>
+                                <div class="col-10 mb-1 small"><span>Some placeholder content in a paragraph below the heading and date.</span></div>
+                            </a></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" role="dialog" tabindex="-1" id="modalHelp">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="helpTitle">Modal Title</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body" id="markdownhelp">
+                            <p>...</p>
+                        </div>
+                        <div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Close</button><button class="btn btn-primary" type="button">Save</button></div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="modalTransactions">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header"><button class="btn btn-warning" id="sealBtn" type="button" style="margin-right: 5px;"><i class="fa fa-unlock-alt"></i></button>
+                    <h3 id="balanceHeader">-</h3><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="modal-title">Transaktionen</h4>
+                    <div id="txTable"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="modalSeal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Zertifikat</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center d-lg-flex justify-content-lg-center">
+                    <div class="text-center w-100">
+                        <div id="qrcode" style="width: 256px;height: 256px;"></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><input class="form-control-plaintext" type="text" id="certificate" value="./." readonly=""><button class="btn btn-dark" id="copy-button" type="button">in Zwischenablage kopieren</button></div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
+    <script src="assets/js/utils.js?h=b6a1e690b2a987d9af7e9692dff15273"></script>
+    <script src="assets/js/3party/marked.min.js?h=26085551a49dd1635b48b42f08c3d583"></script>
+    <script src="assets/js/uc_balancehelper.js?h=326e7d21d9fe60fa2e39fe5756da839f"></script>
+    <script src="assets/js/uc_contract.js?h=f3ad95a4c2133df734c874a6d3bbef70"></script>
+</body>
+
+</html>
