@@ -123,7 +123,9 @@ $(document).ready(function() {
             lastEpoch = data[i].epoch;
         }
         html += '</tbody>';
-
+        chartDataCO2.reverse();
+        chartDataEnergy.reverse();
+        chartLabels.reverse();
         html += '</table>';
         $('#balances').html(html);
         $('.btnClear').off();
