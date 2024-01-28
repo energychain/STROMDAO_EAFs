@@ -303,4 +303,7 @@ $(document).ready(function() {
 
         // console.log(balancerule);
     });
+    $('#balancingHelper').click(function(e) {
+        location.href="./uc_balancehelper.html?assetId="+window.assetId;
+    })
 });
