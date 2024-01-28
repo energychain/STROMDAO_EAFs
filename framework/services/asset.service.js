@@ -85,6 +85,23 @@ module.exports = {
 				}
 			}
 		},
+		query: {
+			rest: {
+				method: "GET",
+				path: "/query"
+			},
+			openapi: {
+				summary: "Native MongoDB find.",
+			},
+			/** @param {Context} ctx  */
+			async handler(ctx) {
+				let res = await db.collection("assets").find(ctx.params.q).toArray();
+				for(let i=0;i<res.length;i++) {
+					delete res[i]._id;
+				}
+				return res;	
+			}
+		},
 		find: {
 			rest: {
 				method: "GET",

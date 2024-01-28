@@ -47,6 +47,19 @@ module.exports = {
 			}
 		},
     // Action to add a settlement from a meter to the energy balancing model
+    peers: {
+      rest: {
+				method: "GET",
+				path: "/peers"
+			},
+      params: {
+        assetId: "string",
+      },
+      async handler(ctx) {
+        const peers = await ctx.call("asset.query",{q:{"$or":[{"balancerule.from":ctx.params.assetId},{"balancerule.to":ctx.params.assetId}]}});
+        return peers;
+      }
+    },
     latestBalances: {
 			rest: {
 				method: "GET",
