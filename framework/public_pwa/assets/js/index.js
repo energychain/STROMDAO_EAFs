@@ -62,6 +62,8 @@ const app = async function(token) {
     });
     
     $.getJSON("/api/debit/open?meterId="+window.meterId+"&token="+token, function(data) {
+        let totalConsumption = 0;
+
         // Handling "Abrechnung Übersicht in Zeile"
         for (let [key, value] of Object.entries(data)) {
             if(key.indexOf('cost') == 0) {
@@ -69,6 +71,7 @@ const app = async function(token) {
             }
             if(key.indexOf('consumption') == 0) {
                 $('.'+key).html((value/1000).toFixed(3).replace('.',','));
+                totalConsumption += value * 1;
             }
         }
         $('.consumption').html((data.consumption/1000).toFixed(3).replace('.',','));
@@ -347,6 +350,12 @@ const app = async function(token) {
     })
 
     $.getJSON("/api/access/getAssetMeta?meterId="+window.meterId+"&token="+token, function(data) {
+        if(typeof data.balancerule !== 'undefined') {
+            if(typeof data.balancerule.to !== 'undefined') {
+                $('.kosten').html("Einnahmen");
+                $('.verbrauch').html("Einspeisung");
+            }
+        }
         let customName = window.meterId;
         if(typeof data.operationMeta !== 'undefined') {
             if(typeof data.operationMeta.meterPointName !== 'undefined') {

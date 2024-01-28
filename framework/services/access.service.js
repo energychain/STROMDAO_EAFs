@@ -490,7 +490,7 @@ module.exports = {
 				verifyOptions.expiresIn = process.env.JWT_EXPIRE_METERING;
 				const token = jwt.verify(ctx.params.token,process.env.JWT_PUBLICKEY, verifyOptions);
 				delete ctx.params.token;
-				const result = await ctx.call("asset.get",{assetId:token.meterId,type:'meter'});
+				const result = await ctx.call("asset.get",{assetId:token.meterId}); // Removes ,type:'meter'
 				return result;
 			}
 		}
