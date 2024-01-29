@@ -490,7 +490,14 @@ module.exports = {
 				verifyOptions.expiresIn = process.env.JWT_EXPIRE_METERING;
 				const token = jwt.verify(ctx.params.token,process.env.JWT_PUBLICKEY, verifyOptions);
 				delete ctx.params.token;
-				const result = await ctx.call("asset.get",{assetId:token.meterId}); // Removes ,type:'meter'
+				const meter = await ctx.call("asset.get",{assetId:token.meterId,type:'meter'}); 
+				const balance = await ctx.call("asset.get",{assetId:token.meterId,type:'balance'}); 
+				const debit = await ctx.call("asset.get",{assetId:token.meterId,type:'debit'}); // 
+				let result = {};
+				for(const [key, value] of Object.entries(meter)) { result[key] = value; }
+				for(const [key, value] of Object.entries(balance)) { result[key] = value; }
+				for(const [key, value] of Object.entries(debit)) { result[key] = value; }
+
 				return result;
 			}
 		}

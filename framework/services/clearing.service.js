@@ -70,6 +70,21 @@ module.exports = {
 				if(results.length > 200) {
 					results = results.slice(0,200); // TODO add pageing
 				}
+				delete ctx.meta.user;
+				if((typeof ctx.params.crossbalance !== 'undefined')&&(ctx.params.crossbalance !== false)) {
+					let asset = await ctx.call("asset.get",{assetId:ctx.params.meterId,type:"debit"});
+					if((typeof asset !== 'undefined')&&(asset !== null)) {
+						if(typeof asset.crossbalance !== 'undefined') {
+							let crossing = await ctx.call("clearing.retrieve",{meterId:asset.crossbalance});	
+							for(let i=0;i<results.length;i++) {
+								if(i<crossing.length) {
+									results[i].consumption -= 1 * crossing[i].consumption;
+									results[i].cost -= 1 * crossing[i].cost;
+								}
+							}
+						}
+					}
+				}
 				return results;
 			}
 		},

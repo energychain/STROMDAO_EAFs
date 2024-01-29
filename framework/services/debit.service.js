@@ -62,11 +62,43 @@ module.exports = {
 						}
 					}
 				}
+				
+				let xbalance = null;
+				let asset = await ctx.call("asset.get",{assetId:ctx.params.meterId,type:"debit"});
+				if((typeof ctx.params.crossbalance !== 'undefined')&&(ctx.params.crossbalance !== false)) {
+					if((typeof asset !== 'undefined')&&(asset !== null)) {
+						if(typeof asset.crossbalance !== 'undefined') {
+							xbalance = asset.crossbalance;
+						}
+					}
+				}
 				let res =  await ctx.call("debit_model.find",{query:{meterId:ctx.params.meterId}});
 				if(res.length == 0) {
 					return {}
 				} else {
 					delete res[0]._id;
+					if(xbalance !== null) {
+						let resX = await ctx.call("debit_model.find",{query:{meterId:xbalance}});
+						let xbalanced = [];
+						if(resX.length !== 0) {
+							for (const [key, value] of Object.entries(res[0])) {
+								if(typeof resX[0][key] !== "undefined") {
+									if(
+										(key.indexOf("consumption") == 0) || 
+										(key.indexOf("cost") == 0) ||
+										(key.indexOf("co2eq") == 0)
+									 ) {
+										res[0][key] -= 1 * resX[0][key];
+										xbalanced.push(key);
+									}
+								}
+							}
+							res[0].crossbalanced = {
+								"meterId":xbalance,
+								"values":xbalanced
+							}
+						}
+					}
 					return res[0];
 				}
 			}

@@ -64,8 +64,13 @@ const app = async function(token) {
             }
           });
     });
-    
-    $.getJSON("/api/debit/open?meterId="+window.meterId+"&token="+token, function(data) {
+    let crossbalance = '';
+
+    if($.urlParam("crossbalance") || window.crossbalance) {
+        console.log("Doing Crossbalanced Retrieve");
+        crossbalance = '&crossbalance='+$.urlParam("crossbalance");
+    }
+    $.getJSON("/api/debit/open?meterId="+window.meterId+"&token="+token+crossbalance, function(data) {
         let totalConsumption = 0;
 
         // Handling "Abrechnung Übersicht in Zeile"
@@ -155,7 +160,7 @@ const app = async function(token) {
         });
     });
 
-    $.getJSON("/api/clearing/retrieve?meterId="+window.meterId+"&token="+token, function(data) {
+    $.getJSON("/api/clearing/retrieve?meterId="+window.meterId+"&token="+token+crossbalance, function(data) {
         let aggregationCost = {};
         let aggregationConsumption = {};
         let totalConsumption =  0;
@@ -179,7 +184,7 @@ const app = async function(token) {
                 if(key == 'consumption') totalConsumption += value;
             }
             let epoch = Math.floor(new Date(data[i].endTime).getTime()/3600000);
-            if((epoch !== oldEpoch) && (data[i]["consumption"]>0)) {
+            if((epoch !== oldEpoch) && (data[i]["consumption"]!==0)) {
                 consumptionChart.push({
                     x:epoch,
                     y:data[i]["consumption"]
@@ -349,7 +354,9 @@ const app = async function(token) {
                 $(".meta_visibility_"+key).show();
             }
         }
-
+        if(typeof data.crossbalance !== 'undefined') {
+            $('.viewSelection').show();
+        }
         if(typeof data.clientMeta !== 'undefined') {
             if(typeof data.clientMeta.meterPointName !== 'undefined') {
                 customName = data.clientMeta.meterPointName;
@@ -412,6 +419,19 @@ $(document).ready(function() {
     } else {
         $('#loginModal').modal('show');
     }
+    if($.urlParam("crossbalance")) {
+        window.crossbalance = $.urlParam("crossbalance");
+    } 
+
+    $(".viewSelect").click(function() {
+        if($(this).val() == "prosumer") {
+            window.crossbalance = true;
+        } else {
+            delete window.crossbalance;
+        }
+        app($.urlParam('token'));
+    });
+
     $('#loginForm').submit(function(e) {
         e.preventDefault();
         if($('#meterId').val() == 'demo') {
