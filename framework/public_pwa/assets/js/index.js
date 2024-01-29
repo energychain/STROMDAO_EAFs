@@ -45,6 +45,7 @@ const app = async function(token) {
                     }
                 },
                 responsive: true,
+                
                 plugins: {
                     tooltip: {
                         callbacks: {
@@ -55,6 +56,9 @@ const app = async function(token) {
                     },
                     legend: {
                         display:false
+                    },
+                    datalabels: {
+                        display: false,
                     }
                 }
             }
@@ -69,7 +73,7 @@ const app = async function(token) {
             if(key.indexOf('cost') == 0) {
                 $('.'+key).html(value.toFixed(2).replace('.',','));
             }
-            if(key.indexOf('consumption') == 0) {
+            if(key.indexOf('consumption_') == 0) {
                 $('.'+key).html((value/1000).toFixed(3).replace('.',','));
                 totalConsumption += value * 1;
             }
@@ -79,54 +83,31 @@ const app = async function(token) {
 
         const ctxCostChart = document.getElementById('costChart');
         if(typeof window.costChartObject !== 'undefined') window.costChartObject.destroy();
-
-        window.costChartObject = new Chart(ctxCostChart, {
+        Chart.register(ChartDataLabels);
+        window.costChartObject = new Chart(ctxCostChart,{
             type: 'doughnut',
-            label: 'Kosten',
             data: {
-              labels: ["Niedertarif","Mitteltarif","Hochtarif"],
-              datasets: [{
-                label: 'Kosten',
-                data: [data["cost_virtual_1"],data["cost_virtual_2"],data["cost_virtual_3"]],
-                backgroundColor:["#147a50","#c69006","#a0a0a0"],
-                datalabels: {
-                    anchor: 'center',
-                    backgroundColor: null,
-                    borderWidth: 2
-                }
-              }]
+                labels: ["Niedertarif", "Mitteltarif", "Hochtarif"],
+                datasets: [{
+                    label: 'Kosten',
+                    data: [data["cost_virtual_1"], data["cost_virtual_2"], data["cost_virtual_3"]],
+                    backgroundColor: ["#147a50", "#c69006", "#a0a0a0"],
+                }]
             },
             options: {
+                animation: false,
                 plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                if(typeof context.parsed !== 'undefined') {
-                                    return context.parsed.toFixed(2).replace('.',',') + ' €';
-                                } else return '';
-                            }
-                        }
-                    },
-                    legend: {
-                        display:false
-                    },
                     datalabels: {
-                        color: '#606060',
-                        borderColor: 'white',
-                        borderRadius: 25,
-                        borderWidth: 2,
-                        display: function(context) {
-                            return 20;
-                          },
-                        formatter: (value) => {
-                            console.log("Formatter"+value);
-                            return value + '%';
-                        },
+                        display: true,
+                        color: 'black',
+                        anchor: 'center',
                         font: {
+                            size: 20,
                             weight: 'bold'
-                          },
-                        padding: 6
-                  
+                        },
+                        formatter: function(value) {
+                            return Math.round(value/data.cost*100) + '%';
+                        }
                     }
                 }
             }
@@ -152,17 +133,21 @@ const app = async function(token) {
                         callbacks: {
                             label: function(context) {
                                 if(typeof context.parsed !== 'undefined') { 
-                                 return (context.parsed/1000).toFixed(3).replace('.',',') + ' kWh / '+Math.round(context.parsed/totalConsumption*100) + '%';
+                                 return (context.parsed/1000).toFixed(3).replace('.',',') + ' kWh';
                                 } else return '';
                             }
                         }
                     },
-                    legend: {
-                        display:false
-                    },
                     datalabels: {
+                        display: true,
+                        color: 'black',
+                        anchor: 'center',
+                        font: {
+                            size: 20,
+                            weight: 'bold'
+                        },
                         formatter: (value) => {
-                            return value + '%';
+                            return Math.round(value/totalConsumption*100) + '%';
                         },
                     }
                 }
@@ -311,9 +296,7 @@ const app = async function(token) {
                           }
                     },
                     datalabels: {
-                        formatter: (value) => {
-                            return value + '%';
-                        },
+                        display: false,
                     }
                 }
                
