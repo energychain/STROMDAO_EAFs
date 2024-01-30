@@ -465,6 +465,7 @@ module.exports = {
 
         balance.upstream = await ctx.call("balancing.getUpstream", {assetId: ctx.params.assetId});
 
+        let absenergy = 0;
         for(let i=0;i<settlements.length;i++) {
           if(settlements[i].from == ctx.params.assetId) {
             balance.out += settlements[i].energy * 1;
@@ -485,6 +486,14 @@ module.exports = {
           balance.co2eq = balance.out_co2eq - balance.in_co2eq;
           balance.transactions.push(settlements[i]);
         }
+        if(balance.out > balance.in) {
+          absenergy += 1 * Math.abs(balance.out);
+        } else {
+          absenergy += 1 * Math.abs(balance.in);
+        }
+
+        balance.balancesum = absenergy; 
+
         const energybalance = balance.energy + balance.upstreamenergy;
         const co2eqbalance = balance.co2eq + balance.upstreamco2eq;
         balance.clearing = {
@@ -524,6 +533,8 @@ module.exports = {
         }
 
         let intermediateBalance = await ctx.call("balancing.unsealedBalance",ctx.params);
+        const _balance = intermediateBalance.balancesum;
+
         if((intermediateBalance.energy !== 0)&&(intermediateBalance.clearing.energy !== 0)){
           let statement = {
             from: intermediateBalance.clearing.from,
@@ -540,6 +551,8 @@ module.exports = {
           intermediateBalance.seal = true;
         }
         if((intermediateBalance.energy == 0)||(intermediateBalance.clearing.energy == 0)) {
+            intermediateBalance.balancesum = Math.round(intermediateBalance.balancesum/2);
+
             const audit = await ctx.call("audit.requestApproval",intermediateBalance);
             if( (audit).success ) {
               intermediateBalance.auditId = audit.auditId;
@@ -548,7 +561,7 @@ module.exports = {
                 assetId: ctx.params.assetId,
                 epoch: ctx.params.epoch * 1,
                 upstream: intermediateBalance.upstream,
-                balance: intermediateBalance.in,
+                balancesum: _balance * 1, 
                 energy: intermediateBalance.upstreamenergy,
                 co2eq: intermediateBalance.upstreamco2eq,
                 auditId: audit.auditId

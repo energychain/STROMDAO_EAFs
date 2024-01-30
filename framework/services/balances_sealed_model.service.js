@@ -24,7 +24,7 @@ module.exports = {
 	 * Settings
 	 */
 	settings: {
-		fields: ["_id", "assetId", "epoch","in","out","energy","upstream","seal","transactions","co2eq","out_co2eq","in_co2eq","auditId"]
+		fields: ["_id", "assetId", "epoch","in","out","energy","upstream","seal","transactions","co2eq","out_co2eq","in_co2eq","auditId","balance","balancesum"]
     },
 	/**
 	 * Dependencies

@@ -16,34 +16,40 @@ $(document).ready(function() {
         let html = '';
         html += '<table class="table table-condensed table-striped">';
         html += '<thead>';
-        html += '<tr><th>Von</th><th>Nach</th><th class="text-end">Treibhausgasemission</th><th class="text-end">Energie</th></tr>';
+        html += '<tr><th>Von</th><th>Nach</th><th class="text-end">Treibhausgasemission</th><th class="text-end">Energie</th><th class="text-end">Saldo</th></tr>';
         html += '</thead>';
         html += '<tbody>';
         let co2eq = 0;
         let energy = 0;
+        let absenergy = 0;
 
         for(let i=0;i<data.transactions.length;i++) {
-            html += '<tr>';
-            let highlight = '';
-            if(data.transactions[i].from == data.upstream) highlight='fw-bold';
-            if(data.transactions[i].to == data.upstream) highlight='fw-bold';
-            html += '<td class="'+highlight+'"><button class="btn btn-light btn-sm openBalance" data-assetId="'+data.transactions[i].from+'" data-epoch="'+data.epoch+'" type="button">'+data.transactions[i].from+'</button></td>';
-            html += '<td class="'+highlight+'"><button class="btn btn-light btn-sm openBalance" data-assetId="'+data.transactions[i].to+'" data-epoch="'+data.epoch+'" type="button">'+data.transactions[i].to+'</button></td>';
-            html += '<td class="text-end '+highlight+'">'+(data.transactions[i].co2eq/1000).toFixed(0).replace('.',',')+'eq</td>';
-            html += '<td class="text-end '+highlight+'">'+(data.transactions[i].energy/1000).toFixed(3).replace('.',',')+'kWh</td>';
-            html += '</tr>';
-            if(data.transactions[i].from == window.assetId) {
-                co2eq += data.transactions[i].co2eq;
-                energy += data.transactions[i].energy;
-            }
-            if(data.transactions[i].to == window.assetId) {
-                co2eq -= data.transactions[i].co2eq;
-                energy -= data.transactions[i].energy;
+            if(data.transactions[i].energy !== 0) {
+                html += '<tr>';
+                let highlight = '';
+                if(data.transactions[i].from == data.upstream) highlight='fw-bold';
+                if(data.transactions[i].to == data.upstream) highlight='fw-bold';
+                html += '<td class="'+highlight+'"><button class="btn btn-light btn-sm openBalance" data-assetId="'+data.transactions[i].from+'" data-epoch="'+data.epoch+'" type="button">'+data.transactions[i].from+'</button></td>';
+                html += '<td class="'+highlight+'"><button class="btn btn-light btn-sm openBalance" data-assetId="'+data.transactions[i].to+'" data-epoch="'+data.epoch+'" type="button">'+data.transactions[i].to+'</button></td>';
+                html += '<td class="text-end '+highlight+'">'+(data.transactions[i].co2eq/1000).toFixed(0).replace('.',',')+'eq</td>';
+                absenergy += Math.abs(data.transactions[i].energy);
+
+                if(data.transactions[i].from == window.assetId) {
+                    co2eq += data.transactions[i].co2eq;
+                    energy += data.transactions[i].energy;
+                }
+                if(data.transactions[i].to == window.assetId) {
+                    co2eq -= data.transactions[i].co2eq;
+                    energy -= data.transactions[i].energy;
+                }
+                html += '<td class="text-end '+highlight+'">'+(data.transactions[i].energy/1000).toFixed(3).replace('.',',')+'kWh</td>';
+                html += '<td class="text-end '+highlight+'">'+(energy/-1000).toFixed(3).replace('.',',')+'kWh</td>';
+                html += '</tr>';
             }
         }
         html += '</tbody>';
         html += '<tfoot>';
-        html += '<tr><th></th><th></th><th class="text-end">'+(co2eq/1000).toFixed(3).replace('.',',')+'eq</th><th class="text-end">'+(energy/1000).toFixed(3).replace('.',',')+'kWh</th></tr>';
+        html += '<tr><th></th><th></th><th class="text-end">'+(co2eq/1000).toFixed(0).replace('.',',')+'eq</th><th class="text-end">'+(data.energy/1000).toFixed(3).replace('.',',')+'kWh</th><th class="text-end">'+( (data.balancesum - data.energy) /1000).toFixed(3).replace('.',',')+'kWh</th></tr>';
         html += '</tfoot>';
         html += '</table>';
         $('#txTable').html(html);
@@ -80,6 +86,7 @@ $(document).ready(function() {
         html += '<th>Stromprodukt</th>';
         html += '<th>Zeitfenster</th>';
         html += '<th class="text-end">Treibhausgasemission</th>';
+        html += '<th class="text-end">Direktlieferung</th>';
         html += '<th class="text-end">Saldo</th>';
         html += '<th>Zertifikat</th>';
         html += '</tr>';
@@ -96,7 +103,7 @@ $(document).ready(function() {
             html += '<tr>';
             let bgclass = '';
             if(data[i].epoch == highlight) {
-                bgclass = 'bg-success';
+                bgclass = 'bg-secondary';
             }
             if(typeof data[i].seal == 'undefined') {
                 html += '<td class="'+bgclass+' text-center"><button class="btn btn-xs btn-light btnClear" data-epoch="'+data[i].epoch+'"><i class="fa fa-unlock-alt text-warning"></i></td>';
@@ -112,7 +119,10 @@ $(document).ready(function() {
             }
             chartDataCO2.push(Math.round(data[i].co2eq/1000));
             chartDataEnergy.push(data[i].energy/1000);
+            if(typeof data[i].sum == 'undefined') { data[i].sum=0; }
+
             html += '<td class="'+color+' text-end '+bgclass+' ">'+(data[i].co2eq/1000).toFixed(0).replace('.',',')+'eq</td>';
+            html += '<td class="'+color+' text-end '+bgclass+' ">'+(Math.abs((data[i].balancesum-data[i].energy))/1000).toFixed(3).replace('.',',')+'kWh</td>';
             html += '<td class="'+color+' text-end '+bgclass+' ">'+(data[i].energy/1000).toFixed(3).replace('.',',')+'kWh</td>';
             if(typeof data[i].seal == 'undefined') {
                 html += '<td class="'+bgclass+'">&nbsp;</td>';
