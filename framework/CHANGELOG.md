@@ -1,3 +1,12 @@
+## [0.6.3](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.2...v0.6.3) (2024-01-30)
+
+
+### Bug Fixes
+
+* Datatables of PWA are now visible. Using CDNs for Chart JS. ([f962a00](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/f962a0061b26dc2159ad379ffda575f01e09c102))
+* Handling of internal balance sum now in homogenized field `balancesum` allowing to calculate internal energy exchange of a balancing point. ([93e52e5](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/93e52e5e2af763faa64c0d3dd0d557c839bbde46))
+* PWA supports "Standard" and prosumer view. ([8ac0986](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/8ac09861a04cbb61aea714f40e10cac405c42163))
+
 ## [0.6.2](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.1...v0.6.2) (2024-01-28)
 
 ### Increment
