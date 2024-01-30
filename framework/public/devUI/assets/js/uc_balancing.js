@@ -87,7 +87,7 @@ $(document).ready(function() {
         html += '<th>Zeitfenster</th>';
         html += '<th class="text-end">Treibhausgasemission</th>';
         html += '<th class="text-end">Direktlieferung</th>';
-        html += '<th class="text-end">Saldo</th>';
+        html += '<th class="text-end">Ausgleich</th>';
         html += '<th>Zertifikat</th>';
         html += '</tr>';
         html += '</thead>';
@@ -96,9 +96,11 @@ $(document).ready(function() {
         let chartDataEnergy = [];
         let chartDataCO2 = [];
         let chartLabels = [];
+        let chartDataDirect = [];
 
         for(let i=0;i<data.length;i++) {
             data[i].energy *= -1; // clearerer to interpret.
+            data[i].balancesum *= -1;  // clearerer to interpret.
             data[i].co2eq *= -1; // clearerer to interpret.
             html += '<tr>';
             let bgclass = '';
@@ -117,13 +119,19 @@ $(document).ready(function() {
             if(data[i].energy > 0) {
                 color = 'text-success';
             }
-            chartDataCO2.push(Math.round(data[i].co2eq/1000));
-            chartDataEnergy.push(data[i].energy/1000);
+            let co2 = data[i].co2eq/(-1000);
+            let energy_direct = (data[i].balancesum-data[i].energy)/1000;
+            let energy_balance = data[i].energy/-1000;
+
+            chartDataCO2.push(Math.round(co2));
+            chartDataDirect.push(energy_direct);
+            chartDataEnergy.push(energy_balance);
+
             if(typeof data[i].sum == 'undefined') { data[i].sum=0; }
 
-            html += '<td class="'+color+' text-end '+bgclass+' ">'+(data[i].co2eq/1000).toFixed(0).replace('.',',')+'eq</td>';
-            html += '<td class="'+color+' text-end '+bgclass+' ">'+(Math.abs((data[i].balancesum-data[i].energy))/1000).toFixed(3).replace('.',',')+'kWh</td>';
-            html += '<td class="'+color+' text-end '+bgclass+' ">'+(data[i].energy/1000).toFixed(3).replace('.',',')+'kWh</td>';
+            html += '<td class="'+color+' text-end '+bgclass+' ">'+(co2).toFixed(0).replace('.',',')+'eq</td>';
+            html += '<td class="'+color+' text-end '+bgclass+' ">'+(energy_direct).toFixed(3).replace('.',',')+'kWh</td>';
+            html += '<td class="'+color+' text-end '+bgclass+' ">'+(energy_balance).toFixed(3).replace('.',',')+'kWh</td>';
             if(typeof data[i].seal == 'undefined') {
                 html += '<td class="'+bgclass+'">&nbsp;</td>';
             } else {
@@ -136,6 +144,7 @@ $(document).ready(function() {
         chartDataCO2.reverse();
         chartDataEnergy.reverse();
         chartLabels.reverse();
+        chartDataDirect.reverse();
         html += '</table>';
         $('#balances').html(html);
         $('.btnClear').off();
@@ -208,9 +217,15 @@ $(document).ready(function() {
             yAxisID: 'A',
             },
             {
-                label: 'Strom (kWh)',
+                label: 'Ausgleich, extern (kWh)',
                 fill:true,
                 data: chartDataEnergy,
+                backgroundColor:["#a0a0a0"],
+                yAxisID: 'B',
+            },            {
+                label: 'Direktlieferung, intern (kWh)',
+                fill:true,
+                data: chartDataDirect,
                 backgroundColor:["#147a50"],
                 yAxisID: 'B',
             }];

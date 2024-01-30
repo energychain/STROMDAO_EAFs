@@ -486,8 +486,8 @@ module.exports = {
           balance.co2eq = balance.out_co2eq - balance.in_co2eq;
           balance.transactions.push(settlements[i]);
         }
-        if(balance.out > balance.in) {
-          absenergy += 1 * Math.abs(balance.out);
+        if(Math.abs(balance.out) > Math.abs(balance.in)) {
+          absenergy += -1 * Math.abs(balance.out);
         } else {
           absenergy += 1 * Math.abs(balance.in);
         }
