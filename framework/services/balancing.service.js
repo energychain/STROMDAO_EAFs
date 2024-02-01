@@ -517,6 +517,16 @@ module.exports = {
 				method: "GET",
 				path: "/seal"
 			},
+      openapi: {
+        summary: "handles the sealing of balances",
+        description:"1. First, the `jsonwebtoken` module is imported, which is used for signing tokens. These tokens are typically used for authentication or for sealing information.\n\n2. Next, the `balances_sealed_model.find` method is called with `ctx.call` to search for sealed balances (`seal`) for a specific `assetId` and `epoch`. If an entry is found, this means that the balance has already been sealed, and an error is returned.\n\n3. Then, the `balancing.unsealedBalance` service is called to determine an intermediate balance. The `balancesum` value of this intermediate balance is stored in `_balance`.\n\n4. It checks if both `energy` and `clearing.energy` are not zero. If so, a `statement` with various information is created and stored using the `balance_settlements_active_model.insert` method. Subsequently, an unsealed balance is requested again to potentially seal it.\n\n5. If `energy` or `clearing.energy` are zero, `balancesum` is halved and rounded. Afterward, the `audit.requestApproval` service is called to get an approval for the balance. If successful (`success`), an `auditId` is added to the balance and the `meritorder.process` service is called.\n\n6. After the balance has been approved, its contents are stored in `seal_content` and signed with JWT. The signed `seal_content` also includes the `transactions` from the intermediate balance and is then stored with `balances_sealed_model.insert` and broadcast with `ctx.broker.broadcast`.\n\n7. The signed balance content (`seal_content`) is returned.\n\n8. If the approval request fails (`audit`), an error message is logged and an error is thrown. Similarly, if it is found that the unsealed balance is not zero, which would indicate that there are still pending transactions that have not been processed.\n\nThus, the code handles the sealing of balances by checking if a balance is already sealed, creating an intermediate balance, obtaining approvals, and ultimately sealing the balance before storing and publishing it in the system. Errors and special cases are also handled, with corresponding error messages and, if necessary, exceptions.",
+        tags: ["Balancing"],
+        responses: {
+          200: {
+            description: "Success"
+          }
+        }
+      },
       async handler(ctx) {
         const jwt = require("jsonwebtoken");
 

@@ -32,6 +32,9 @@ module.exports = {
       changelogFile: 'CHANGELOG.md',
     }],
     ['@semantic-release/npm', {}],
+    ["@semantic-release/exec", {
+      "prepare": "node prepare_docs.js"
+    }],
     ['@semantic-release/github', {
       assets: [
         {path: 'CHANGELOG.md', label: 'Changelog'},
