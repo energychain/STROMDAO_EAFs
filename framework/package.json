@@ -1,6 +1,6 @@
 {
   "name": "stromdao-eaf",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "STROMDAO Energy Application Framework - Referenzimplementierung für dynamische Stromtarife",
   "scripts": {
     "dev": "node ./run-eaf",
@@ -51,6 +51,7 @@
   "homepage": "https://energy.js.org/",
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^6.0.3",
     "@spailybot/moleculer-auto-openapi": "^1.2.0",
     "conventional-changelog-conventionalcommits": "^7.0.2",
     "eslint": "^8.25.0",

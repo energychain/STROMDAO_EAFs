@@ -1,3 +1,10 @@
+## [0.6.4](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.3...v0.6.4) (2024-02-01)
+
+
+### Bug Fixes
+
+* Improved UI for balancing to make it more clearer what happens. ([82a7771](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/82a777150f2847f2c2771e2f401d737e353ec0c8))
+
 ## [0.6.3](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.2...v0.6.3) (2024-01-30)
 
 
