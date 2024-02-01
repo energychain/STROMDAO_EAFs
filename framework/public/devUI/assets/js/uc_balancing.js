@@ -120,7 +120,7 @@ $(document).ready(function() {
                 color = 'text-success';
             }
             let co2 = data[i].co2eq/(-1000);
-            let energy_direct = (data[i].balancesum-data[i].energy)/1000;
+            let energy_direct = (Math.abs(data[i].balancesum)-Math.abs(data[i].energy))/1000;
             let energy_balance = data[i].energy/-1000;
 
             chartDataCO2.push(Math.round(co2));
