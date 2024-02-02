@@ -122,7 +122,8 @@ module.exports = {
       async handler(ctx) {
         const EPOCH_DURATION = process.env.EPOCH_DURATION;
 
-        const upstream = await ctx.call("balancing.getUpstream",{ assetId: ctx.params.assetId });
+        const upstream_from = await ctx.call("balancing.getUpstream",{ assetId: ctx.params.assetId,energy:-1 });
+        const upstream_to = await ctx.call("balancing.getUpstream",{ assetId: ctx.params.assetId,energy:1 });
 
         const query = {
           epoch: 1 * ctx.params.epoch // Might add Label filter here for later use
@@ -150,7 +151,7 @@ module.exports = {
           res[i].sealed = false;
           res[i].time = res[i].epoch * EPOCH_DURATION;
           let candidate = res[i].to;
-          if((res[i].to == upstream) || (res[i].from == upstream)) {
+          if((res[i].to == upstream_to) || (res[i].from == upstream_from)) {
             res[i].isUpstream = true;
           } else {
             res[i].isUpstream = false;
@@ -213,14 +214,21 @@ module.exports = {
         assetId: "string"
       },
       async handler(ctx) {
+        if(typeof ctx.params.energy == 'undefined') {
+          ctx.params.energy = -1;
+        }
         let upstream = ROOT_BALANCE_GROUP;
         const asset = await ctx.call("asset.get", { assetId: ctx.params.assetId,type:"balance" });
         if (asset && asset.balancerule) {
           if(typeof asset.balancerule.from !== 'undefined') {
-            upstream = asset.balancerule.from;
+            if(ctx.params.energy <0 ) {
+              upstream = asset.balancerule.from;
+            }
           }
           if(typeof asset.balancerule.to !== 'undefined') {
-            upstream = asset.balancerule.to;
+            if(ctx.params.energy > 0) {
+              upstream = asset.balancerule.to;
+            }
           }
         }
         return upstream;
@@ -463,8 +471,9 @@ module.exports = {
           },
         });
 
-        balance.upstream = await ctx.call("balancing.getUpstream", {assetId: ctx.params.assetId});
-
+        balance.upstream_from = await ctx.call("balancing.getUpstream", {assetId: ctx.params.assetId,energy:-1});
+        balance.upstream_to = await ctx.call("balancing.getUpstream", {assetId: ctx.params.assetId,energy:1});
+        
         let absenergy = 0;
         for(let i=0;i<settlements.length;i++) {
           if(settlements[i].from == ctx.params.assetId) {
@@ -475,10 +484,11 @@ module.exports = {
             balance.in_co2eq += settlements[i].co2eq * 1;
           }
 
-          if(settlements[i].from == balance.upstream) {
+          if(settlements[i].from == balance.upstream_from) {
             balance.upstreamenergy += settlements[i].energy * 1;
             balance.upstreamco2eq += settlements[i].co2eq * 1;
-          } else if(settlements[i].to == balance.upstream) {
+          } 
+          if(settlements[i].to == balance.upstream_to) {
             balance.upstreamenergy -= settlements[i].energy * 1;
             balance.upstreamco2eq -= settlements[i].co2eq * 1;
           }
@@ -490,6 +500,12 @@ module.exports = {
           absenergy += -1 * Math.abs(balance.out);
         } else {
           absenergy += 1 * Math.abs(balance.in);
+        }
+
+        if(balance.upstreamenergy > 0) {
+          balance.upstream = balance.upstream_to;
+        } else {
+          balance.upstream = balance.upstream_from;
         }
 
         balance.balancesum = absenergy; 
@@ -556,7 +572,8 @@ module.exports = {
           }
           await ctx.call("balance_settlements_active_model.insert",{entity:statement});
           intermediateBalance = await ctx.call("balancing.unsealedBalance",ctx.params); // Hier könnte man die MOL danach abrufen
-
+          // Fix who is upstream
+       //   intermediateBalance.upstream = await ctx.call("balancing.getUpstream",{ assetId: ctx.params.assetId,energy:intermediateBalance.energy });
           // TODO: Handover info that balance will be sealed.
           intermediateBalance.seal = true;
         }

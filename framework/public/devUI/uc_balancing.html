@@ -7,7 +7,9 @@
     <title>Use Case: Balancing</title>
     <meta name="description" content="Energy Application Frameworks">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css?h=cd822b7fd22c8a95a68470c795adea69">
+    <link rel="stylesheet" href="assets/css/lato-light.css?h=db15d6906b330e05b7a47b9b1ea35c53">
     <link rel="stylesheet" href="assets/fonts/font-awesome.min.css?h=fbfa80fe81882dd47f8abd5cbb011b19">
+    <link rel="stylesheet" href="assets/css/joint.css?h=045af686e64deab658dbda86b698bd60">
     <link rel="stylesheet" href="assets/css/Navbar-With-Button-icons.css?h=befd8a398792e305b7ffd4a176b5b585">
 </head>
 
@@ -31,6 +33,29 @@
         </nav>
     </header>
     <div class="container">
+        <form id="balancerule">
+            <div class="card" style="margin-bottom: 25px;">
+                <div class="card-body">
+                    <h3>Ausgleich:&nbsp;<span class="assetLabel">-</span>&nbsp;</h3>
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="col">
+                            <div class="form-check"><input class="form-check-input" type="checkbox" id="direction-from"><label class="form-check-label" for="formCheck-1">Bezug von</label></div>
+                        </div>
+                        <div class="col-8">
+                            <div class="input-group"><span class="input-group-text">Allokation</span><input class="form-control" type="text" id="allocation_from" required="" minlength="2" name="allocation" value="eaf_generic_balancegroup"></div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="col">
+                            <div class="form-check"><input class="form-check-input" type="checkbox" id="direction-to"><label class="form-check-label" for="direction-from-1">Lieferung an</label></div>
+                        </div>
+                        <div class="col-8">
+                            <div class="input-group"><span class="input-group-text">Allokation</span><input class="form-control" type="text" id="allocation_to" required="" minlength="2" name="allocation" value="eaf_generic_balancegroup"></div>
+                        </div>
+                    </div><button class="btn btn-dark float-end" id="btnRule" type="submit"><i class="fa fa-floppy-o" style="margin-right: 5px;"></i>speichern</button>
+                </div>
+            </div>
+        </form>
         <div class="card" style="margin-bottom: 25px;">
             <div class="card-body">
                 <h3>
@@ -41,22 +66,6 @@
                 <div class="text-end"><button class="btn btn-dark" id="balancingHelper" type="button"><i class="fa fa-gear"></i></button></div>
             </div>
         </div>
-        <form id="balancerule">
-            <div class="card" style="margin-bottom: 25px;">
-                <div class="card-body">
-                    <h3>Ausgleich:&nbsp;<span class="assetLabel">-</span>&nbsp;</h3>
-                    <div class="row" style="margin-bottom: 15px;">
-                        <div class="col">
-                            <div class="form-check"><input class="form-check-input" type="radio" id="direction-from" name="direction" checked="" value="in"><label class="form-check-label" for="direction-from">Bezug von</label></div>
-                            <div class="form-check"><input class="form-check-input" type="radio" id="direction-to" name="direction" value="out"><label class="form-check-label" for="direction-to">Einspeisung für</label></div>
-                        </div>
-                        <div class="col-8">
-                            <div class="input-group"><span class="input-group-text">Allokation</span><input class="form-control" type="text" id="allocation" required="" minlength="2" name="allocation" value="eaf_generic_balancegroup"></div>
-                        </div>
-                    </div><button class="btn btn-dark float-end" id="btnRule" type="submit"><i class="fa fa-floppy-o" style="margin-right: 5px;"></i>speichern</button>
-                </div>
-            </div>
-        </form>
         <footer class="footer mt-auto py-3 bg-white" style="margin-bottom: 25px;">
             <p class="text-center">powered by <a href="https://github.com/energychain/STROMDAO_EAFs" target="_blank"><strong>STROM</strong></a><a href="https://github.com/energychain/STROMDAO_EAFs" target="_blank">DAO Energy Application Frameworks</a></p>
             <div class="offcanvas offcanvas-end" tabindex="-1" data-bs-backdrop="false" id="helpBar">
@@ -120,8 +129,7 @@
     <script src="assets/js/3party/qrcode.js?h=517b55d3688ce9ef1085a3d9632bcb97"></script>
     <script src="assets/js/utils.js?h=b6a1e690b2a987d9af7e9692dff15273"></script>
     <script src="assets/js/3party/marked.min.js?h=26085551a49dd1635b48b42f08c3d583"></script>
-    <script src="assets/js/uc_balancing.js?h=1e064c90722e4162ee0b7b36dff30157"></script>
-    <script src="assets/js/uc_contract.js?h=f3ad95a4c2133df734c874a6d3bbef70"></script>
+    <script src="assets/js/uc_balancing.js?h=aeda6d53ff72db135fb281aa02bf1167"></script>
 </body>
 
 </html>

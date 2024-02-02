@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Use Case: Assets</title>
+    <title>Use Case: Balancing</title>
     <meta name="description" content="Energy Application Frameworks">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css?h=cd822b7fd22c8a95a68470c795adea69">
     <link rel="stylesheet" href="assets/css/lato-light.css?h=db15d6906b330e05b7a47b9b1ea35c53">
@@ -33,38 +33,33 @@
         </nav>
     </header>
     <div class="container">
-        <form id="frmMO" style="margin-bottom: 25px;">
-            <div class="card">
+        <div class="card" style="margin-bottom: 25px;">
+            <div class="card-body">
+                <div id="graphBLK"></div>
+            </div>
+        </div>
+        <div class="card" style="margin-bottom: 25px;">
+            <div class="card-body">
+                <h3>Hinzufügen</h3>
+                <form id="searchForm">
+                    <div class="input-group"><span class="input-group-text">Messstelle</span><input class="form-control" type="text" id="addSearch"><button class="btn btn-dark" type="submit"><i class="fa fa-search"></i></button></div>
+                </form>
+                <div id="addSearchResult"></div>
+            </div>
+        </div>
+        <form id="balancerule">
+            <div class="card" style="margin-bottom: 25px;">
                 <div class="card-body">
-                    <h3>Stromvertrag von&nbsp;<span class="assetId">-</span></h3><input class="form-control" type="hidden" id="assetId" name="assetId">
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-check"><input class="form-check-input" type="radio" id="formCheck-1" name="direction" value="to"><label class="form-check-label" for="formCheck-1">&nbsp;Lieferung an</label></div>
-                        </div>
-                        <div class="col">
-                            <div class="form-check"><input class="form-check-input" type="radio" id="formCheck-2" checked="" name="direction" value="from"><label class="form-check-label" for="formCheck-2">&nbsp;Bezug von</label></div>
-                        </div>
-                    </div>
-                    <div class="input-group" style="margin-top: 15px;"><span class="input-group-text">Bilanzierungspunkt</span><input class="form-control" type="text" id="partnerId" name="partnerId" required=""></div><small class="form-text" style="margin-bottom: 25px;">Vertragspartner für diese Lieferung/Einspeisung</small>
-                    <h4 style="margin-top: 25px;">Energie</h4>
+                    <h3>Ausgleich:&nbsp;<span class="assetLabel">-</span>&nbsp;</h3>
                     <div class="row" style="margin-bottom: 15px;">
                         <div class="col">
-                            <div class="input-group"><span class="input-group-text">Min</span><input class="form-control" type="number" id="load_min" step="1" min="0" name="energy_min" value="0" required=""></div><small class="form-text">je Epoche/Stromprodukt</small>
+                            <div class="form-check"><input class="form-check-input" type="radio" id="direction-from" name="direction" checked="" value="in"><label class="form-check-label" for="direction-from">Bezug von</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" id="direction-to" name="direction" value="out"><label class="form-check-label" for="direction-to">Einspeisung für</label></div>
                         </div>
-                        <div class="col">
-                            <div class="input-group"><span class="input-group-text">Max</span><input class="form-control" type="number" id="load_max" step="1" min="0" name="load_max" value="0" required=""></div><small class="form-text">je Epoche/Stromprodukt</small>
+                        <div class="col-8">
+                            <div class="input-group"><span class="input-group-text">Allokation</span><input class="form-control" type="text" id="allocation" required="" minlength="2" name="allocation" value="eaf_generic_balancegroup"></div>
                         </div>
-                        <div class="col">
-                            <div class="input-group"><span class="input-group-text">Gesamt</span><input class="form-control" type="number" id="energy" step="1" min="0" name="energy" value="0" required=""></div><small class="form-text">Energiemenge in Laufzeit</small>
-                        </div>
-                    </div>
-                    <h4 style="margin-top: 25px;">Erfüllt wenn</h4>
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-check"><input class="form-check-input" type="radio" id="formCheck-3" checked="" name="fulfillment" value="energy"><label class="form-check-label" for="formCheck-3">erreichen Gesamt</label></div>
-                        </div>
-                    </div>
-                    <div class="text-end"><button class="btn btn-dark" id="btnSubmit" type="submit"><i class="fa fa-check" style="margin-right: 5px;"></i>Freigeben</button></div>
+                    </div><button class="btn btn-dark float-end" id="btnRule" type="submit"><i class="fa fa-floppy-o" style="margin-right: 5px;"></i>speichern</button>
                 </div>
             </div>
         </form>
@@ -97,11 +92,42 @@
             </div>
         </footer>
     </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="modalTransactions">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header"><button class="btn btn-warning" id="sealBtn" type="button" style="margin-right: 5px;"><i class="fa fa-unlock-alt"></i></button>
+                    <h3 id="balanceHeader">-</h3><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="modal-title">Transaktionen</h4>
+                    <div id="txTable"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="modalSeal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Zertifikat</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center d-lg-flex justify-content-lg-center">
+                    <div class="text-center w-100">
+                        <div id="qrcode" style="width: 256px;height: 256px;"></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><input class="form-control-plaintext" type="text" id="certificate" value="./." readonly=""><button class="btn btn-dark" id="copy-button" type="button">in Zwischenablage kopieren</button></div>
+            </div>
+        </div>
+    </div>
     <script src="assets/js/jquery.min.js?h=6bcc3684f18aa21874fa709f122723cf"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js?h=e55bde7d6e36ebf17ba0b8c1e80e4065"></script>
+    <script src="assets/js/3party/lodash.js?h=bbb588cc4360df5d317ebff5f5c1ac9c"></script>
+    <script src="assets/js/3party/backbone.js?h=eba7bc470a0673ca2e07b2df39064eb1"></script>
+    <script src="assets/js/3party/joint.js?h=dc880dd8c8ce2e6e70f5f32cfac61b0e"></script>
     <script src="assets/js/utils.js?h=b6a1e690b2a987d9af7e9692dff15273"></script>
     <script src="assets/js/3party/marked.min.js?h=26085551a49dd1635b48b42f08c3d583"></script>
-    <script src="assets/js/uc_contract.js?h=f3ad95a4c2133df734c874a6d3bbef70"></script>
+    <script src="assets/js/uc_balancemanager.js?h=5f657c9db0d05661cc6708eaf19907c5"></script>
 </body>
 
 </html>

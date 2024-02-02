@@ -29,6 +29,13 @@ $(document).ready(function() {
                 let highlight = '';
                 if(data.transactions[i].from == data.upstream) highlight='fw-bold';
                 if(data.transactions[i].to == data.upstream) highlight='fw-bold';
+
+                if(data.transactions[i].from == window.assetId) {
+                    highlight += ' text-success ';
+                } else {
+                    highlight += ' text-danger ';
+                }
+
                 html += '<td class="'+highlight+'"><button class="btn btn-light btn-sm openBalance" data-assetId="'+data.transactions[i].from+'" data-epoch="'+data.epoch+'" type="button">'+data.transactions[i].from+'</button></td>';
                 html += '<td class="'+highlight+'"><button class="btn btn-light btn-sm openBalance" data-assetId="'+data.transactions[i].to+'" data-epoch="'+data.epoch+'" type="button">'+data.transactions[i].to+'</button></td>';
                 html += '<td class="text-end '+highlight+'">'+(data.transactions[i].co2eq/1000).toFixed(0).replace('.',',')+'eq</td>';
@@ -97,6 +104,13 @@ $(document).ready(function() {
         let chartDataCO2 = [];
         let chartLabels = [];
         let chartDataDirect = [];
+        let totalEnergy = 0;
+        let totalCO2 = 0;
+        let totalBalancing = 0;
+        let totalDirect = 0;
+        let totalIn = 0;
+        let totalOut = 0;
+
 
         for(let i=0;i<data.length;i++) {
             data[i].energy *= -1; // clearerer to interpret.
@@ -126,6 +140,15 @@ $(document).ready(function() {
             chartDataCO2.push(Math.round(co2));
             chartDataDirect.push(energy_direct);
             chartDataEnergy.push(energy_balance);
+            
+            totalBalancing += energy_balance;
+            totalDirect += energy_direct;
+            totalCO2 += co2;
+            if(energy_balance > 0) {
+                totalIn += energy_balance;
+            } else {
+                totalOut += energy_balance;
+            }
 
             if(typeof data[i].sum == 'undefined') { data[i].sum=0; }
 
@@ -140,6 +163,15 @@ $(document).ready(function() {
             html += '</tr>';
             lastEpoch = data[i].epoch;
         }
+        html += '<tfoot>';
+        html += '<tr>';
+        html += '<th>&nbsp;</th>';
+        html += '<th colspan="2">von '+new Date(data[data.length-1].time).toLocaleString()+'<br/>bis '+new Date(data[0].time).toLocaleString()+' </th>';
+        html += '<th class="text-end" valign="top">'+totalCO2.toFixed(0).replace('.',',')+'eq</th>';
+        html += '<th class="text-end" valign="top">'+totalDirect.toFixed(3).replace('.',',')+'kWh</th>';
+        html += '<th class="text-end" valign="top"><span class="text-danger">'+totalIn.toFixed(3).replace('.',',')+'kWh</span><br/><span class="text-success">'+totalOut.toFixed(3).replace('.',',')+'kWh</span><br/>'+totalBalancing.toFixed(3).replace('.',',')+'kWh</th>';
+        html += '</tr>';
+        html += '</tfoot>';
         html += '</tbody>';
         chartDataCO2.reverse();
         chartDataEnergy.reverse();
@@ -275,17 +307,17 @@ $(document).ready(function() {
     const retrieveBalances =  function(assetId,highlight,before) {
         $('.assetLabel').html(assetId);
         $('#balances').html('');
-        $.getJSON("/api/balancing/latestBalances?assetId="+assetId+"&n=10&before="+before,function(data) {
+        $.getJSON("/api/balancing/latestBalances?assetId="+assetId+"&n=25&before="+before,function(data) {
             renderBalances(data,highlight);
         });
         $.getJSON("/api/asset/get?assetId="+assetId+"&type=balance", function(data) {
             if(typeof data.balancerule !== 'undefined') {
                 if(typeof data.balancerule.from !== 'undefined') {
-                    $('#allocation').val(data.balancerule.from);
+                    $('#allocation_from').val(data.balancerule.from);
                     $('#direction-from').attr('checked','checked');
                 }
                 if(typeof data.balancerule.to !== 'undefined') {
-                    $('#allocation').val(data.balancerule.to);
+                    $('#allocation_to').val(data.balancerule.to);
                     $('#direction-to').attr('checked','checked');
                 }
             }
@@ -301,11 +333,12 @@ $(document).ready(function() {
             balancerule[rule[i].name] = rule[i].value;
         }
         let apiData = {};
-        if(balancerule.direction == 'in') {
-            apiData.from = balancerule.allocation
+        if ($("#direction-from").is(":checked")) {
+            apiData.from = $('#allocation_from').val();
+        }
 
-        } else {
-            apiData.to = balancerule.allocation
+        if ($("#direction-to").is(":checked")) {
+            apiData.to = $('#allocation_to').val();
         }
 
         apiData.updated = new Date().getTime();
