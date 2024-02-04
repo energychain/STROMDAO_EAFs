@@ -13,7 +13,35 @@ $(document).ready(function() {
     })
 
     const renderTransactions = function(data) {
+        let fromData = [];
+        let fromLabels = [];
+        let toData = [];
+        let toLabels = [];
         let html = '';
+        html += '<table class="table table-condensed">';
+        html += '<thead>';
+        html += '<tr><th>Von</th><th class="text-end">kWh</th><th class="text-end">Nach</th><th class="text-end">kWh</th></tr>';
+        html += '</thead>';
+        html += '<tbody>';
+        html += '<tr><td colspan=2 style="height:200px"> <canvas id="fromChart" style="height:200px"></canvas></td><td colspan=2 style="height:200px"><canvas id="toChart" style="height:200px"></canvas></td></tr>';
+        let einspeiser = '';
+        for (const [key, value] of Object.entries(data.peers.from)) {
+            einspeiser += '<tr><td><a class="btn btn-light btn-sm openBalance" data-assetId="'+key+'" data-epoch="'+data.epoch+'" type="button">'+key+'</a></td><td class="float-end">'+(value.energy/1000).toFixed(3).replace('.',',')+'</td></tr>';
+            fromData.push(value.energy/1000);
+            fromLabels.push(key);
+        }
+        let bezug = '';
+        for (const [key, value] of Object.entries(data.peers.to)) {
+            bezug += '<tr><td><a class="btn btn-light btn-sm openBalance" data-assetId="'+key+'" data-epoch="'+data.epoch+'" type="button">'+key+'</a></td><td class="float-end">'+(value.energy/1000).toFixed(3).replace('.',',')+'</td></tr>';
+            toData.push(value.energy/1000);
+            toLabels.push(key);
+        }
+        html += '<tr><td colspan=2><table class="table">'+einspeiser+'</table></td><td colspan=2><table class="table">'+bezug+'</table></td></tr>';
+        html += '</tbody>';
+
+
+        html += '</table>';
+        html += '<h4 class="modal-title" style="margin-top:25px;">Transaktionen</h4>';
         html += '<table class="table table-condensed table-striped">';
         html += '<thead>';
         html += '<tr><th>Von</th><th>Nach</th><th class="text-end">Treibhausgasemission</th><th class="text-end">Energie</th><th class="text-end">Saldo</th></tr>';
@@ -60,6 +88,67 @@ $(document).ready(function() {
         html += '</tfoot>';
         html += '</table>';
         $('#txTable').html(html);
+
+        const ctxToChart = document.getElementById('toChart');
+        if(typeof window.wtoChart !== 'undefined') window.wtoChart.destroy();
+
+        window.wtoChart = new Chart(ctxToChart,{
+            type: 'doughnut',
+            data: {
+                labels: toLabels,
+                datasets: [{
+                    label: '',
+                    data: toData,
+                    backgroundColor: ["#147a50", "#c69006", "#a0a0a0"],
+                }]
+            },
+            options: {
+                animation: false,
+                plugins: {
+                    datalabels: {
+                        display: true,
+                        color: 'black',
+                        anchor: 'center',
+                        font: {
+                            size: 20,
+                            weight: 'bold'
+                        },
+                    }
+                }
+            }
+        });
+
+
+        const ctxFromChart = document.getElementById('fromChart');
+        if(typeof window.wfromChart !== 'undefined') window.wfromChart.destroy();
+
+        window.wfromChart = new Chart(ctxFromChart,{
+            type: 'doughnut',
+            data: {
+                labels: fromLabels,
+                datasets: [{
+                    label: '',
+                    data: fromData,
+                    backgroundColor: ["#147a50", "#c69006", "#a0a0a0"],
+                }]
+            },
+            options: {
+                animation: false,
+                plugins: {
+                    datalabels: {
+                        display: true,
+                        color: 'black',
+                        anchor: 'center',
+                        font: {
+                            size: 20,
+                            weight: 'bold'
+                        },
+                    }
+                }
+            }
+        });
+
+
         $('#balanceHeader').html("Bilanzierung:&nbsp;"+window.assetId+" - Produkt:&nbsp;"+data.epoch);
         if(typeof data.seal !=='undefined') {
             $('#sealBtn').removeClass('btn-warning');
@@ -80,7 +169,9 @@ $(document).ready(function() {
         $('.openBalance').off();
         $('.openBalance').click(function() {
             window.assetId = $(this).attr('data-assetId');
+            $('#searchMeter').val(window.assetId);
             retrieveBalances(window.assetId,$(this).attr('data-epoch'));
+            initGraph();
             $('#modalTransactions').modal('hide');
         })
     }
@@ -103,6 +194,7 @@ $(document).ready(function() {
         let chartDataEnergy = [];
         let chartDataCO2 = [];
         let chartLabels = [];
+        let chartNav = [];
         let chartDataDirect = [];
         let totalEnergy = 0;
         let totalCO2 = 0;
@@ -126,7 +218,12 @@ $(document).ready(function() {
             } else {
                 html += '<td class="'+bgclass+' text-center">&nbsp;</td>';
             }
-            chartLabels.push(new Date(data[i].time).toLocaleString()+" ("+data[i].epoch+")");
+            let label = new Date(data[i].time).toLocaleTimeString();
+            if((i == 0) || (i==data.length-1)) {
+                label = new Date(data[i].time).toLocaleString();
+            }
+            chartLabels.push(label);
+            chartNav.push(""+data[i].epoch);
             html += '<td class="'+bgclass+'"><button class="btn btn-xs btn-light btnProduct" data-epoch="'+data[i].epoch+'">'+data[i].epoch+'</button></td>';
             html += '<td class="'+bgclass+'" title="Epoch '+data[i].epoch+'">'+new Date(data[i].time).toLocaleString()+'</td>';
             let color = 'text-danger';
@@ -166,16 +263,22 @@ $(document).ready(function() {
         html += '<tfoot>';
         html += '<tr>';
         html += '<th>&nbsp;</th>';
-        html += '<th colspan="2">von '+new Date(data[data.length-1].time).toLocaleString()+'<br/>bis '+new Date(data[0].time).toLocaleString()+' </th>';
+        let timeFrame = 'von <span class="float-end">'+new Date(data[data.length-1].time).toLocaleString()+'</span><br/>bis <span class="float-end">'+new Date(data[0].time).toLocaleString()+'</span> ';
+        html += '<th colspan="2">'+timeFrame+'</th>';
         html += '<th class="text-end" valign="top">'+totalCO2.toFixed(0).replace('.',',')+'eq</th>';
         html += '<th class="text-end" valign="top">'+totalDirect.toFixed(3).replace('.',',')+'kWh</th>';
         html += '<th class="text-end" valign="top"><span class="text-danger">'+totalIn.toFixed(3).replace('.',',')+'kWh</span><br/><span class="text-success">'+totalOut.toFixed(3).replace('.',',')+'kWh</span><br/>'+totalBalancing.toFixed(3).replace('.',',')+'kWh</th>';
         html += '</tr>';
         html += '</tfoot>';
         html += '</tbody>';
+        $('#timeFrame').html(timeFrame);
+        let results = 'Direkt (intern):<span class="float-end">'+totalDirect.toFixed(3).replace('.',',')+'kWh</span><br/>';
+         results += 'Ausgleich (extern):<span class="float-end">'+totalBalancing.toFixed(3).replace('.',',')+'kWh</span><br/>';
+        $('#resultStats').html(results)
         chartDataCO2.reverse();
         chartDataEnergy.reverse();
         chartLabels.reverse();
+        chartNav.reverse();
         chartDataDirect.reverse();
         html += '</table>';
         $('#balances').html(html);
@@ -243,19 +346,19 @@ $(document).ready(function() {
         let unit = 'kWh';
 
         datasets = [{
-            label: 'Treibhausgasemission (g)',
+            label: 'Emission (g)',
             data: chartDataCO2,
             backgroundColor:["#c69006"],
             yAxisID: 'A',
             },
             {
-                label: 'Ausgleich, extern (kWh)',
+                label: 'Ausgleich (kWh)',
                 fill:true,
                 data: chartDataEnergy,
                 backgroundColor:["#a0a0a0"],
                 yAxisID: 'B',
             },            {
-                label: 'Direktlieferung, intern (kWh)',
+                label: 'Direkt (kWh)',
                 fill:true,
                 data: chartDataDirect,
                 backgroundColor:["#147a50"],
@@ -270,13 +373,22 @@ $(document).ready(function() {
               datasets: datasets
             },
             options: {
-                tooltip: {
+                onClick: function(event, elements) {
+                    if (elements.length > 0) {
+                      $.getJSON("/api/balancing/balance?assetId="+window.assetId+"&epoch="+chartNav[elements[0].index], function(data) {
+                        renderTransactions(data);
+                        $('#modalTransactions').modal('show');
+                       });
+                    }
+                },
+                tooltips: {
                     callbacks: {
-                        label: function(context) {
-                            if(typeof context.parsed !== 'undefined') {
-                                return context.parsed + ''+unit;
-                            } else return '';
-                        }
+                      
+                            label: function(tooltipItem, data) {
+                              // Formatieren des Labels des Tooltips
+                              console.log("HALLO");
+                              return '$' + tooltipItem.yLabel.toFixed(2);
+                            }
                     }
                 },
                 scales: {
@@ -297,6 +409,10 @@ $(document).ready(function() {
                   },
             }
         });
+        window.chartObject.canvas.parentNode.style.height = '100%';
+        window.chartObject.canvas.parentNode.style.width = '100%';
+        window.chartObject.resize();
+        window.paper.scaleContentToFit({ padding: 10 });
     }
 
     /**
@@ -363,5 +479,11 @@ $(document).ready(function() {
     });
     $('#balancingHelper').click(function(e) {
         location.href="./uc_balancehelper.html?assetId="+window.assetId;
+    })
+    $('#allocation_from').on('keypress',function(e) {
+        $('#direction-from').prop('checked',true);
+    })
+    $('#allocation_to').on('keypress',function(e) {
+        $('#direction-to').prop('checked',true);
     })
 });

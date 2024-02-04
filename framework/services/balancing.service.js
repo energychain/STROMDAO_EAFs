@@ -65,6 +65,7 @@ module.exports = {
 				method: "GET",
 				path: "/latestBalances"
 			},
+      cache: true, 
       params: {
         assetId: "string",
       },
@@ -382,6 +383,7 @@ module.exports = {
         assetId: { type: "string" },
         epoch: { type: "any" }
       },
+      cache: true, 
       rest: {
 				method: "GET",
 				path: "/balance"
@@ -400,11 +402,53 @@ module.exports = {
             res.energy = (-1) * res.clearing.energy; 
           }
           res.energy *= -1;
-
-          return res;
         } else {
-          return res[0];
+          res= res[0];
         }
+        // check peers
+        let froms = {};
+        let tos = {};
+        let total_from = 0;
+        let total_to = 0;
+        for(let i=0;i<res.transactions.length;i++) {
+          if(res.transactions[i].label !== '.end') {
+              if(res.transactions[i].from !== ctx.params.assetId) {
+                  if(typeof froms[res.transactions[i].from] === 'undefined') {
+                      froms[res.transactions[i].from] =  { energy: 0,tx:{} }; ;
+                  }
+                  froms[res.transactions[i].from].energy += res.transactions[i].energy;
+                  total_from += 1* res.transactions[i].energy;
+              }
+              if(res.transactions[i].to !== ctx.params.assetId) {
+                if(typeof tos[res.transactions[i].to] === 'undefined') {
+                    tos[res.transactions[i].to] = {energy:0,tx:{}} ;
+                }
+                tos[res.transactions[i].to].energy += res.transactions[i].energy;
+                total_to += 1 * res.transactions[i].energy;
+            }
+          }
+        }
+        if(total_to>0) {
+          for (const [key, value] of Object.entries(froms)) {
+            for (const [key2, value2] of Object.entries(tos)) {
+              froms[key].tx[key2] = Math.round((value2.energy/total_to) * value.energy);
+              if(froms[key].tx[key2]==null) delete froms[key].tx[key2];
+            }
+          }
+        }
+        if(total_from>0) {
+          for (const [key, value] of Object.entries(tos)) {
+            for (const [key2, value2] of Object.entries(froms)) {
+              tos[key].tx[key2] = Math.round((value2.energy/total_from) * value.energy);
+              if(tos[key].tx[key2]==null) delete tos[key].tx[key2];
+            }
+          }
+        }
+        res.peers = {
+          from: froms,
+          to: tos
+        }
+        return res;
       }
     },
     sealedBalance: {
