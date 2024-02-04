@@ -1,3 +1,11 @@
+## [0.6.5](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.4...v0.6.5) (2024-02-04)
+
+
+### Bug Fixes
+
+* Allow balancing split between In and out / From and To. ([a014595](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/a0145954a11d69572c9349af64ecaab25af5d6a2))
+* UI display calculation of self consumption of a balancing point ([a7b4b20](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/a7b4b206626e749801e55898d580ad800c3966a7))
+
 ## [0.6.4](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.3...v0.6.4) (2024-02-01)
 
 
