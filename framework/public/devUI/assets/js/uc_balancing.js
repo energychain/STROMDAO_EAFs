@@ -352,18 +352,19 @@ $(document).ready(function() {
             yAxisID: 'A',
             },
             {
-                label: 'Ausgleich (kWh)',
-                fill:true,
-                data: chartDataEnergy,
-                backgroundColor:["#a0a0a0"],
-                yAxisID: 'B',
-            },            {
                 label: 'Direkt (kWh)',
                 fill:true,
                 data: chartDataDirect,
                 backgroundColor:["#147a50"],
                 yAxisID: 'B',
-            }];
+            },
+            {
+                label: 'Ausgleich (kWh)',
+                fill:true,
+                data: chartDataEnergy,
+                backgroundColor:["#a0a0a0"],
+                yAxisID: 'B',
+            }            ];
         
 
         window.chartObject = new Chart(ctxChart, {
