@@ -1,5 +1,8 @@
 ## [0.6.5](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.4...v0.6.5) (2024-02-04)
-
+### Increment
+Balancing Enhancement: Implemented a balancing enhancement that allows for linear optimization of individual balances to optimize inner dispatches of generation and consumption in a period. This is achieved by feeding multiple balances in sequence into a simplex optimization.
+Performance Optimization: Improved the performance of the application by optimizing the data structures and algorithms used for calculations.
+User Interface Enhancements: Made several improvements to the user interface to make it more user-friendly and intuitive.
 
 ### Bug Fixes
 
