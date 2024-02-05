@@ -131,9 +131,12 @@ module.exports = {
 						if(typeof ctx.params.type !== 'undefined') {
 							query.type = ctx.params.type;
 						}
-					let res = await db.collection("assets").find(query).toArray();
-					for(let i=0;i<res.length;i++) {
-						delete res[i]._id;
+					let res = [];
+					if(typeof db !== 'undefined') {
+						res = await db.collection("assets").find(query).toArray();
+						for(let i=0;i<res.length;i++) {
+							delete res[i]._id;
+						}
 					}
 					return res;
 			}
