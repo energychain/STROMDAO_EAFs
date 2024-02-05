@@ -1,5 +1,5 @@
 module.exports = {
-    node: function() {
+    node: async function() {
         var os = require("os");
 
         if(typeof process.env["EAF_NODE_ID"] == 'undefined') {
@@ -15,7 +15,8 @@ module.exports = {
             runnerArgs.push(__dirname + "/services/**/*.service.js");
         }
         const runner = new Runner();
-        runner.start(runnerArgs);
+        await runner.start(runnerArgs);
+        return runner.broker;
 
     }
 }
