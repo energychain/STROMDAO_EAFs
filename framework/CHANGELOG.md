@@ -1,5 +1,12 @@
 ## [0.6.8](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.7...v0.6.8) (2024-02-05)
+### Increment
+It is possible to start EAF from within an existing runtime. 
 
+```node
+        const eaf = require('stromdao-eaf');
+        process.env.TRANSPORTER="natsurl:4222";
+        eaf.node();
+```
 
 ### Bug Fixes
 
