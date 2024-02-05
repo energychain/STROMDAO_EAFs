@@ -1,3 +1,11 @@
+## [0.6.6](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.5...v0.6.6) (2024-02-05)
+
+
+### Bug Fixes
+
+* Balance profile chart has "direct" in front now. ([81d1000](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/81d10007aba26bf6b5dbcd84a422b51e613ed093))
+* Specify main in package.json to allow embedded usage of EAF. ([4c6b848](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/4c6b848fb2e8a494b70661e618e5b9686006a034))
+
 ## [0.6.5](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.4...v0.6.5) (2024-02-04)
 ### Increment
 Balancing Enhancement: Implemented a balancing enhancement that allows for linear optimization of individual balances to optimize inner dispatches of generation and consumption in a period. This is achieved by feeding multiple balances in sequence into a simplex optimization.
