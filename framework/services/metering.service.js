@@ -303,14 +303,14 @@ module.exports = {
 						transientReading.time = ctx.params.time * 1;
 						transientReading.id = transientReading._id;
 						transientReading.jwt = await ctx.call("access.createReadingJWT",transientReading);
-						if(typeof ctx.params.clearing !== 'undefined') {
+						if((typeof ctx.params.clearing !== 'undefined') || (typeof transientReading.id == 'undefined')) {
 							// in case we received a clearing we might need to insert first
 							const findExisting = await ctx.call("readings_model.find",{
 								query: {
 									meterId: ctx.params.meterId
 								}
 							});
-							if(findExisting.length == 0) {
+							if((findExisting.length == 0) || (typeof transientReading.id == 'undefined')) {
 								await ctx.call("readings_model.insert",{entity:transientReading});
 							} else {
 								for(let i=0;i<findExisting.length;i++) {
@@ -323,6 +323,7 @@ module.exports = {
 								await ctx.call("readings_model.insert",{entity:transientReading});
 							}
 						} else {
+							console.log(transientReading);
 							await ctx.call("readings_model.update",transientReading);
 						}
 						transientReading.consumption = deltaConumption;
@@ -356,8 +357,9 @@ module.exports = {
 					}
 
 					const clearing = await ctx.call("clearing.commit",transientClearing);
-					
-					transientReading.id = transientReading._id;
+					if(typeof transientReading.id == 'undefined') {
+						transientReading.id = transientReading._id;
+					}
 					if(typeof transientReading._id !== 'undefined') {
 						transientReading.clearingJWT = clearing.jwt;
 						delete transientReading._id;

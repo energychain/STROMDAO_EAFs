@@ -379,7 +379,7 @@ module.exports = {
 							},
 							sort:"-epoch"
 						});
-						if((typeof price_info !== 'undefined') && (price_info !== null)) {
+						if((typeof price_info !== 'undefined') && (price_info !== null) && (price_info.length >0)) {
 							existingEpochs["epoch_"+i].price = price_info[0].price;
 							existingEpochs["epoch_"+i].priceOfEpoch = price_info[0].epoch;
 						}

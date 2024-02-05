@@ -126,6 +126,7 @@ module.exports = {
 								"clientMeta.location.country" : "text"
 							}
 					*/
+<<<<<<< HEAD
 					let query = {"assetId" : {$regex : ctx.params.q}};
 					if(typeof ctx.params.type !== 'undefined') {
 						query.type = ctx.params.type;
@@ -133,6 +134,18 @@ module.exports = {
 					let res = await db.collection("assets").find(query).toArray();
 					for(let i=0;i<res.length;i++) {
 						delete res[i]._id;
+=======
+						let query = {"assetId" : {$regex : ctx.params.q}};
+						if(typeof ctx.params.type !== 'undefined') {
+							query.type = ctx.params.type;
+						}
+					let res = [];
+					if(typeof db !== 'undefined') {
+						res = await db.collection("assets").find(query).toArray();
+						for(let i=0;i<res.length;i++) {
+							delete res[i]._id;
+						}
+>>>>>>> 953c7d1924a207459fbcfa1ef8430cf37c8fce83
 					}
 					return res;
 			}

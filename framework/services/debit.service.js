@@ -36,7 +36,14 @@ module.exports = {
 					return (await ctx.call("debit_model.list",{ pageSize: 50,sort:"-clearingTime"})).rows;
 				} else {
 					const regex = new RegExp(`^${ctx.params.q}`, 'i');
-					return await ctx.call("debit_model.find",{query:{ meterId: { $regex: regex }  }});
+					// Regex "Find" only works with MongoDB Backend. 
+					console.log(process.db_adapter);
+					if((!process.db_adapter) ||(process.db_adapter == null)) {
+						let res = await ctx.call("debit_model.find",{query:{ meterId: ctx.params.q }});
+						return res;
+					} else {
+						return await ctx.call("debit_model.find",{query:{ meterId: { $regex: regex }  }});
+					}
 				}
 			}
 		},
