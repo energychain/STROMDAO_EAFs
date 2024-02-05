@@ -1,3 +1,10 @@
+## [0.6.7](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.6...v0.6.7) (2024-02-05)
+
+
+### Bug Fixes
+
+* Allow to preload standard (core) microservices or specify custom services of node via env `EAF_SERVICES` ([fc4d620](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/fc4d6200151143f46ce1d0e6166c5442acf5ea18))
+
 ## [0.6.6](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.5...v0.6.6) (2024-02-05)
 
 
