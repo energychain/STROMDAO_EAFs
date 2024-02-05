@@ -43,6 +43,7 @@
     "stromdao",
     "tariff"
   ],
+  "main": "./index.js",
   "author": "STROMDAO GmbH <dev@stromdao.com>",
   "license": "Apache-2.0",
   "bugs": {
