@@ -1,3 +1,10 @@
+## [0.6.8](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.7...v0.6.8) (2024-02-05)
+
+
+### Bug Fixes
+
+* Remove Moleculer LAB dependency as it makes SQLite3 dependency mandatory ([c49cc48](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/c49cc485166f1e35ae8c3f16ba3d4552fabccfa4))
+
 ## [0.6.7](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.6...v0.6.7) (2024-02-05)
 
 
