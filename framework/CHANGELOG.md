@@ -1,3 +1,10 @@
+## [0.6.9](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.8...v0.6.9) (2024-02-05)
+
+
+### Bug Fixes
+
+* Returns broker if instantiated via existing runtime. ([1488f7f](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/1488f7f56e7f4fd16cd32b21dc55638afc9e0a4e))
+
 ## [0.6.8](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.7...v0.6.8) (2024-02-05)
 ### Increment
 It is possible to start EAF from within an existing runtime. 

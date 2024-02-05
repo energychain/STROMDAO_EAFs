@@ -47,7 +47,6 @@ module.exports = {
 			},
 			/** @param {Context} ctx  */
 			async handler(ctx) {
-				
 				if(db == null) {
 					return false;
 				} else {
@@ -127,10 +126,10 @@ module.exports = {
 								"clientMeta.location.country" : "text"
 							}
 					*/
-						let query = {"assetId" : {$regex : ctx.params.q}};
-						if(typeof ctx.params.type !== 'undefined') {
-							query.type = ctx.params.type;
-						}
+					let query = {"assetId" : {$regex : ctx.params.q}};
+					if(typeof ctx.params.type !== 'undefined') {
+						query.type = ctx.params.type;
+					}
 					let res = await db.collection("assets").find(query).toArray();
 					for(let i=0;i<res.length;i++) {
 						delete res[i]._id;
