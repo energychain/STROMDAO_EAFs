@@ -1,3 +1,10 @@
+## [0.6.11](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.10...v0.6.11) (2024-02-07)
+
+
+### Bug Fixes
+
+* Allow balancing in stateless (memory database) operation of the Energy Application Framework ([67ce2a3](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/67ce2a3d80edb38398330e5e85a34f9997795653))
+
 ## [0.6.10](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.9...v0.6.10) (2024-02-05)
 
 
