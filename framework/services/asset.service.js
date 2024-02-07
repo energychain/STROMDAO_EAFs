@@ -131,9 +131,14 @@ module.exports = {
 			async handler(ctx) {
 				if(db == null) {
 					let query = {"assetId" : ctx.params.q};
+					if((typeof ctx.params.q == 'undefined') || (ctx.params.q.length == 0)) {
+						query = {};
+					}
 					if(typeof ctx.params.type !== 'undefined') {
 						query.type = ctx.params.type;
 					}
+					// in case query is empty system should behave like mongoDB usage... (using list).
+					
 					const assets = await ctx.call("asset_model.find",{query:query});
 					return assets;
 				} else {
