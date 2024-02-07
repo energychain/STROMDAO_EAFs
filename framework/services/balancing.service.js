@@ -257,7 +257,7 @@ module.exports = {
         try {
           // Check if we have a balancing rule for this asset.
           const asset = await ctx.call("asset.get", { assetId: ctx.params.meterId,type:"balance" });
-  
+          console.log("Asset Info",asset);
           // Initialize the statement and balance objects
           let statement = {
             from: ROOT_BALANCE_GROUP,

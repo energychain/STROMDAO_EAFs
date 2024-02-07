@@ -174,12 +174,14 @@ module.exports = {
 				time: { 
 					type: "number",
 					$$t: "Timestamp of meter reading given in partameter `reading` in UTC ms.",
-					example: 1702217116620
+					example: 1702217116620,
+					optional: true
 				},
 				reading: { 
 					type: "number",
 					$$t: "Actual reading in Wh at given time in parameter `time`",
-					example: 833546123
+					example: 833546123,
+					optional: true
 				}
 			},
 			/**
@@ -196,6 +198,12 @@ module.exports = {
 			 * @return {object} transientReading - The updated transient reading object.
 			 */
 			async handler(ctx) {
+				if(typeof ctx.params.time == 'undefined') {
+					ctx.params.time = new Date().getTime();
+				}
+				if(typeof ctx.params.reading == 'undefined') {
+					ctx.params.reading = -1;
+				}
 				if((typeof ctx.meta.user !== 'undefined') && ((typeof ctx.meta.user.meterId !== 'undefined') || (typeof ctx.meta.user.concentratorId !== 'undefined'))) {
 					// Ensure Authenticated Token is authorized
 					if(typeof ctx.meta.user.concentratorId !== 'undefined') {
@@ -323,7 +331,6 @@ module.exports = {
 								await ctx.call("readings_model.insert",{entity:transientReading});
 							}
 						} else {
-							console.log(transientReading);
 							await ctx.call("readings_model.update",transientReading);
 						}
 						transientReading.consumption = deltaConumption;

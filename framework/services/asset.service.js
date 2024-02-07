@@ -48,7 +48,19 @@ module.exports = {
 			/** @param {Context} ctx  */
 			async handler(ctx) {
 				if(db == null) {
-					return false;
+					// retrieve assetId via query
+					const assets = await ctx.call("asset_model.find",{query:{assetId:ctx.params.assetId,type:ctx.params.type}});
+					let found = false;
+					for(let i=0;i<assets.length;i++) {
+						if(assets[i].assetId == ctx.params.assetId) {
+							if(typeof assets[i]._id !== 'undefined') assets[i].id = assets[i]._id;
+							found = true;
+							await ctx.call("asset_model.update",assets[i]);
+						}
+					}
+					if(!found) {
+						await ctx.call("asset_model.insert",{entity:ctx.params});
+					}
 				} else {
 					return (await db.collection("assets").updateOne({assetId:ctx.params.assetId,type:ctx.params.type},{$set:ctx.params},{upsert:true})).result;
 				}
@@ -68,7 +80,8 @@ module.exports = {
 			/** @param {Context} ctx  */
 			async handler(ctx) {
 				if(db == null) {
-					return false;
+					const assets = await ctx.call("asset_model.find",{query:{assetId:ctx.params.assetId}});
+					return assets[0];
 				} else {
 					let query = {assetId:ctx.params.assetId};
 					if(typeof ctx.params.type !== 'undefined') {
@@ -94,11 +107,16 @@ module.exports = {
 			},
 			/** @param {Context} ctx  */
 			async handler(ctx) {
-				let res = await db.collection("assets").find(ctx.params.q).toArray();
-				for(let i=0;i<res.length;i++) {
-					delete res[i]._id;
-				}
-				return res;	
+				if(db == null) {
+					const assets = await ctx.call("asset_model.find",{query:ctx.params.q});
+					return assets;
+				} else {
+					let res = await db.collection("assets").find(ctx.params.q).toArray();
+					for(let i=0;i<res.length;i++) {
+						delete res[i]._id;
+					}
+					return res;
+				}	
 			}
 		},
 		find: {
@@ -111,21 +129,14 @@ module.exports = {
 			},
 			/** @param {Context} ctx  */
 			async handler(ctx) {
-					/* Should have text index with fields:
-							{
-								"clientMeta.meterPointName" : "text",
-								"clientMeta" : "text",
-								"clientMeta.administrationNumber" : "text",
-								"clientMeta.location.street" : "text",
-								"clientMeta.manufacturerId" : "text",
-								"clientMeta.location.city" : "text",
-								"clientMeta.location.zip" : "text",
-								"clientMeta.serialNumber" : "text",
-								"clientMeta.fullSerialNumber" : "text",
-								"clientMeta.metaName" : "text",
-								"clientMeta.location.country" : "text"
-							}
-					*/
+				if(db == null) {
+					let query = {"assetId" : ctx.params.q};
+					if(typeof ctx.params.type !== 'undefined') {
+						query.type = ctx.params.type;
+					}
+					const assets = await ctx.call("asset_model.find",{query:query});
+					return assets;
+				} else {
 					let query = {"assetId" : {$regex : ctx.params.q}};
 					if(typeof ctx.params.type !== 'undefined') {
 						query.type = ctx.params.type;
@@ -135,6 +146,7 @@ module.exports = {
 						delete res[i]._id;
 					}
 					return res;
+				}
 			}
 		}
 	},

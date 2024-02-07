@@ -1,3 +1,12 @@
+## [0.6.10](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.9...v0.6.10) (2024-02-05)
+
+
+### Bug Fixes
+
+* Asset dependency ([9542d67](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/9542d67a331a2e65fc686aacc40c553afb79deb9))
+* https://github.com/energychain/STROMDAO_EAFs/issues/21 ([953c7d1](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/953c7d1924a207459fbcfa1ef8430cf37c8fce83))
+* Merge error of last commit ([9c418cc](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/9c418ccad28a8febc95ad54cc8a6df94c60faea3))
+
 ## [0.6.9](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.8...v0.6.9) (2024-02-05)
 
 
