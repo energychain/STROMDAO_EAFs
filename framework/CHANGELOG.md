@@ -1,3 +1,10 @@
+## [0.6.12](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.11...v0.6.12) (2024-02-07)
+
+
+### Bug Fixes
+
+* Usage of empty query in find operation should act same for in-memory and mongoDB. ([8449030](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/8449030e3f4abb41d5c49bfe0265e060cc41cad0))
+
 ## [0.6.11](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.10...v0.6.11) (2024-02-07)
 
 

@@ -38,6 +38,7 @@ module.exports = {
        * @return {Array} the result of the function
        */
       async handler(ctx) {
+        console.log("*********** Process",ctx.params);
         let findContract = await ctx.call("contract_model.find",{query:{contractId:ctx.params.contractId}});
         if(findContract.length == 1) {
             findContract[0].balanced += 1 * ctx.params.energy;

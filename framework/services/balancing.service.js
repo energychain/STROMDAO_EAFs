@@ -614,6 +614,12 @@ module.exports = {
             co2eq: intermediateBalance.clearing.co2eq,
             label: ".end"
           }
+          if(statement.energy < 0) {
+            const tmp_to = statement.to;
+            statement.to = statement.from;
+            statement.from = tmp_to; 
+            statement.energy *= -1;
+          }
           await ctx.call("balance_settlements_active_model.insert",{entity:statement});
           intermediateBalance = await ctx.call("balancing.unsealedBalance",ctx.params); // Hier könnte man die MOL danach abrufen
           // Fix who is upstream
@@ -623,7 +629,6 @@ module.exports = {
         }
         if((intermediateBalance.energy == 0)||(intermediateBalance.clearing.energy == 0)) {
             intermediateBalance.balancesum = Math.round(intermediateBalance.balancesum/2);
-
             const audit = await ctx.call("audit.requestApproval",intermediateBalance);
             if( (audit).success ) {
               intermediateBalance.auditId = audit.auditId;

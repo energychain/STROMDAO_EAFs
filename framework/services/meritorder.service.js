@@ -127,7 +127,7 @@ module.exports = {
                 let counterTransaction = {
 
                 }
-              
+               
                 if(
                   (energy_in > 0) &&
                   (mol[i].direction == "from")
@@ -162,9 +162,16 @@ module.exports = {
                             "contractId": mol[i].contractId
                         }
                 }
-                if((energy_out >0) &&
+                if(energy_in < 0) {
+                  energy_out = Math.abs(energy_in);
+                }
+                energy_out = Math.abs(energy_out);
+              
+                if((Math.abs(energy_out) >0) &&
                   (mol[i].direction == "to")
                 ) {
+                      
+                        // Da energy_out < 0 ist, wird dies hier fehlerhaft!
                         if(energy_out > mol[i].load_max) {
                           energy_out = mol[i].load_max;
                         }
@@ -195,7 +202,6 @@ module.exports = {
                           "contractId": mol[i].contractId
                       }
                 }
-
                 ctx.params.transactions.push(transaction);
                 ctx.params.transactions.push(counterTransaction);
               
@@ -226,6 +232,7 @@ module.exports = {
           mol = mol[0].mol; // We only allow 1 mol per balancing point
 
           for(let i=0;i<ctx.params.transactions.length;i++) {
+            
               // Identify relevant transactions and change balanced of contract
               if(ctx.params.transactions[i].accounting == 'mol') {
                 ctx.params.transactions[i].assetId = ctx.params.assetId;
