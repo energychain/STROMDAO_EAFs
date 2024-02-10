@@ -1,3 +1,5 @@
+## [0.6.13](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.12...v0.6.13) (2024-02-10)
+
 ## [0.6.12](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.11...v0.6.12) (2024-02-07)
 
 
