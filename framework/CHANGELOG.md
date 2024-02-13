@@ -1,3 +1,24 @@
+## [0.6.14](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.13...v0.6.14) (2024-02-13)
+
+
+### Features
+
+* Allow download of last 100 invoices as CSV. ([3c56b6f](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/3c56b6fefc4debd9deade3c035ca35e187979fd3))
+* Method stub for last invoices list. ([f3e85ef](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/f3e85efa7098fccbe9c3d4428ed69df932c24e02))
+
+
+### Bug Fixes
+
+* Allow format for exports. Fix calculations. Added timeout option for larger installations. ([a8d6f92](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/a8d6f92636fd5bc0a93651e80ec4d29b2bb3df72))
+* debit/clearing interference with balancing. ([ed4b916](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/ed4b916953dbb53161fc072255df3a5d961440f7))
+* Handling of clearing after invoicing ([e500176](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/e500176e52d30e810cef08065f0210f3f7433c34))
+* Limit amount of clearings to retrieve to 30 to avoid BSON error. ([91fefee](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/91fefeeed0f8c939ed0262fb3851f4d3bbb55f84))
+* Missign endTime in transient clearing for closeBilling() ([ba00bc1](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/ba00bc16e58dac7baebe3ad13affb76bec7da4f9))
+* Missing check if finalReading exists. ([99adbe9](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/99adbe98d2a1af67d9d077e632879d94fdae0b61))
+* Missing data ignored for closing clearing ([b893059](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/b89305990fa2e60ae3e48f78dffbdc230c1c9a9d))
+* rename closing and opening to have "time" at the end. ([4d1fe72](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/4d1fe7245509188661eb8e074c7336e521c428e0))
+* Set Opening Time of next invoice in closeBilling ([d14e302](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/d14e302b8fd17dba420d1848840154c8b1e99ade))
+
 ## [0.6.13](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.12...v0.6.13) (2024-02-10)
 
 ## [0.6.12](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.11...v0.6.12) (2024-02-07)
