@@ -25,7 +25,16 @@ module.exports = {
 	 * Actions
 	 */
 	actions: {
-
+		invoices: {
+			rest: {
+				method: "GET",
+				path: "/invoices"
+			},
+			async handler(ctx) {
+				let res =  await ctx.call("invoice_model.find",{query:{},sort:"-_id",limit:100});
+				return res;
+			}
+		},
 		assets: {
 			rest: {
 				method: "GET",
@@ -340,6 +349,7 @@ module.exports = {
 					delete current_debit._id;
 				
 					current_debit.clearing = await ctx.call("clearing.commit",transient_clearing);
+					current_debit.handle =  await ctx.call("access.randomString",{length:12});
 					current_debit.jwt = await ctx.call("access.createInvoiceJWT",current_debit);
 					await ctx.call("invoice_model.insert",{entity:current_debit});
 					await ctx.broker.emit("invoice.created", current_debit);
