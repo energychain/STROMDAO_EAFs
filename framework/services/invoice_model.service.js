@@ -24,7 +24,7 @@ module.exports = {
 	 * Settings
 	 */
 	settings: {
-		fields: ["_id", "meterId", "reading","time","virtual_0","virtual_1","virtual_2","virtual_3","virtual_4","virtual_5","virtual_6","virtual_7","virtual_8","virtual_9","invoice","finalReading","endTime","jwt"],
+		fields: ["_id", "meterId", "reading","time","cost","consumption","cost_virtual_1","cost_virtual_2","cost_virtual_3","consumption_virtual_1","consumption_virtual_2","consumption_virtual_3","virtual_0","virtual_1","virtual_2","virtual_3","virtual_4","virtual_5","virtual_6","virtual_7","virtual_8","virtual_9","invoice","finalReading","endTime","jwt"],
    },
 
 	/**

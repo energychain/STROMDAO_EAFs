@@ -32,6 +32,61 @@ module.exports = {
 			},
 			async handler(ctx) {
 				let res =  await ctx.call("invoice_model.find",{query:{},sort:"-_id",limit:100});
+				for(let i=0;i<res.length;i++) {
+					delete res[i]._id;
+					delete res[i].id;
+					if(typeof ctx.params.jwt == 'undefined') {
+						delete res[i].jwt;
+						delete res[i].finalReading.clearingJWT;
+					}
+				}
+				if((typeof ctx.params.format !== 'undefined') && (ctx.params.format == 'csv')) {
+					let csv = '';
+					for (const [key, value] of Object.entries(res[0])) {
+						const addISOTimeField = function(_key) {
+							if(_key.toLowerCase().indexOf('time') !== -1) {
+								return '"' + _key +"_ISO" + '",';
+							} else return "";
+						}
+
+						if(typeof value !== 'object') {
+							csv += '"' + key + '"' + ","+addISOTimeField(key);
+						} else {
+							for (const [level2_key, level2_value] of Object.entries(value)) {
+								csv += '"' + key + '_'+ level2_key + '"' + "," + addISOTimeField(key + '_'+ level2_key);
+							}
+						}
+					}
+					csv = csv.substring(0, csv.length - 1);
+
+					csv += "\n";
+					for(let i=0;i<res.length;i++) {
+						const decorateValue = function(_value) {
+							if(isNaN(_value)) return `"${_value}"`; 
+							else return `${_value}`;
+						}
+
+						const addISOTimeField = function(_key,_value) {
+							if(_key.toLowerCase().indexOf('time') !== -1) {
+								return '"' + new Date(_value).toISOString() + '",';
+							} else return "";
+						}
+
+						for (const [key, value] of Object.entries(res[i])) {
+							if(typeof value !== 'object') {
+								csv += '' + decorateValue(value) + '' + ","+addISOTimeField(key,value);
+							} else {
+								for (const [level2_key, level2_value] of Object.entries(value)) {
+									csv += '' + decorateValue(level2_value) + '' + "," +  addISOTimeField(key + '_'+ level2_key,level2_value);
+								}
+							}
+						}
+						csv = csv.substring(0, csv.length - 1);
+						csv += "\n";
+					}
+					res = csv;
+					ctx.meta.$responseType  = "text/plain"
+				}
 				return res;
 			}
 		},

@@ -7,7 +7,7 @@ module.exports = {
         {type: 'increment', release: 'patch'},
         {type: 'Increment', release: 'patch'},
         {type: 'feat', release: 'patch'},
-        {type: 'Feat', release: 'minor'},
+        {type: 'Feat', release: 'patch'},
         {type: 'fix', release: 'patch'},
         {type: 'Fix', release: 'patch'},
         {type: 'docs', release: 'patch'},
