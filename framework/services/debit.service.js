@@ -296,7 +296,7 @@ module.exports = {
 					}
 					current_debit.finalReading = rt;
 					// Collect all clearances in Time Frame
-					current_debit.invoice.opening = 0 // TODO Set with previous credit note
+					current_debit.invoice.opening = new Date().getTime(); // TODO Set with previous credit note
 
 					let offset = 0;
 					let results = 100;
