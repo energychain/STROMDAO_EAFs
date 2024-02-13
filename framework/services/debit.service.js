@@ -360,7 +360,7 @@ module.exports = {
 					}
 					current_debit.finalReading = rt;
 					// Collect all clearances in Time Frame
-					current_debit.invoice.openingTime = new Date().getTime(); // TODO Set with previous credit note
+					current_debit.invoice.openingTime = 0; new Date().getTime(); // TODO Set with previous credit note
 
 					let offset = 0;
 					let results = 100;
@@ -403,7 +403,13 @@ module.exports = {
 					await ctx.call("debit_model.remove",{id:current_debit._id});
 					delete current_debit._id;
 					try {
-					current_debit.clearing = await ctx.call("clearing.commit",transient_clearing);
+					current_debit.clearing = await ctx.call("clearing.commit",{
+						meterId: current_debit.meterId,
+						endTime: new Date().getTime(),
+						consumption: 1,
+						cost:0,
+						reading: current_debit.invoice.endReading
+					});
 					} catch(e) {
 						// Will fail on frequent billings. 
 						// Might require handling of last period.
