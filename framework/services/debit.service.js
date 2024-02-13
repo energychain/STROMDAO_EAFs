@@ -375,7 +375,7 @@ module.exports = {
 						let clearings = await ctx.call("clearings_model.find",{query:{
 							meterId:current_debit.meterId,
 							startTime:{ "$gte": current_debit.invoice.opening, "$lte":current_debit.invoice.closing }
-						},sort:"-clearingTime",limit:100,offset:offset,populate:["consumption","cost","consumption_virtual_1","consumption_virtual_2","consumption_virtual_3","consumption_virtual_4","consumption_virtual_5","consumption_virtual_6","consumption_virtual_7","consumption_virtual_8","consumption_virtual_9","cost_virtual_1","cost_virtual_2","cost_virtual_3","cost_virtual_4","cost_virtual_5","cost_virtual_6","cost_virtual_7","cost_virtual_8","cost_virtual_9"]},
+						},sort:"-clearingTime",limit:30,offset:offset,populate:["consumption","cost","consumption_virtual_1","consumption_virtual_2","consumption_virtual_3","consumption_virtual_4","consumption_virtual_5","consumption_virtual_6","consumption_virtual_7","consumption_virtual_8","consumption_virtual_9","cost_virtual_1","cost_virtual_2","cost_virtual_3","cost_virtual_4","cost_virtual_5","cost_virtual_6","cost_virtual_7","cost_virtual_8","cost_virtual_9"]},
 						{timeout:60000});
 						results = clearings.length;
 						offset += clearings.length;
