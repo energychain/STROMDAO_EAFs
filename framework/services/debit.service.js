@@ -32,19 +32,74 @@ module.exports = {
 				path: "/assets"
 			},
 			async handler(ctx) {
+				let res = [];
 				if((typeof ctx.params.q == 'undefined') || (ctx.params.q.length == 0)) {
-					return (await ctx.call("debit_model.list",{ pageSize: 50,sort:"-clearingTime"})).rows;
+					res =  (await ctx.call("debit_model.list",{ pageSize: 50,sort:"-clearingTime"})).rows;
 				} else {
 					const regex = new RegExp(`^${ctx.params.q}`, 'i');
 					// Regex "Find" only works with MongoDB Backend. 
-					console.log(process.db_adapter);
+					
 					if((!process.db_adapter) ||(process.db_adapter == null)) {
-						let res = await ctx.call("debit_model.find",{query:{ meterId: ctx.params.q }});
-						return res;
+						res = await ctx.call("debit_model.find",{query:{ meterId: ctx.params.q }});
 					} else {
-						return await ctx.call("debit_model.find",{query:{ meterId: { $regex: regex }  }});
+						res = await ctx.call("debit_model.find",{query:{ meterId: { $regex: regex }  }});
 					}
 				}
+				if(res.length >0) {
+					for(let i=0;i<res.length;i++) {
+						delete res[i]._id;
+						delete res[i].id;
+					}
+
+					if((typeof ctx.params.format !== 'undefined') && (ctx.params.format == 'csv')) {
+						let csv = '';
+						for (const [key, value] of Object.entries(res[0])) {
+							const addISOTimeField = function(_key) {
+								if(_key.toLowerCase().indexOf('time') !== -1) {
+									return '"' + _key +"_ISO" + '",';
+								} else return "";
+							}
+
+							if(typeof value !== 'object') {
+								csv += '"' + key + '"' + ","+addISOTimeField(key);
+							} else {
+								for (const [level2_key, level2_value] of Object.entries(value)) {
+									csv += '"' + key + '_'+ level2_key + '"' + "," + addISOTimeField(key + '_'+ level2_key);
+								}
+							}
+						}
+						csv = csv.substring(0, csv.length - 1);
+
+						csv += "\n";
+						for(let i=0;i<res.length;i++) {
+							const decorateValue = function(_value) {
+								if(isNaN(_value)) return `"${_value}"`; 
+								else return `${_value}`;
+							}
+
+							const addISOTimeField = function(_key,_value) {
+								if(_key.toLowerCase().indexOf('time') !== -1) {
+									return '"' + new Date(_value).toISOString() + '",';
+								} else return "";
+							}
+
+							for (const [key, value] of Object.entries(res[i])) {
+								if(typeof value !== 'object') {
+									csv += '' + decorateValue(value) + '' + ","+addISOTimeField(key,value);
+								} else {
+									for (const [level2_key, level2_value] of Object.entries(value)) {
+										csv += '' + decorateValue(level2_value) + '' + "," +  addISOTimeField(key + '_'+ level2_key,level2_value);
+									}
+								}
+							}
+							csv = csv.substring(0, csv.length - 1);
+							csv += "\n";
+						}
+						res = csv;
+						ctx.meta.$responseType  = "text/plain"
+					}
+				}
+				return res;
 			}
 		},
 		open: {
@@ -253,10 +308,11 @@ module.exports = {
 					}
 					
 					while(results == 100) {
-						let clearings = await ctx.call("clearing.find",{query:{
+						let clearings = await ctx.call("clearings_model.find",{query:{
 							meterId:current_debit.meterId,
 							startTime:{ "$gte": current_debit.invoice.opening, "$lte":current_debit.invoice.closing }
-						},sort:"-clearingTime",limit:100,offset:offset,populate:["consumption","cost","consumption_virtual_1","consumption_virtual_2","consumption_virtual_3","consumption_virtual_4","consumption_virtual_5","consumption_virtual_6","consumption_virtual_7","consumption_virtual_8","consumption_virtual_9","cost_virtual_1","cost_virtual_2","cost_virtual_3","cost_virtual_4","cost_virtual_5","cost_virtual_6","cost_virtual_7","cost_virtual_8","cost_virtual_9"]});
+						},sort:"-clearingTime",limit:100,offset:offset,populate:["consumption","cost","consumption_virtual_1","consumption_virtual_2","consumption_virtual_3","consumption_virtual_4","consumption_virtual_5","consumption_virtual_6","consumption_virtual_7","consumption_virtual_8","consumption_virtual_9","cost_virtual_1","cost_virtual_2","cost_virtual_3","cost_virtual_4","cost_virtual_5","cost_virtual_6","cost_virtual_7","cost_virtual_8","cost_virtual_9"]},
+						{timeout:60000});
 						results = clearings.length;
 						offset += clearings.length;
 						for(let i=0;i<clearings.length;i++) {
