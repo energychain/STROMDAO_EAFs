@@ -37,7 +37,9 @@ module.exports = {
 					delete res[i].id;
 					if(typeof ctx.params.jwt == 'undefined') {
 						delete res[i].jwt;
-						delete res[i].finalReading.clearingJWT;
+						if(typeof res[i].finalReading !== 'undefined') {
+							delete res[i].finalReading.clearingJWT;
+						}
 					}
 				}
 				if((typeof ctx.params.format !== 'undefined') && (ctx.params.format == 'csv')) {
