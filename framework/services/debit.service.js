@@ -296,7 +296,7 @@ module.exports = {
 					}
 					current_debit.finalReading = rt;
 					// Collect all clearances in Time Frame
-					current_debit.invoice.opening = new Date().getTime(); // TODO Set with previous credit note
+					current_debit.invoice.openingTime = new Date().getTime(); // TODO Set with previous credit note
 
 					let offset = 0;
 					let results = 100;
@@ -304,7 +304,7 @@ module.exports = {
 					let transient_clearing = {
 						meterId:current_debit.meterId,
 						reading:current_debit.invoice.endReading,
-						endTime:current_debit.invoice.closing
+						endTime:current_debit.invoice.closingTime
 					}
 					
 					while(results == 100) {
