@@ -338,6 +338,8 @@ module.exports = {
 					current_debit.invoice.closing = new Date().getTime();
 					current_debit.invoice.endEpoch = Math.floor(new Date().getTime() / process.env.EPOCH_DURATION);
 					current_debit.invoice.endReading = current_debit.reading;
+					/*
+					This does not to be done, as the readings might be aging and will interfer with balancing.
 
 					// update Reading to ensure "new start"
 					let rt = await ctx.call("metering.updateReading", {
@@ -359,6 +361,7 @@ module.exports = {
 						rt.closedByDebit=false;
 					}
 					current_debit.finalReading = rt;
+					 */
 					// Collect all clearances in Time Frame
 					current_debit.invoice.openingTime = 0; new Date().getTime(); // TODO Set with previous credit note
 
