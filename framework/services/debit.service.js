@@ -397,13 +397,17 @@ module.exports = {
 							}
 						}
 					}
-
+					transient_clearing.endTime = new Date().getTime(); // Fix to make required Parameter availabe
 					console.log('Transient Clearing',transient_clearing);
 
 					await ctx.call("debit_model.remove",{id:current_debit._id});
 					delete current_debit._id;
-					transient_clearing.endTime = new Date().getTime(); // Fix to make required Parameter availabe
+					try {
 					current_debit.clearing = await ctx.call("clearing.commit",transient_clearing);
+					} catch(e) {
+						// Will fail on frequent billings. 
+						// Might require handling of last period.
+					}
 					current_debit.handle =  await ctx.call("access.randomString",{length:12});
 					current_debit.jwt = await ctx.call("access.createInvoiceJWT",current_debit);
 					await ctx.call("invoice_model.insert",{entity:current_debit});
