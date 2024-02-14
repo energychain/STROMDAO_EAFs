@@ -42,7 +42,7 @@ module.exports = {
 						}
 					}
 				}
-				if((typeof ctx.params.format !== 'undefined') && (ctx.params.format == 'csv')) {
+				if((typeof ctx.params.format !== 'undefined') && (ctx.params.format == 'csv') && (res.length > 0)) {
 					let csv = '';
 					for (const [key, value] of Object.entries(res[0])) {
 						const addISOTimeField = function(_key) {
