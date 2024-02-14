@@ -1,5 +1,9 @@
 $(document).ready(function() {
     let customLabels = {};
+    $.getJSON("/api/access/settings",function(data) {
+        window.eaf_settings = data;
+    });
+
     if($.urlParam('meterId')) {
         window.assetId = $.urlParam('meterId'); 
     }
@@ -527,8 +531,8 @@ $(document).ready(function() {
             contentType: 'application/json',
             success: function(response) {
                 // Set Counter Rule
-                console.log(response);
-                $('#btnRule').removeAttr('disabled');
+                $(".mutable").addClass("bg-light");
+                $('#btnRule').attr('disabled','disabled');
             }
         });     
 
@@ -543,4 +547,12 @@ $(document).ready(function() {
     $('#allocation_to').on('keypress',function(e) {
         $('#direction-to').prop('checked',true);
     })
+    $(function() {
+        $(".mutable").addClass("bg-light");
+        $('#btnRule').attr('disabled','disabled');
+        $(".mutable").on("click", function() {
+            $(this).removeClass("bg-light");
+            $('#btnRule').removeAttr('disabled');
+        });
+      });
 });
