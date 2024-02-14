@@ -16,6 +16,9 @@ $(document).ready(function() {
             html += '<td>';
             html +=   '<button class="btn btn-xs btn-light btnClear openAssetBalancing" title="Bilanzierung öffnen" data-id="'+data[i].assetId+'">'+data[i].assetId+'</button>';
             html += '</td>';
+            if(data[i].assetId == $.urlParam('meterId')) {
+                location.href="./uc_balancing.html?assetId="+data[i].assetId;
+            }
             if(typeof data[i].balancerule == 'undefined') {
                 html += '<td colspan="2">&nbsp;</td>';
             } else {
@@ -23,6 +26,9 @@ $(document).ready(function() {
                     html += '<td>';
                     html +=   '<button class="btn btn-xs btn-light btnClear openAssetBalancing" title="Bilanzierung öffnen" data-id="'+data[i].balancerule.from+'">'+data[i].balancerule.from+'</button>';
                     html += '</td>';
+                    if(data[i].balancerule.from == $.urlParam('meterId')) {
+                        location.href="./uc_balancing.html?assetId="+data[i].balancerule.from;
+                    }
                 } else {
                     html += '<td>&nbsp;</td>';
                 }
@@ -30,6 +36,9 @@ $(document).ready(function() {
                     html += '<td>';
                     html +=   '<button class="btn btn-xs btn-light btnClear openAssetBalancing" title="Bilanzierung öffnen" data-id="'+data[i].balancerule.to+'">'+data[i].balancerule.to+'</button>';
                     html += '</td>';
+                    if(data[i].balancerule.to == $.urlParam('meterId')) {
+                        location.href="./uc_balancing.html?assetId="+data[i].balancerule.to;
+                    }
                 } else {
                     html += '<td>&nbsp;</td>';
                 }

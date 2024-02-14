@@ -260,28 +260,49 @@ $(document).ready(function() {
             html += '</tr>';
             lastEpoch = data[i].epoch;
         }
-        html += '<tfoot>';
-        html += '<tr>';
-        html += '<th>&nbsp;</th>';
-        let timeFrame = 'von <span class="float-end">'+new Date(data[data.length-1].time).toLocaleString()+'</span><br/>bis <span class="float-end">'+new Date(data[0].time).toLocaleString()+'</span> ';
-        html += '<th colspan="2">'+timeFrame+'</th>';
-        html += '<th class="text-end" valign="top">'+totalCO2.toFixed(0).replace('.',',')+'eq</th>';
-        html += '<th class="text-end" valign="top">'+totalDirect.toFixed(3).replace('.',',')+'kWh</th>';
-        html += '<th class="text-end" valign="top"><span class="text-danger">'+totalIn.toFixed(3).replace('.',',')+'kWh</span><br/><span class="text-success">'+totalOut.toFixed(3).replace('.',',')+'kWh</span><br/>'+totalBalancing.toFixed(3).replace('.',',')+'kWh</th>';
-        html += '</tr>';
-        html += '</tfoot>';
+        if(data.length > 0) {
+            html += '<tfoot>';
+            html += '<tr>';
+            html += '<th>&nbsp;</th>';
+            let timeFrame = 'von <span class="float-end">'+new Date(data[data.length-1].time).toLocaleString()+'</span><br/>bis <span class="float-end">'+new Date(data[0].time).toLocaleString()+'</span> ';
+            html += '<th colspan="2">'+timeFrame+'</th>';
+            html += '<th class="text-end" valign="top">'+totalCO2.toFixed(0).replace('.',',')+'eq</th>';
+            html += '<th class="text-end" valign="top">'+totalDirect.toFixed(3).replace('.',',')+'kWh</th>';
+            html += '<th class="text-end" valign="top"><span class="text-danger">'+totalIn.toFixed(3).replace('.',',')+'kWh</span><br/><span class="text-success">'+totalOut.toFixed(3).replace('.',',')+'kWh</span><br/>'+totalBalancing.toFixed(3).replace('.',',')+'kWh</th>';
+            html += '</tr>';
+            html += '</tfoot>';
+        }
         html += '</tbody>';
         $('#timeFrame').html(timeFrame);
         let results = 'Direkt (intern):<span class="float-end">'+totalDirect.toFixed(3).replace('.',',')+'kWh</span><br/>';
          results += 'Ausgleich (extern):<span class="float-end">'+totalBalancing.toFixed(3).replace('.',',')+'kWh</span><br/>';
+
+
+
+
         $('#resultStats').html(results)
+       
+        let actionrow = '';
+
+        actionrow += '<button class="btn btn-xs btn-light btnClear openPWA" title="Letztverbraucher APP öffnen" data-id="'+window.assetId+'"><i class="fa fa-window-restore"></i></button>';
+        actionrow += '<button class="btn btn-xs btn-light btnClear openProfile" title="Lastgangprofil öffnen" data-id="'+window.assetId+'"><i class="fa fa-bar-chart-o"></i></button>';
+        actionrow += '<button class="btn btn-xs btn-light btnClear openReading" title="Zählerstandserfassung öffnen" data-id="'+window.assetId+'"><i class="fa fa-pencil"></i></button>';
+        actionrow += '<button class="btn btn-xs btn-light btnClear openClearing" title="Clearing öffnen" data-id="'+window.assetId+'"><i class="fa fa-euro"></i></button>';
+        actionrow += '<button class="btn btn-xs btn-light btnClear openBalancing" title="Bilanzierung öffnen" data-id="'+window.assetId+'"><i class="fa fa-balance-scale"></i></button>';
+        actionrow += '';
+       
+        $('#actionRow').html(actionrow);
+
         chartDataCO2.reverse();
         chartDataEnergy.reverse();
         chartLabels.reverse();
         chartNav.reverse();
         chartDataDirect.reverse();
         html += '</table>';
+
         $('#balances').html(html);
+        
+
         $('.btnClear').off();
         $('.btnClear').click(function() {
             $.getJSON("/api/balancing/seal?assetId="+window.assetId+"&epoch="+$(this).data('epoch'), function(data) {
@@ -414,6 +435,41 @@ $(document).ready(function() {
         window.chartObject.canvas.parentNode.style.width = '100%';
         window.chartObject.resize();
         window.paper.scaleContentToFit({ padding: 10 });
+
+        // Event Handler for Action Row
+        $('.openPWA').off();
+        $('.openPWA').click(function() {
+            const meterId = $(this).data('id');
+            $.getJSON("/api/access/createMeterJWT?meterId="+meterId, function(data) {
+                let baseUrl = location.protocol + '//' + location.hostname + ':' + window.eaf_settings.PORT_PWA;
+                if((typeof window.eaf_settings.PWA_URL !== 'undefined') && (window.eaf_settings.PWA_URL !== '') && (window.eaf_settings.PWA_URL !== null)) {
+                    baseUrl = window.eaf_settings.PWA_URL;
+                }
+                let url = baseUrl + '/?token=' + data+'&meterId='+meterId;
+                window.open(url, '_blank');
+            });
+        });
+        $('.openProfile').off();
+        $('.openProfile').click(function() {
+            console.log("jhsssss");
+            const meterId = $(this).data('id');
+            location.href="./uc_energyprofile.html?meterId="+meterId;
+        });
+        $('.openReading').off();
+        $('.openReading').click(function() {
+            const meterId = $(this).data('id');
+            location.href="./uc_meterreading.html?meterId="+meterId;
+        });
+        $('.openClearing').off();
+        $('.openClearing').click(function() {
+            const meterId = $(this).data('id');
+            location.href="./uc_clearing.html?meterId="+meterId;
+        });
+        $('.openBalancing').off();
+        $('.openBalancing').click(function() {
+            const meterId = $(this).data('id');
+            location.href="./uc_balancing.html?assetId="+meterId;
+        });
     }
 
     /**
