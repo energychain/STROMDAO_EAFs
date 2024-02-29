@@ -43,20 +43,22 @@ module.exports = {
 						throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
 					}
 				}
-				let results =  await ctx.call("clearings_model.find",{
+				let results =  await ctx.call("httppull_model.find",{
 					query: {
-						meterId: ctx.params.meterId
-					},
-					sort:"-epoch"
+						requestId: ctx.params.requestId
+					}
 				});
+				if((typeof results !== 'undefined') && (results !== null) && (results.length == 1)) {
+					const res = await axios(results[0].fetch);
+					return res.data;
+				} else return null;
 				
-				return results;
 			}
 		},
 		process: {
 			rest: {
 				method: "GET",
-				path: "/fetch"
+				path: "/process"
 			},
 			params: {
 				requestId: {
@@ -65,23 +67,46 @@ module.exports = {
 				}
 			},
 			async handler(ctx) {
-				if((typeof ctx.meta.user !== 'undefined') && (typeof ctx.meta.user.meterId !== 'undefined')) {
-					// Ensure Authenticated Token is authorized
-					if(ctx.meta.user.meterId !== ctx.params.meterId) {
-						throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
-					}
-				}
-				let results =  await ctx.call("clearings_model.find",{
+				let json = await ctx.call("httppull.fetch",{requestId:ctx.params.requestId});
+				if(json !== null) {
+					const results =  await ctx.call("httppull_model.find",{
+						query: {
+							requestId: ctx.params.requestId
+						}
+					});
+					const rule = results[0].processor;
+					const Handlebars = require('handlebars');
+
+					function convertObject(obj, rulesTemplate) {
+						const template = Handlebars.compile(rulesTemplate);
+						const context = { json: obj };
+						const convertedData = JSON.parse(template(context));
+						return convertedData;
+					} 		
+					
+					return convertObject(json, rule);
+				} else return null;
+			}
+		},
+		updateReading: {
+			rest: {
+				method: "GET",
+				path: "/updateReading"
+			},
+			async handler(ctx) {
+				const results =  await ctx.call("httppull_model.find",{
 					query: {
 						meterId: ctx.params.meterId
-					},
-					sort:"-epoch"
+					}
 				});
-				
-				return results;
+
+				let json = await ctx.call("httppull.process",{requestId:results[0].requestId});
+				if(json !== null) {
+					json.meterId = results[0].meterId;
+					return await ctx.call("metering.updateReading",json); 
+				} else return {};
 			}
 		}
-
 	},
 
 	/**
