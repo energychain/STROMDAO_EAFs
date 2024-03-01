@@ -1,3 +1,11 @@
+## [0.6.15](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.14...v0.6.15) (2024-03-01)
+
+
+### Bug Fixes
+
+* Check if result.length > 0 in case of CSV header generation on empty resultset. ([e799072](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/e799072d475b35a6af57d4e162ab047fb1765b57))
+* Handling of handlebars ([032243d](https://github.com/energychain/ZSG_DynamischeStromtarife/commit/032243d644a42da4f51509756f98ab18977ce5d5))
+
 ## [0.6.14](https://github.com/energychain/ZSG_DynamischeStromtarife/compare/v0.6.13...v0.6.14) (2024-02-13)
 
 
