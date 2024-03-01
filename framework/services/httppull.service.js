@@ -78,7 +78,7 @@ module.exports = {
 					const Handlebars = require('handlebars');
 
 					function convertObject(obj, rulesTemplate) {
-						const template = Handlebars.compile(rulesTemplate);
+						const template = Handlebars.compile(JSON.stringify(rulesTemplate));
 						const context = { json: obj };
 						const convertedData = JSON.parse(template(context));
 						return convertedData;
@@ -103,6 +103,8 @@ module.exports = {
 				let json = await ctx.call("httppull.process",{requestId:results[0].requestId});
 				if(json !== null) {
 					json.meterId = results[0].meterId;
+					json.reading *= 1;
+					json.timestamp *= 1000; //TODO:  Fix should be done in Template not in code
 					return await ctx.call("metering.updateReading",json); 
 				} else return {};
 			}
