@@ -24,7 +24,7 @@ module.exports = {
 	 * Settings
 	 */
 	settings: {
-		fields: ["_id", "requestId","fetch","processor","meterId"],
+		fields: ["_id", "requestId","fetch","processor","meterId","lastFetch"],
 	   },
 
 	/**

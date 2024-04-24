@@ -9,17 +9,35 @@
  */
 const ApiGateway = require("moleculer-web"); // Included for Invalid Authentication Errors 
 const axios = require("axios");
-
+const Cron = require("moleculer-cron");
 
 /** @type {ServiceSchema} */
 module.exports = {
 	name: "httppull",
+	mixins: [Cron],
 
 	/**
 	 * Dependencies
 	 */
 	dependencies: ["httppull_model"],
 
+	crons: [
+        {
+            name: "Scheduled HTTP Pulls",
+            cronTime: '*/5 * * * *',
+            manualStart: true,
+            timeZone: 'Europe/Berlin',
+            onTick: async function() {
+              console.log('Scheduled HTTP Pulls triggered');
+            },
+            runOnInit: function() {
+				console.log("Scheduled HTTP Pulls is created");
+            },
+            onComplete: function() {
+				console.log("Scheduled HTTP Pulls is finished");
+            }
+        }
+	],
 	/**
 	 * Actions
 	 */
@@ -76,6 +94,10 @@ module.exports = {
 							}
 						});
 						const rule = results[0].processor;
+						results[0].lastFetch = new Date().getTime();
+						results[0].id = results[0]._id;
+						await ctx.call("httppull_model.update",results[0]);
+
 						const Handlebars = require('handlebars');
 
 						function convertObject(obj, rulesTemplate) {
@@ -90,6 +112,25 @@ module.exports = {
 				} catch(e) {
 					return null;
 				}
+			}
+		},
+		scheduledFetch: {
+			rest: {
+				method: "GET",
+				path: "/scheduledFetch"
+			},
+			async handler(ctx) {
+				const results =  await ctx.call("httppull_model.find",{
+					$or: [
+						{lastFetch: { $exists: false }},
+						{lastFetch: { $gt: new Date().getTime() - 86400000 }}
+					]
+				});
+				let res = [];
+				for(let i=0;i<results.length;i++) {
+					res.push(await ctx.call("httppull.process",{requestId:results[i].requestId}));
+				}
+				return res;
 			}
 		},
 		updateReading: {

@@ -74,6 +74,7 @@
     "jsonwebtoken": "^9.0.2",
     "moleculer": "^0.14.26",
     "moleculer-auto-openapi": "^1.1.6",
+    "moleculer-cron": "^0.0.4",
     "moleculer-db": "^0.8.25",
     "moleculer-db-adapter-mongo": "^0.4.19",
     "moleculer-web": "^0.10.4",
