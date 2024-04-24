@@ -27,48 +27,43 @@ const app = async function(token) {
         }
         const ctxChart = document.getElementById('forecastChart');
         if(typeof window.chartObject !== 'undefined') window.chartObject.destroy();
-        try {
-                window.chartObject = new Chart(ctxChart, {
-                    type: 'bar',
-                    data: {
-                    labels: chartLabels,
-                    datasets: [{
-                        label: 'Preis je kWh',
-                        data: chartData,
-                        backgroundColor:chartColors
-                    }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                min: minY * 0.8
-                            }
-                        },
-                        responsive: true,
-                        
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return context.parsed.y.toFixed(2).replace('.',',') + ' €/kWh';
-                                    }
-                                }
-                            },
-                            legend: {
-                                display:false
-                            },
-                            datalabels: {
-                                display: false,
+
+        window.chartObject = new Chart(ctxChart, {
+            type: 'bar',
+            data: {
+              labels: chartLabels,
+              datasets: [{
+                label: 'Preis je kWh',
+                data: chartData,
+                backgroundColor:chartColors
+              }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        min: minY * 0.8
+                    }
+                },
+                responsive: true,
+                
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y.toFixed(2).replace('.',',') + ' €/kWh';
                             }
                         }
+                    },
+                    legend: {
+                        display:false
+                    },
+                    datalabels: {
+                        display: false,
                     }
-                });
-        
-        } catch(e) {
-         
-        }
+                }
+            }
+          });
     });
-
     let crossbalance = '';
 
     if($.urlParam("crossbalance") || window.crossbalance) {
@@ -248,86 +243,76 @@ const app = async function(token) {
         const xValues = consumptionChart.map(point => new Date( (point.x * 3600000)-demofy ).toLocaleString());
         const yValues = consumptionChart.map(point => (point.y/1000));
         const yValues2 = costChart.map(point => point.y);
-       
-        if(xValues.length > 1) {       
-            window.timelineChartObject = new Chart(ctxTimelineChart, {
-                type: 'line',
-                data: {
-                        labels: xValues, // x-Werte als Labels
-                        datasets: [{
-                            label: 'kWh',
-                            yAxisID: 'A',
-                            data: yValues, // y-Werte für die Datenpunkte
-                            borderWidth: 1,
-                            backgroundColor: '#273469',
-                            borderColor: '#273469',
-                            tension: 0.1 // Glättung der Linie
-                        },{
-                            label: '€',
-                            yAxisID: 'B',
-                            data: yValues2, // y-Werte für die Datenpunkte
-                            borderWidth: 1,
-                            backgroundColor: '#606060',
-                            borderColor: '#606060',
-                            tension: 0.1 // Glättung der Linie
-                        }]
+
+        window.timelineChartObject = new Chart(ctxTimelineChart, {
+            type: 'line',
+            data: {
+                    labels: xValues, // x-Werte als Labels
+                    datasets: [{
+                        label: 'kWh',
+                        yAxisID: 'A',
+                        data: yValues, // y-Werte für die Datenpunkte
+                        borderWidth: 1,
+                        backgroundColor: '#273469',
+                        borderColor: '#273469',
+                        tension: 0.1 // Glättung der Linie
+                    },{
+                        label: '€',
+                        yAxisID: 'B',
+                        data: yValues2, // y-Werte für die Datenpunkte
+                        borderWidth: 1,
+                        backgroundColor: '#606060',
+                        borderColor: '#606060',
+                        tension: 0.1 // Glättung der Linie
+                    }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                  A: {
+                    type: 'linear',
+                    position: 'left',
+                    ticks: { beginAtZero: true, color: '#273469' },
+                    // Hide grid lines, otherwise you have separate grid lines for the 2 y axes
+                    grid: { display: false }
+                  },
+                  B: {
+                    type: 'linear',
+                    position: 'right',
+                    ticks: { beginAtZero: true, color: '#606060' },
+                    grid: { display: false }
+                  },
+                  x: { ticks: { beginAtZero: true } }
                 },
-                options: {
-                    responsive: true,
-                    scales: {
-                    A: {
-                        type: 'linear',
-                        position: 'left',
-                        ticks: { beginAtZero: true, color: '#273469' },
-                        // Hide grid lines, otherwise you have separate grid lines for the 2 y axes
-                        grid: { display: false }
-                    },
-                    B: {
-                        type: 'linear',
-                        position: 'right',
-                        ticks: { beginAtZero: true, color: '#606060' },
-                        grid: { display: false }
-                    },
-                    x: { ticks: { beginAtZero: true } }
-                    },
-                    plugins: {
-                        zoom: {
-                            pan: {
-                                mode: 'x',
-                                enabled: true
-                            },
-                            zoom: {
-                                wheel: {
-                                enabled: true,
-                                },
-                                pinch: {
-                                enabled: true
-                                },
-                                mode: 'x',
-                            }
+                plugins: {
+                    zoom: {
+                        pan: {
+                            mode: 'x',
+                            enabled: true
                         },
-                        datalabels: {
-                            display: false,
-                        }
+                        zoom: {
+                            wheel: {
+                              enabled: true,
+                            },
+                            pinch: {
+                              enabled: true
+                            },
+                            mode: 'x',
+                          }
+                    },
+                    datalabels: {
+                        display: false,
                     }
-                
                 }
-            });
+               
+              }
+        });
+        setTimeout(function() {
+            window.timelineChartObject.zoom( 2-(1/(timeSpan/86400000)) );
             setTimeout(function() {
-                try {
-                    window.timelineChartObject.zoom( 2-(1/(timeSpan/86400000)) );
-                    setTimeout(function() {
-                        try {
-                            window.timelineChartObject.pan({x: -timeSpan});
-                        } catch(e) {
-
-                        }
-                    },500);
-                } catch(e) {
-
-                }
-            },1500);
-        }
+                window.timelineChartObject.pan({x: -timeSpan});
+            },100);
+        },500);
 
         // prepare Stats
         let htmlCost = '<table class="table table-condensed">';
@@ -420,10 +405,6 @@ $(document).ready(function() {
     
     $('#meterId').val(window.localStorage.getItem("meterId"));
     $('#token').val(window.localStorage.getItem("token"));
-    $('#demoButton').click(function() {
-        $('#meterId').val('demo');
-        $('#token').val('');
-    })
     if($.urlParam('token')) {
         $('#loginModal').modal('hide');
         $('#token').val($.urlParam('token'));
@@ -449,22 +430,38 @@ $(document).ready(function() {
 
     $('#loginForm').submit(function(e) {
         e.preventDefault();
-        if($('#meterId').val() == 'demo') {
-            window.meterId = 'demo';
-            $.getJSON("/api/access/demo", function(data) {
-                app(data); 
-                setInterval(function() { app(data) }, 60000);
-            }); 
-        } else {
-            window.localStorage.setItem("token", $('#token').val());
-            window.localStorage.setItem("meterId", $('#meterId').val());
-            window.meterId = $('#meterId').val();
-            app($('#token').val());
-            // Trigger Auto-Reload
-            setInterval(function() { app($('#token').val()) }, 60000);
-        }
-       
-        $('#loginModal').modal('hide');
+
+        $.ajax({
+            type: 'POST',
+            url: '/api/powerfox/login', // replace with your endpoint URL
+            data: JSON.stringify({ email: $('#email').val(), password: $('#password').val()}), // replace with your data
+            contentType: 'application/json',
+            success: function(response) {
+                if(typeof response.token !== 'undefined') {
+                    const token = response.token;
+                    const meterId = response.meterId;
+                    window.localStorage.setItem("token", token);
+                    window.localStorage.setItem("meterId", meterId);
+                    $('#meterId').val(meterId);
+                    $('#token').val(token);
+                    window.meterId = meterId;
+                    location.replace("/?token="+token+"&meterId="+meterId);
+                    /* For the moment we redirect to the standard login page as this might be the best option to avoid double implementation
+                    app(token);
+                    // Trigger Auto-Reload
+                    setInterval(function() { app(token) }, 60000);
+                    $('#loginModal').modal('hide');
+                    //
+                    */
+                } else {
+                    console.error("Error login in");
+                }
+               
+            },
+            error: function(error) {
+                console.error(error);
+            }
+        });
     })
 
 

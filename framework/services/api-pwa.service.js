@@ -46,7 +46,9 @@ module.exports = {
 					"access.getAssetMeta",
 					"access.settings",
 					"access.sharedFolder",
-					"debit.open"
+					"debit.open",
+					"powerfox.login",
+					"httppull.updateReading"
 				],
 
 				// Route-level Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
@@ -157,6 +159,14 @@ module.exports = {
 			if(typeof ctx.params.req.query.token !== 'undefined') {
 				auth = ctx.params.req.query.token;
 			}
+			if(typeof ctx.params.req.body.email !== 'undefined') {
+				auth = {
+					meterId: 'powerfox',
+					email: ctx.params.req.body.email,
+					password: ctx.params.req.body.password
+				}
+				return auth;
+			} else
 			if (auth) {
 				let token = auth;
 				if(auth.startsWith("Bearer")) {

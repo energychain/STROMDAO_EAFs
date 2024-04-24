@@ -67,25 +67,29 @@ module.exports = {
 				}
 			},
 			async handler(ctx) {
-				let json = await ctx.call("httppull.fetch",{requestId:ctx.params.requestId});
-				if(json !== null) {
-					const results =  await ctx.call("httppull_model.find",{
-						query: {
-							requestId: ctx.params.requestId
-						}
-					});
-					const rule = results[0].processor;
-					const Handlebars = require('handlebars');
+				try {
+					let json = await ctx.call("httppull.fetch",{requestId:ctx.params.requestId});
+					if(json !== null) {
+						const results =  await ctx.call("httppull_model.find",{
+							query: {
+								requestId: ctx.params.requestId
+							}
+						});
+						const rule = results[0].processor;
+						const Handlebars = require('handlebars');
 
-					function convertObject(obj, rulesTemplate) {
-						const template = Handlebars.compile(JSON.stringify(rulesTemplate));
-						const context = { json: obj };
-						const convertedData = JSON.parse(template(context));
-						return convertedData;
-					} 		
-					
-					return convertObject(json, rule);
-				} else return null;
+						function convertObject(obj, rulesTemplate) {
+							const template = Handlebars.compile(JSON.stringify(rulesTemplate));
+							const context = { json: obj };
+							const convertedData = JSON.parse(template(context));
+							return convertedData;
+						} 		
+						
+						return convertObject(json, rule);
+					} else return null;
+				} catch(e) {
+					return null;
+				}
 			}
 		},
 		updateReading: {
@@ -99,7 +103,6 @@ module.exports = {
 						meterId: ctx.params.meterId
 					}
 				});
-
 				let json = await ctx.call("httppull.process",{requestId:results[0].requestId});
 				if(json !== null) {
 					json.meterId = results[0].meterId;
@@ -109,7 +112,7 @@ module.exports = {
 				} else return {};
 			}
 		}
-	},
+	},	
 
 	/**
 	 * Events
