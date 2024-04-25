@@ -24,7 +24,7 @@ module.exports = {
 	crons: [
         {
             name: "Scheduled HTTP Pulls",
-            cronTime: '*/5 * * * *',
+            cronTime: '*/15 * * * *',
             manualStart: false,
             timeZone: 'Europe/Berlin',
             onTick: async function(ctx) {
