@@ -25,16 +25,15 @@ module.exports = {
         {
             name: "Scheduled HTTP Pulls",
             cronTime: '*/5 * * * *',
-            manualStart: true,
+            manualStart: false,
             timeZone: 'Europe/Berlin',
-            onTick: async function() {
-              console.log('Scheduled HTTP Pulls triggered');
+            onTick: async function(ctx) {
+			  console.log("Scheduled Fetch triggered");
+              await ctx.call("httppull.scheduledFetch");
             },
             runOnInit: function() {
-				console.log("Scheduled HTTP Pulls is created");
-            },
+          	},
             onComplete: function() {
-				console.log("Scheduled HTTP Pulls is finished");
             }
         }
 	],
@@ -128,7 +127,7 @@ module.exports = {
 				});
 				let res = [];
 				for(let i=0;i<results.length;i++) {
-					res.push(await ctx.call("httppull.process",{requestId:results[i].requestId}));
+					res.push(await ctx.call("httppull.updateReading",{meterId:results[i].meterId},{timeout:60000}));
 				}
 				return res;
 			}
@@ -144,12 +143,12 @@ module.exports = {
 						meterId: ctx.params.meterId
 					}
 				});
-				let json = await ctx.call("httppull.process",{requestId:results[0].requestId});
+				let json = await ctx.call("httppull.process",{requestId:results[0].requestId},{timeout:60000});
 				if(json !== null) {
 					json.meterId = results[0].meterId;
 					json.reading *= 1;
 					json.timestamp *= 1000; //TODO:  Fix should be done in Template not in code
-					return await ctx.call("metering.updateReading",json); 
+					return await ctx.call("metering.updateReading",json,{timeout:60000}); 
 				} else return {};
 			}
 		}
