@@ -93,7 +93,7 @@ const app = async function(token) {
 
         const ctxCostChart = document.getElementById('costChart');
         if(typeof window.costChartObject !== 'undefined') window.costChartObject.destroy();
-        Chart.register(ChartDataLabels);
+       // Chart.register(ChartDataLabels);
         window.costChartObject = new Chart(ctxCostChart,{
             type: 'doughnut',
             data: {
