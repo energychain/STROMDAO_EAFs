@@ -137,6 +137,7 @@ module.exports = {
 				method: "GET",
 				path: "/updateReading"
 			},
+			timeout:60000,
 			async handler(ctx) {
 				const results =  await ctx.call("httppull_model.find",{
 					query: {
@@ -148,7 +149,7 @@ module.exports = {
 					json.meterId = results[0].meterId;
 					json.reading *= 1;
 					json.timestamp *= 1000; //TODO:  Fix should be done in Template not in code
-					return await ctx.call("metering.updateReading",json,{timeout:60000}); 
+					return await ctx.call("metering.updateReading",json,{timeout:600000}); 
 				} else return {};
 			}
 		}

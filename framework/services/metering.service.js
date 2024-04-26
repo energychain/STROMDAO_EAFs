@@ -362,16 +362,18 @@ module.exports = {
 							transientClearing[key] = value;
 						}
 					}
-
-					const clearing = await ctx.call("clearing.commit",transientClearing);
-					if(typeof transientReading.id == 'undefined') {
-						transientReading.id = transientReading._id;
+					const clearingCommit = async function() {
+						const clearing = await ctx.call("clearing.commit",transientClearing);
+						if(typeof transientReading.id == 'undefined') {
+							transientReading.id = transientReading._id;
+						}
+						if(typeof transientReading._id !== 'undefined') {
+							transientReading.clearingJWT = clearing.jwt;
+							delete transientReading._id;
+							await ctx.call("readings_model.update",{id:transientReading.id,clearingJWT:transientReading.clearingJWT}); // ensures clearing to be part of.
+						}
 					}
-					if(typeof transientReading._id !== 'undefined') {
-						transientReading.clearingJWT = clearing.jwt;
-						delete transientReading._id;
-						await ctx.call("readings_model.update",{id:transientReading.id,clearingJWT:transientReading.clearingJWT}); // ensures clearing to be part of.
-					}
+					clearingCommit();
 				}
 				delete transientReading._id; // For operational safety we do not provide our db IDs to the client.
 				delete transientReading.id;
